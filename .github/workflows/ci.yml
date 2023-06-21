@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: [ 8.2 ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2.25.4
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:2.5.8, phpunit:10.2.2
+        env:
+          fail-fast: true
