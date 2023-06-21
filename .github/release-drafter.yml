@@ -1,0 +1,19 @@
+template: |
+  ## What's Changed
+  
+  $CHANGES
+categories:
+  - title: '💥 Breaking changes'
+    label: 'type/epic'
+  - title: '🚀 Features'
+    label: 'type/feature'
+  - title: '🐛 Bug fixes'
+    label: 'type/bug'
+  - title: '🧹 Housekeeping'
+    label: 'type/housekeeping'
+  - title: '📦 Dependency Updates'
+    label: 'type/dependencies'
+    collapse-after: 5
+change-template: '* (#$NUMBER) $TITLE - @$AUTHOR'
+exclude-labels:
+  - 'meta/skip-change-log'
