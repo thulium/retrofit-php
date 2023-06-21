@@ -1,0 +1,16 @@
+name: Add labels
+
+on:
+  - pull_request_target
+
+jobs:
+  type-label:
+    permissions:
+      contents: read
+      pull-requests: write
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Triage against type/* label
+        uses: actions/labeler@v5.0.0-alpha.1
