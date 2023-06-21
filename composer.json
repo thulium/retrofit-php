@@ -11,12 +11,12 @@
     },
     "autoload": {
         "psr-4": {
-            "\\Thulium": "src/"
+            "\\Thulium\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "\\Thulium\\Retrofit\\Tests": "tests/"
+            "\\Thulium\\Retrofit\\Tests\\": "tests/"
         }
     }
 }

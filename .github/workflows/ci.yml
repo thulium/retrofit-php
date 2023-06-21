@@ -21,9 +21,12 @@ jobs:
           fetch-depth: 0
 
       - name: Setup PHP ${{ matrix.php }}
-        uses: shivammathur/setup-php@v2.25.4
+        uses: shivammathur/setup-php@v2.25.3
         with:
           php-version: ${{ matrix.php }}
           tools: composer:2.5.8, phpunit:10.2.2
         env:
           fail-fast: true
+
+      - name: Run tests
+        uses: php-actions/phpunit@v3.0.3
