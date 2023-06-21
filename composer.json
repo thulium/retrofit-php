@@ -3,20 +3,22 @@
     "description": "HTTP client for PHP",
     "minimum-stability": "stable",
     "license": "MIT",
+    "type": "library",
     "require": {
-        "php": ">=8.2"
+        "php": ">=8.2",
+        "psr/http-message": "2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "10.2.3"
     },
     "autoload": {
         "psr-4": {
-            "\\Thulium\\": "src/"
+            "Retrofit\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "\\Thulium\\Retrofit\\Tests\\": "tests/"
+            "Retrofit\\Tests\\": "tests/"
         }
     }
 }
