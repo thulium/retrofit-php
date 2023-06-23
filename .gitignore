@@ -1,5 +1,6 @@
+.phpunit.result.cache
 composer.lock
 composer.phar
-.phpunit.result.cache
+phpstan.neon
 /.idea
 /vendor

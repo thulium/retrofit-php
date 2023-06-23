@@ -3,15 +3,9 @@ declare(strict_types=1);
 
 namespace Retrofit;
 
-class ConverterFactory
+interface ConverterFactory
 {
-    public function requestBodyConverter(): ?Converter
-    {
-        return null;
-    }
+    public function requestBodyConverter(): ?Converter;
 
-    public function responseBodyConverter(): ?Converter
-    {
-        return null;
-    }
+    public function responseBodyConverter(): ?Converter;
 }
