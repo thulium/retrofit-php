@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Retrofit\Proxy;
+namespace Retrofit\Internal\Proxy;
 
 use ReflectionClass;
 use Retrofit\Retrofit;

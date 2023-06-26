@@ -8,7 +8,7 @@ use LogicException;
 use Psr\Http\Message\UriInterface;
 use ReflectionClass;
 use ReflectionException;
-use Retrofit\Proxy\ProxyFactory;
+use Retrofit\Internal\Proxy\ProxyFactory;
 
 /**
  * Retrofit adapts a PHP interface to HTTP calls by using attributes on the declared methods to define how request are

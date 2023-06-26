@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Retrofit\Proxy;
+namespace Retrofit\Internal\Proxy;
 
 use LogicException;
 use PhpParser\Builder\Method;
