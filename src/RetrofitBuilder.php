@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace Retrofit;
 
 use LogicException;
+use Nyholm\Psr7\Uri;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
+use Psr\Http\Message\UriInterface;
 use Retrofit\Proxy\DefaultProxyFactory;
 
 /**
@@ -14,7 +16,7 @@ use Retrofit\Proxy\DefaultProxyFactory;
 class RetrofitBuilder
 {
     private ?HttpClient $httpClient = null;
-    private ?string $baseUrl = null;
+    private ?UriInterface $baseUrl = null;
     private array $converterFactories = [];
 
     public function client(HttpClient $httpClient): static
@@ -23,8 +25,11 @@ class RetrofitBuilder
         return $this;
     }
 
-    public function baseUrl(string $baseUrl): static
+    public function baseUrl(UriInterface|string $baseUrl): static
     {
+        if (is_string($baseUrl)) {
+            $baseUrl = new Uri($baseUrl);
+        }
         $this->baseUrl = $baseUrl;
         return $this;
     }
@@ -37,16 +42,16 @@ class RetrofitBuilder
 
     public function build(): Retrofit
     {
-        if (is_null($this->baseUrl)) {
-            throw new LogicException('Base URL required');
-        }
-
         if (is_null($this->httpClient)) {
             throw new LogicException('Must set HttpClient object to make requests');
         }
 
+        if (is_null($this->baseUrl)) {
+            throw new LogicException('Base URL required');
+        }
+
         $proxyFactory = new DefaultProxyFactory(new BuilderFactory(), new Standard());
 
-        return new Retrofit($this->httpClient, $proxyFactory);
+        return new Retrofit($this->httpClient, $this->baseUrl, $this->converterFactories, $proxyFactory);
     }
 }

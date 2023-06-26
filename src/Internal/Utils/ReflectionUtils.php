@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Retrofit\Utils;
+namespace Retrofit\Internal\Utils;
 
 class ReflectionUtils
 {

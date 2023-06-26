@@ -5,6 +5,7 @@ namespace Retrofit;
 
 use InvalidArgumentException;
 use LogicException;
+use Psr\Http\Message\UriInterface;
 use ReflectionClass;
 use ReflectionException;
 use Retrofit\Proxy\ProxyFactory;
@@ -30,6 +31,8 @@ class Retrofit
 {
     public function __construct(
         public readonly HttpClient $httpClient,
+        public readonly UriInterface $baseUrl,
+        public readonly array $converterFactories,
         private readonly ProxyFactory $proxyFactory
     )
     {

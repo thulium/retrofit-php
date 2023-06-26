@@ -21,10 +21,9 @@ use PhpParser\PrettyPrinterAbstract;
 use ReflectionClass;
 use ReflectionMethod;
 use Retrofit\Call;
-use Retrofit\HttpClient;
+use Retrofit\Internal\ServiceMethodFactory;
+use Retrofit\Internal\Utils\ReflectionUtils;
 use Retrofit\Retrofit;
-use Retrofit\ServiceMethodFactory;
-use Retrofit\Utils\ReflectionUtils;
 
 class DefaultProxyFactory implements ProxyFactory
 {
@@ -48,14 +47,19 @@ class DefaultProxyFactory implements ProxyFactory
             ->class($proxyServiceName)
             ->implement($serviceFQCN);
 
-        $property = $this->builderFactory
-            ->param('httpClient')
+        $param1 = $this->builderFactory
+            ->param('retrofit')
             ->makePrivate()
-            ->setType(ReflectionUtils::toFQCN(HttpClient::class));
+            ->setType(ReflectionUtils::toFQCN(Retrofit::class));
+//        $param2 = $this->builderFactory
+//            ->param('baseUrl')
+//            ->makePrivate()
+//            ->setType(ReflectionUtils::toFQCN(UriInterface::class));
         $constructor = $this->builderFactory
             ->method('__construct')
             ->makePublic()
-            ->addParam($property->getNode());
+            ->addParam($param1->getNode());
+//            ->addParam($param2->getNode());
         $proxyServiceBuilder->addStmt($constructor->getNode());
 
         $proxyServiceMethod = $this->createProxyServiceMethod($service);
@@ -89,7 +93,7 @@ class DefaultProxyFactory implements ProxyFactory
         eval($proxyServiceClass);
 
         $proxyServiceFQCN = ReflectionUtils::toFQCN($namespace . ReflectionUtils::NAMESPACE_DELIMITER . $proxyServiceName);
-        return new $proxyServiceFQCN($retrofit->httpClient);
+        return new $proxyServiceFQCN($retrofit);
     }
 
     private function attributes(array $attributes, Method|Param $destination): void
@@ -148,7 +152,8 @@ class DefaultProxyFactory implements ProxyFactory
             new Name(ReflectionUtils::toFQCN(ServiceMethodFactory::class)),
             'create',
             [
-                new PropertyFetch(new Variable('this'), 'httpClient'),
+                new PropertyFetch(new Variable('this'), 'retrofit'),
+//                new PropertyFetch(new Variable('this'), 'baseUrl'),
                 new String_(ReflectionUtils::toFQCN($service->getName())),
                 new Function_(),
             ]
