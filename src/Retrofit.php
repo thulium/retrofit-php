@@ -27,13 +27,13 @@ use Retrofit\Proxy\ProxyFactory;
  * $users = $api->getUsers()->execute();
  * </pre>
  */
-class Retrofit
+readonly class Retrofit
 {
     public function __construct(
-        public readonly HttpClient $httpClient,
-        public readonly UriInterface $baseUrl,
-        public readonly array $converterFactories,
-        private readonly ProxyFactory $proxyFactory
+        public HttpClient $httpClient,
+        public UriInterface $baseUrl,
+        public array $converterFactories,
+        private ProxyFactory $proxyFactory
     )
     {
     }

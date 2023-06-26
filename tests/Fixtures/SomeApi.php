@@ -17,6 +17,9 @@ interface SomeApi
     #[GET('/users/{id}')]
     public function getUser(#[Path('id')] int $id): Call;
 
+    #[GET('/users/{name}')]
+    public function getUserByName(#[Path(name: 'name', encoded: true)] string $name): Call;
+
     #[POST('/users')]
     public function createUser(#[Body] UserRequest $userRequest): Call;
 }

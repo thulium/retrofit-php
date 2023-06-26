@@ -1,52 +1,37 @@
 <?php
-declare(strict_types=1);
 
 namespace Retrofit\Internal;
 
 use Nyholm\Psr7\Request;
+use Nyholm\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
 use Retrofit\Attribute\HttpRequest;
-use Retrofit\Internal\Handler\ParameterHandler;
 
 class RequestBuilder
 {
-    private UriInterface $baseUrl;
-    private HttpRequest $httpRequest;
-    /** @var ParameterHandler[] */
-    private array $parameterHandlers;
-    private array $args;
+    private UriInterface $uri;
 
-    public function baseUrl(UriInterface $baseUrl): static
+    public function __construct(
+        UriInterface $baseUrl,
+        private readonly HttpRequest $httpRequest
+    )
     {
-        $this->baseUrl = $baseUrl;
-        return $this;
+        $this->uri = new Uri($baseUrl->__toString() . $httpRequest->path());
     }
 
-    public function httpRequest(HttpRequest $httpRequest): static
+    public function addPathParam(string $name, string $value, bool $encoded): void
     {
-        $this->httpRequest = $httpRequest;
-        return $this;
-    }
-
-    public function parameterHandlers(array $parameterHandlers): static
-    {
-        $this->parameterHandlers = $parameterHandlers;
-        return $this;
-    }
-
-    public function withArgs(array $args): static
-    {
-        $this->args = $args;
-        return $this;
+        if ($encoded) {
+            $value = rawurlencode($value);
+        }
+        $path = rawurldecode($this->uri->getPath());
+        $path = str_replace(sprintf('{%s}', $name), $value, $path);
+        $this->uri = $this->uri->withPath($path);
     }
 
     public function build(): RequestInterface
     {
-
-        foreach ($this->parameterHandlers as $i => $parameterHandler) {
-        }
-
-        return new Request($this->httpRequest->httpMethod()->value, null);
+        return new Request($this->httpRequest->httpMethod()->value, $this->uri);
     }
 }

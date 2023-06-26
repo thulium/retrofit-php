@@ -25,13 +25,13 @@ use Retrofit\Internal\ServiceMethodFactory;
 use Retrofit\Internal\Utils\ReflectionUtils;
 use Retrofit\Retrofit;
 
-class DefaultProxyFactory implements ProxyFactory
+readonly class DefaultProxyFactory implements ProxyFactory
 {
     private const PROXY_PREFIX = 'Retrofit\Proxy\\';
 
     public function __construct(
-        private readonly BuilderFactory $builderFactory,
-        private readonly PrettyPrinterAbstract $prettyPrinterAbstract
+        private BuilderFactory $builderFactory,
+        private PrettyPrinterAbstract $prettyPrinterAbstract
     )
     {
     }
@@ -51,15 +51,10 @@ class DefaultProxyFactory implements ProxyFactory
             ->param('retrofit')
             ->makePrivate()
             ->setType(ReflectionUtils::toFQCN(Retrofit::class));
-//        $param2 = $this->builderFactory
-//            ->param('baseUrl')
-//            ->makePrivate()
-//            ->setType(ReflectionUtils::toFQCN(UriInterface::class));
         $constructor = $this->builderFactory
             ->method('__construct')
             ->makePublic()
             ->addParam($param1->getNode());
-//            ->addParam($param2->getNode());
         $proxyServiceBuilder->addStmt($constructor->getNode());
 
         $proxyServiceMethod = $this->createProxyServiceMethod($service);

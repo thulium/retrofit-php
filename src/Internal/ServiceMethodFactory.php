@@ -10,11 +10,11 @@ use Retrofit\Attribute\HttpRequest;
 use Retrofit\Attribute\Path;
 use Retrofit\Call;
 use Retrofit\HttpClient;
-use Retrofit\Internal\Handler\ParameterHandler;
-use Retrofit\Internal\Handler\PathHandler;
+use Retrofit\Internal\ParameterHandler\ParameterHandler;
+use Retrofit\Internal\ParameterHandler\PathHandler;
 use Retrofit\Retrofit;
 
-class ServiceMethodFactory
+readonly class ServiceMethodFactory
 {
     /**
      * @throws ReflectionException
@@ -34,36 +34,31 @@ class ServiceMethodFactory
             $reflectionAttributes2 = $reflectionParameter->getAttributes();
             $reflectionAttribute = $reflectionAttributes2[0];
             $newInstance = $reflectionAttribute->newInstance();
-            $position = $reflectionParameter->getPosition();
-
             /** @var ParameterHandler $var1 */
             $var1 = $pathHandlers[$reflectionAttribute->getName()];
+            $var1->setName($reflectionParameter->getName());
             $var1->setAttribute($newInstance);
 
-            $parameterHandlers[$position] = $var1;
+            $parameterHandlers[$reflectionParameter->getPosition()] = $var1;
         }
         ksort($parameterHandlers);
 
         /** @var HttpRequest $var */
         $var = $reflectionAttributes1[0];
-        $requestBuilder = (new RequestBuilder())
-            ->baseUrl($retrofit->baseUrl)
-            ->httpRequest($var)
-            ->parameterHandlers($parameterHandlers);
 
-        return new class($retrofit->httpClient, $requestBuilder) implements ServiceMethod {
+        $requestFactory = new RequestFactory($retrofit->baseUrl, $var, $parameterHandlers);
+
+        return new class($retrofit->httpClient, $requestFactory) implements ServiceMethod {
             public function __construct(
                 private readonly HttpClient $httpClient,
-                private readonly RequestBuilder $requestBuilder
+                private readonly RequestFactory $requestFactory
             )
             {
             }
 
             public function invoke(array $args): Call
             {
-                $request = $this->requestBuilder
-                    ->withArgs($args)
-                    ->build();
+                $request = $this->requestFactory->create($args);
                 return new HttpClientCall($this->httpClient, $request);
             }
         };
