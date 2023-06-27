@@ -5,5 +5,5 @@ namespace Retrofit;
 
 interface Converter
 {
-    public function convert(): void;
+    public function convert(mixed $value): mixed;
 }

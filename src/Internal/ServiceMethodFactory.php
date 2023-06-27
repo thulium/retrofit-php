@@ -10,8 +10,7 @@ use Retrofit\Attribute\HttpRequest;
 use Retrofit\Attribute\Path;
 use Retrofit\Call;
 use Retrofit\HttpClient;
-use Retrofit\Internal\ParameterHandler\ParameterHandler;
-use Retrofit\Internal\ParameterHandler\PathHandler;
+use Retrofit\Internal\ParameterHandler\Factory\PathAbstractParameterHandlerFactory;
 use Retrofit\Retrofit;
 
 readonly class ServiceMethodFactory
@@ -26,7 +25,8 @@ readonly class ServiceMethodFactory
         $reflectionAttributeInstances = array_map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance(), $reflectionAttributes);
         $reflectionAttributes1 = array_filter($reflectionAttributeInstances, fn(object $instance): bool => $instance instanceof HttpRequest);
 
-        $pathHandlers = self::test();
+        $converterProvider = new ConverterProvider($retrofit->converterFactories);
+        $pathParameterHandlerFactories = self::parameterHandlerFactories($converterProvider);
 
         $parameterHandlers = [];
         $reflectionParameters = $reflectionMethod->getParameters();
@@ -34,12 +34,11 @@ readonly class ServiceMethodFactory
             $reflectionAttributes2 = $reflectionParameter->getAttributes();
             $reflectionAttribute = $reflectionAttributes2[0];
             $newInstance = $reflectionAttribute->newInstance();
-            /** @var ParameterHandler $var1 */
-            $var1 = $pathHandlers[$reflectionAttribute->getName()];
-            $var1->setName($reflectionParameter->getName());
-            $var1->setAttribute($newInstance);
 
-            $parameterHandlers[$reflectionParameter->getPosition()] = $var1;
+            $parameterHandlerFactory = $pathParameterHandlerFactories[$reflectionAttribute->getName()];
+            $parameterHandler = $parameterHandlerFactory->create($reflectionParameter->getName(), $newInstance);
+
+            $parameterHandlers[$reflectionParameter->getPosition()] = $parameterHandler;
         }
         ksort($parameterHandlers);
 
@@ -64,10 +63,10 @@ readonly class ServiceMethodFactory
         };
     }
 
-    private static function test()
+    private static function parameterHandlerFactories(ConverterProvider $converterProvider): array
     {
         return [
-            Path::class => new PathHandler(),
+            Path::class => new PathAbstractParameterHandlerFactory($converterProvider),
         ];
     }
 }

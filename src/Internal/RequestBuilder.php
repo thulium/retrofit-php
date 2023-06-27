@@ -17,7 +17,8 @@ class RequestBuilder
         private readonly HttpRequest $httpRequest
     )
     {
-        $this->uri = new Uri($baseUrl->__toString() . $httpRequest->path());
+        $this->uri = (new Uri($baseUrl->__toString()))
+            ->withPath($this->httpRequest->path());
     }
 
     public function addPathParam(string $name, string $value, bool $encoded): void

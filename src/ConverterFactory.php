@@ -8,4 +8,6 @@ interface ConverterFactory
     public function requestBodyConverter(): ?Converter;
 
     public function responseBodyConverter(): ?Converter;
+
+    public function stringConverter(): ?Converter;
 }

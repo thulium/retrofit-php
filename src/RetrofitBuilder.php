@@ -8,7 +8,8 @@ use Nyholm\Psr7\Uri;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Psr\Http\Message\UriInterface;
-use Retrofit\Proxy\DefaultProxyFactory;
+use Retrofit\Internal\BuiltInConverters;
+use Retrofit\Internal\Proxy\DefaultProxyFactory;
 
 /**
  * Build a new {@link Retrofit}.
@@ -49,6 +50,8 @@ class RetrofitBuilder
         if (is_null($this->baseUrl)) {
             throw new LogicException('Base URL required');
         }
+
+        $this->converterFactories[] = new BuiltInConverters();
 
         $proxyFactory = new DefaultProxyFactory(new BuilderFactory(), new Standard());
 
