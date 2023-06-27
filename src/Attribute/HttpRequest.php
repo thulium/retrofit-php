@@ -11,5 +11,7 @@ interface HttpRequest
 
     public function path(): string;
 
+    public function pathParameters(): array;
+
     public function hasBody(): bool;
 }

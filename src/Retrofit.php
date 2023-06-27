@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Retrofit;
 
 use InvalidArgumentException;
-use LogicException;
 use Psr\Http\Message\UriInterface;
 use ReflectionClass;
 use ReflectionException;
+use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\Proxy\ProxyFactory;
 
 /**
@@ -32,7 +32,7 @@ readonly class Retrofit
     public function __construct(
         public HttpClient $httpClient,
         public UriInterface $baseUrl,
-        public array $converterFactories,
+        public ConverterProvider $converterProvider,
         private ProxyFactory $proxyFactory
     )
     {
@@ -43,8 +43,6 @@ readonly class Retrofit
      *
      * @param string $service
      * @return object the implementation of the service
-     * @throws InvalidArgumentException
-     * @throws LogicException
      * @throws ReflectionException
      */
     public function create(string $service): object
@@ -62,7 +60,8 @@ readonly class Retrofit
     private function validateServiceInterface(ReflectionClass $service): void
     {
         if (!$service->isInterface()) {
-            throw new InvalidArgumentException('API declarations must be interface');
+            $serviceName = $service::class;
+            throw new InvalidArgumentException("Service {$serviceName} API declarations must be interface.");
         }
     }
 }

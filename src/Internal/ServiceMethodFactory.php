@@ -10,7 +10,8 @@ use Retrofit\Attribute\HttpRequest;
 use Retrofit\Attribute\Path;
 use Retrofit\Call;
 use Retrofit\HttpClient;
-use Retrofit\Internal\ParameterHandler\Factory\PathAbstractParameterHandlerFactory;
+use Retrofit\Internal\ParameterHandler\Factory\PathParameterHandlerFactory;
+use Retrofit\Internal\Utils\Utils;
 use Retrofit\Retrofit;
 
 readonly class ServiceMethodFactory
@@ -21,31 +22,26 @@ readonly class ServiceMethodFactory
     public static function create(Retrofit $retrofit, string $service, string $method): ServiceMethod
     {
         $reflectionMethod = new ReflectionMethod($service, $method);
-        $reflectionAttributes = $reflectionMethod->getAttributes();
-        $reflectionAttributeInstances = array_map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance(), $reflectionAttributes);
-        $reflectionAttributes1 = array_filter($reflectionAttributeInstances, fn(object $instance): bool => $instance instanceof HttpRequest);
+        $httpRequestMethods = collect($reflectionMethod->getAttributes())
+            ->map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance())
+            ->filter(fn(object $instance): bool => $instance instanceof HttpRequest)
+            ->collect();
 
-        $converterProvider = new ConverterProvider($retrofit->converterFactories);
-        $pathParameterHandlerFactories = self::parameterHandlerFactories($converterProvider);
-
-        $parameterHandlers = [];
-        $reflectionParameters = $reflectionMethod->getParameters();
-        foreach ($reflectionParameters as $reflectionParameter) {
-            $reflectionAttributes2 = $reflectionParameter->getAttributes();
-            $reflectionAttribute = $reflectionAttributes2[0];
-            $newInstance = $reflectionAttribute->newInstance();
-
-            $parameterHandlerFactory = $pathParameterHandlerFactories[$reflectionAttribute->getName()];
-            $parameterHandler = $parameterHandlerFactory->create($reflectionParameter->getName(), $newInstance);
-
-            $parameterHandlers[$reflectionParameter->getPosition()] = $parameterHandler;
+        if ($httpRequestMethods->isEmpty()) {
+            throw Utils::methodException($reflectionMethod, 'HTTP method annotation is required (e.g., #[GET], #[POST], etc.).');
         }
-        ksort($parameterHandlers);
 
-        /** @var HttpRequest $var */
-        $var = $reflectionAttributes1[0];
+        //todo check issue https://github.com/nikic/PHP-Parser/issues/930 is fixed
+        if ($httpRequestMethods->count() > 1) {
+            $httpMethodNames = $httpRequestMethods->implode(fn(HttpRequest $request): string => $request::class, ', ');
+            throw Utils::methodException($reflectionMethod, "Only one HTTP method is allowed. Found: [$httpMethodNames].");
+        }
 
-        $requestFactory = new RequestFactory($retrofit->baseUrl, $var, $parameterHandlers);
+        $httpRequest = $httpRequestMethods->first();
+
+        $parameterHandlers = self::getParameterHandlers($httpRequest, $retrofit, $reflectionMethod);
+
+        $requestFactory = new RequestFactory($retrofit->baseUrl, $httpRequest, $parameterHandlers);
 
         return new class($retrofit->httpClient, $requestFactory) implements ServiceMethod {
             public function __construct(
@@ -63,10 +59,32 @@ readonly class ServiceMethodFactory
         };
     }
 
-    private static function parameterHandlerFactories(ConverterProvider $converterProvider): array
+    private static function getParameterHandlers(HttpRequest $httpRequest, Retrofit $retrofit, ReflectionMethod $reflectionMethod): array
+    {
+        $pathParameterHandlerFactories = self::parameterHandlerFactories($httpRequest, $retrofit->converterProvider);
+
+        $parameterHandlers = [];
+        $reflectionParameters = $reflectionMethod->getParameters();
+        foreach ($reflectionParameters as $reflectionParameter) {
+            $reflectionAttributes = $reflectionParameter->getAttributes();
+            $reflectionAttribute = $reflectionAttributes[0];
+            $newInstance = $reflectionAttribute->newInstance();
+
+            $parameterHandlerFactory = $pathParameterHandlerFactories[$reflectionAttribute->getName()];
+            $parameterHandler = $parameterHandlerFactory->create($newInstance);
+
+            $parameterHandlers[$reflectionParameter->getPosition()] = $parameterHandler;
+        }
+
+        ksort($parameterHandlers);
+
+        return $parameterHandlers;
+    }
+
+    private static function parameterHandlerFactories(HttpRequest $httpRequest, ConverterProvider $converterProvider): array
     {
         return [
-            Path::class => new PathAbstractParameterHandlerFactory($converterProvider),
+            Path::class => new PathParameterHandlerFactory($httpRequest, $converterProvider),
         ];
     }
 }

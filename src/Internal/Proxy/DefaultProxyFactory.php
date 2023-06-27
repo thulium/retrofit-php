@@ -18,11 +18,12 @@ use PhpParser\Node\Scalar\MagicConst\Function_;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\PrettyPrinterAbstract;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
 use Retrofit\Call;
 use Retrofit\Internal\ServiceMethodFactory;
-use Retrofit\Internal\Utils\ReflectionUtils;
+use Retrofit\Internal\Utils\Utils;
 use Retrofit\Retrofit;
 
 readonly class DefaultProxyFactory implements ProxyFactory
@@ -42,7 +43,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
     public function create(Retrofit $retrofit, ReflectionClass $service): ?object
     {
         $proxyServiceName = "{$service->getShortName()}Impl";
-        $serviceFQCN = ReflectionUtils::toFQCN($service->getName());
+        $serviceFQCN = Utils::toFQCN($service->getName());
         $proxyServiceBuilder = $this->builderFactory
             ->class($proxyServiceName)
             ->implement($serviceFQCN);
@@ -50,7 +51,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
         $param1 = $this->builderFactory
             ->param('retrofit')
             ->makePrivate()
-            ->setType(ReflectionUtils::toFQCN(Retrofit::class));
+            ->setType(Utils::toFQCN(Retrofit::class));
         $constructor = $this->builderFactory
             ->method('__construct')
             ->makePublic()
@@ -72,7 +73,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
             $params = $this->params($method, $service);
             $proxyMethodBuilder->addParams($params);
 
-            $proxyMethodBuilder->setReturnType(ReflectionUtils::toFQCN($method->getReturnType()->getName()));
+            $proxyMethodBuilder->setReturnType(Utils::toFQCN($method->getReturnType()->getName()));
             $proxyMethodBuilder->addStmt(new Return_($proxyServiceMethod));
 
             $proxyServiceBuilder->addStmt($proxyMethodBuilder->getNode());
@@ -87,14 +88,19 @@ readonly class DefaultProxyFactory implements ProxyFactory
 
         eval($proxyServiceClass);
 
-        $proxyServiceFQCN = ReflectionUtils::toFQCN($namespace . ReflectionUtils::NAMESPACE_DELIMITER . $proxyServiceName);
+        $proxyServiceFQCN = Utils::toFQCN($namespace . Utils::NAMESPACE_DELIMITER . $proxyServiceName);
         return new $proxyServiceFQCN($retrofit);
     }
 
+    /**
+     * @param ReflectionAttribute[] $attributes
+     * @param Method|Param $destination
+     * @return void
+     */
     private function attributes(array $attributes, Method|Param $destination): void
     {
         foreach ($attributes as $attribute) {
-            $name = new Name(ReflectionUtils::toFQCN($attribute->getName()));
+            $name = new Name(Utils::toFQCN($attribute->getName()));
             $attribute = $this->builderFactory->attribute($name, $attribute->getArguments());
 
             $destination->addAttribute($attribute);
@@ -120,7 +126,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
 
             $reflectionTypeName = $parameter->getType()->getName();
             if (!($parameter->getType()->isBuiltin())) {
-                $reflectionTypeName = ReflectionUtils::NAMESPACE_DELIMITER . $reflectionTypeName;
+                $reflectionTypeName = Utils::NAMESPACE_DELIMITER . $reflectionTypeName;
             }
 
             $type = $parameter->getType()->allowsNull() ? new NullableType($reflectionTypeName) : $reflectionTypeName;
@@ -144,12 +150,11 @@ readonly class DefaultProxyFactory implements ProxyFactory
     private function createProxyServiceMethod(ReflectionClass $service): MethodCall
     {
         $serviceMethodFactory = new StaticCall(
-            new Name(ReflectionUtils::toFQCN(ServiceMethodFactory::class)),
+            new Name(Utils::toFQCN(ServiceMethodFactory::class)),
             'create',
             [
                 new PropertyFetch(new Variable('this'), 'retrofit'),
-//                new PropertyFetch(new Variable('this'), 'baseUrl'),
-                new String_(ReflectionUtils::toFQCN($service->getName())),
+                new String_(Utils::toFQCN($service->getName())),
                 new Function_(),
             ]
         );

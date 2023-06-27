@@ -9,6 +9,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Psr\Http\Message\UriInterface;
 use Retrofit\Internal\BuiltInConverters;
+use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\Proxy\DefaultProxyFactory;
 
 /**
@@ -44,17 +45,18 @@ class RetrofitBuilder
     public function build(): Retrofit
     {
         if (is_null($this->httpClient)) {
-            throw new LogicException('Must set HttpClient object to make requests');
+            throw new LogicException('Must set HttpClient object to make requests.');
         }
 
         if (is_null($this->baseUrl)) {
-            throw new LogicException('Base URL required');
+            throw new LogicException('Base URL required.');
         }
 
         $this->converterFactories[] = new BuiltInConverters();
 
         $proxyFactory = new DefaultProxyFactory(new BuilderFactory(), new Standard());
 
-        return new Retrofit($this->httpClient, $this->baseUrl, $this->converterFactories, $proxyFactory);
+        $converterProvider = new ConverterProvider($this->converterFactories);
+        return new Retrofit($this->httpClient, $this->baseUrl, $converterProvider, $proxyFactory);
     }
 }
