@@ -7,7 +7,7 @@ use Retrofit\Attribute\Path;
 use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\ParameterHandler\ParameterHandler;
 
-abstract class AbstractParameterHandlerFactory
+readonly abstract class AbstractParameterHandlerFactory
 {
     public function __construct(protected ConverterProvider $converterProvider)
     {

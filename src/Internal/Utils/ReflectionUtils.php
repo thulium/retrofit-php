@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal\Utils;
 
-class ReflectionUtils
+readonly class ReflectionUtils
 {
     public const NAMESPACE_DELIMITER = '\\';
 

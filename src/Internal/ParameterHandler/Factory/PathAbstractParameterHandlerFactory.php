@@ -7,7 +7,7 @@ use Retrofit\Attribute\Path;
 use Retrofit\Internal\ParameterHandler\ParameterHandler;
 use Retrofit\Internal\ParameterHandler\PathParameterHandler;
 
-class PathAbstractParameterHandlerFactory extends AbstractParameterHandlerFactory
+readonly class PathAbstractParameterHandlerFactory extends AbstractParameterHandlerFactory
 {
     public function create(string $name, Path $path): ParameterHandler
     {

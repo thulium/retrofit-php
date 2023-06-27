@@ -6,7 +6,7 @@ namespace Retrofit\Internal;
 use Retrofit\Converter;
 use Retrofit\ConverterFactory;
 
-class BuiltInConverters implements ConverterFactory
+readonly class BuiltInConverters implements ConverterFactory
 {
     public function requestBodyConverter(): ?Converter
     {

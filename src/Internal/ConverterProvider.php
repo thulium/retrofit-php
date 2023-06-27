@@ -7,33 +7,12 @@ use LogicException;
 use Retrofit\Converter;
 use Retrofit\ConverterFactory;
 
-class ConverterProvider
+readonly class ConverterProvider
 {
-    /**
-     * A cache of [@see ResponseBodyConverter]'s
-     *
-     * @var ResponseBodyConverter[]
-     */
-    private $responseBodyConverters = [];
-
-    /**
-     * A cache of [@see RequestBodyConverter]'s
-     *
-     * @var RequestBodyConverter[]
-     */
-    private $requestBodyConverters = [];
-
-    /**
-     * A cache of [@see StringConverter]'s
-     *
-     * @var StringConverter[]
-     */
-    private $stringConverters = [];
-
     /**
      * @param ConverterFactory[] $converterFactories
      */
-    public function __construct(private readonly array $converterFactories)
+    public function __construct(private array $converterFactories)
     {
     }
 
@@ -105,7 +84,7 @@ class ConverterProvider
 
         throw new LogicException(sprintf(
             'Retrofit: Could not get string converter for type %s',
-            $type
+            '$type'
         ));
     }
 }
