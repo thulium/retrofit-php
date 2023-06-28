@@ -5,9 +5,10 @@ namespace Retrofit\Tests\Fixtures\Api;
 
 use Retrofit\Attribute\GET;
 use Retrofit\Attribute\Path;
+use Retrofit\Call;
 
-interface SampleApi
+interface ValidApi
 {
     #[GET('/info/{login}')]
-    public function getInfo(#[Path('login')] string $login);
+    public function getInfo(#[Path('login')] string $login): Call;
 }

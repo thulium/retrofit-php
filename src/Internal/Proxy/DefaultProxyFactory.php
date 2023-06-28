@@ -22,10 +22,36 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
 use Retrofit\Call;
+use Retrofit\Internal\ServiceMethod;
 use Retrofit\Internal\ServiceMethodFactory;
 use Retrofit\Internal\Utils\Utils;
 use Retrofit\Retrofit;
 
+/**
+ * Creates an proxy which implements all of the methods from the service interface.
+ *
+ * In the constructor of an interface implementation a {@link Retrofit} object is injected. Each of the implemented methods
+ * calls {@link ServiceMethodFactory::create()} method to create a {@link ServiceMethod} implementation with required
+ * details - parsed and validated attributes. This created method is immediately invoked with passed all arguments.
+ *
+ * Example (pseudo-code):
+ * <pre>
+ * namespace Retrofit\Proxy\Retrofit\Tests\Fixtures;
+ *
+ * class SomeApiImpl implements \Retrofit\Tests\Fixtures\SomeApi
+ * {
+ *      public function __construct(private \Retrofit\Retrofit $retrofit)
+ *      {
+ *      }
+ *
+ *      #[\Retrofit\Attribute\GET('/users/{id}')]
+ *      public function getUser(#[\Retrofit\Attribute\Path('id')] int $id): \Retrofit\Call
+ *      {
+ *          return \Retrofit\Internal\ServiceMethodFactory::create($this->retrofit, '\\Retrofit\\Tests\\Fixtures\\SomeApi', __FUNCTION__)->invoke(func_get_args());
+ *      }
+ * }
+ * </pre>
+ */
 readonly class DefaultProxyFactory implements ProxyFactory
 {
     private const PROXY_PREFIX = 'Retrofit\Proxy\\';
@@ -37,10 +63,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
     {
     }
 
-    /**
-     * Create a new proxy class given an interface name.
-     */
-    public function create(Retrofit $retrofit, ReflectionClass $service): ?object
+    public function create(Retrofit $retrofit, ReflectionClass $service): object
     {
         $proxyServiceName = "{$service->getShortName()}Impl";
         $serviceFQCN = Utils::toFQCN($service->getName());
@@ -94,8 +117,6 @@ readonly class DefaultProxyFactory implements ProxyFactory
 
     /**
      * @param ReflectionAttribute[] $attributes
-     * @param Method|Param $destination
-     * @return void
      */
     private function attributes(array $attributes, Method|Param $destination): void
     {

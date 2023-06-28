@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Internal\Utils;
 
+use Ouzo\Utilities\Strings;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Retrofit\Internal\Utils\Utils;
-use Retrofit\Tests\Fixtures\Api\SampleApi;
+use Retrofit\Tests\Fixtures\Api\ValidApi;
 
 class UtilsTest extends TestCase
 {
@@ -66,35 +67,35 @@ class UtilsTest extends TestCase
     public function shouldReturnExceptionWithMethodDetails(): void
     {
         //given
-        $reflectionClass = new ReflectionClass(SampleApi::class);
+        $reflectionClass = new ReflectionClass(ValidApi::class);
         $reflectionMethod = $reflectionClass->getMethod('getInfo');
 
         //when
         $runtimeException = Utils::methodException($reflectionMethod, 'Some message to throw.');
 
         //then
-        $this->assertSame('Method SampleApi::getInfo(). Some message to throw.', $runtimeException->getMessage());
+        $this->assertSame('Method ValidApi::getInfo(). Some message to throw.', $runtimeException->getMessage());
     }
 
     #[Test]
     public function shouldReturnExceptionWithMethodAndParameterDetails(): void
     {
         //given
-        $reflectionClass = new ReflectionClass(SampleApi::class);
+        $reflectionClass = new ReflectionClass(ValidApi::class);
         $reflectionMethod = $reflectionClass->getMethod('getInfo');
 
         //when
         $runtimeException = Utils::parameterException($reflectionMethod, 0, 'Some message to throw.');
 
         //then
-        $this->assertSame('Method SampleApi::getInfo() parameter #1. Some message to throw.', $runtimeException->getMessage());
+        $this->assertSame('Method ValidApi::getInfo() parameter #1. Some message to throw.', $runtimeException->getMessage());
     }
 
     #[Test]
     public function shouldReturnEmptyArrayWhenThereAreNoParametersToParse(): void
     {
         //given
-        $path = '';
+        $path = Strings::EMPTY;
 
         //when
         $pathParameters = Utils::parsePathParameters($path);

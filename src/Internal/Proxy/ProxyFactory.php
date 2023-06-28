@@ -8,5 +8,8 @@ use Retrofit\Retrofit;
 
 interface ProxyFactory
 {
-    public function create(Retrofit $retrofit, ReflectionClass $service): ?object;
+    /**
+     * Creates a new proxy from given service.
+     */
+    public function create(Retrofit $retrofit, ReflectionClass $service): object;
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal\Utils;
 
+use Ouzo\Utilities\Strings;
 use ReflectionMethod;
 use RuntimeException;
 use TRegx\CleanRegex\Match\Detail;
@@ -28,7 +29,7 @@ readonly class Utils
     {
         return collect($names)
             ->map(fn(string $name): string => str_starts_with($name, self::NAMESPACE_DELIMITER) ? $name : (self::NAMESPACE_DELIMITER . $name))
-            ->join('');
+            ->join(Strings::EMPTY);
     }
 
     /**
