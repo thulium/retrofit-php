@@ -24,9 +24,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          tools: composer:2.5.8, phpunit:10.2.2
+          tools: composer:v2
         env:
           fail-fast: true
 
+      - name: Install Composer dependencies
+        run: composer install --no-progress
+
       - name: Run tests
-        uses: php-actions/phpunit@v3.0.3
+        run: ./vendor/bin/phpunit --configuration ./phpunit.xml
+
