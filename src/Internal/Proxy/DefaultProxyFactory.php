@@ -88,7 +88,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
 
         eval($proxyServiceClass);
 
-        $proxyServiceFQCN = Utils::toFQCN($namespace . Utils::NAMESPACE_DELIMITER . $proxyServiceName);
+        $proxyServiceFQCN = Utils::toFQCN($namespace, $proxyServiceName);
         return new $proxyServiceFQCN($retrofit);
     }
 
@@ -126,7 +126,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
 
             $reflectionTypeName = $parameter->getType()->getName();
             if (!($parameter->getType()->isBuiltin())) {
-                $reflectionTypeName = Utils::NAMESPACE_DELIMITER . $reflectionTypeName;
+                $reflectionTypeName = Utils::toFQCN($reflectionTypeName);
             }
 
             $type = $parameter->getType()->allowsNull() ? new NullableType($reflectionTypeName) : $reflectionTypeName;

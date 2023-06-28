@@ -13,5 +13,6 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR12' => true,
 
+        'closure_fn_spacing' => 'none',
         'declare_strict_types' => true,
     ]);

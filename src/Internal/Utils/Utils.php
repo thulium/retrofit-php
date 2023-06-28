@@ -7,25 +7,33 @@ use ReflectionMethod;
 use RuntimeException;
 use TRegx\CleanRegex\Match\Detail;
 
+/**
+ * Convenient utils for repeatable things.
+ *
+ * <b>Only for internal purposes.</b>
+ */
 readonly class Utils
 {
-    public const NAMESPACE_DELIMITER = '\\';
-
+    private const NAMESPACE_DELIMITER = '\\';
     private const PARAM_URL_REGEX = '\{([a-zA-Z][a-zA-Z0-9_-]*)\}';
 
     private function __construct()
     {
     }
 
-    public static function toFQCN(string $name): string
+    /**
+     * Transforms {@code $names} to the valid FQCN (Full Qualified Class Name) with leading namespace delimiter.
+     */
+    public static function toFQCN(string...$names): string
     {
-        $startsWithNamespaceDelimiter = str_starts_with($name, self::NAMESPACE_DELIMITER);
-        if ($startsWithNamespaceDelimiter) {
-            return $name;
-        }
-        return self::NAMESPACE_DELIMITER . $name;
+        return collect($names)
+            ->map(fn(string $name): string => str_starts_with($name, self::NAMESPACE_DELIMITER) ? $name : (self::NAMESPACE_DELIMITER . $name))
+            ->join('');
     }
 
+    /**
+     * Creates an exception with the message which contains a detailed info about method where an error occurs.
+     */
     public static function methodException(ReflectionMethod $reflectionMethod, string $message): RuntimeException
     {
         $methodExceptionMessage = self::methodExceptionMessage($reflectionMethod);
@@ -33,6 +41,9 @@ readonly class Utils
         return new RuntimeException($msg);
     }
 
+    /**
+     * Creates exception with message which contains a detailed info about method and parameter number where error occurs.
+     */
     public static function parameterException(ReflectionMethod $reflectionMethod, int $position, string $message): RuntimeException
     {
         $methodExceptionMessage = self::methodExceptionMessage($reflectionMethod);
@@ -48,7 +59,8 @@ readonly class Utils
     public static function parsePathParameters(string $path): array
     {
         /** @var Detail[] $matcher */
-        $matcher = pattern(self::PARAM_URL_REGEX)->match($path);
+        $matcher = pattern(self::PARAM_URL_REGEX)
+            ->match($path);
         $patterns = [];
         foreach ($matcher as $detail) {
             $patterns[] = $detail->get(1);

@@ -37,7 +37,7 @@ class PathParameterHandlerTest extends TestCase
             $pathParameterHandler->apply($this->requestBuilder, null);
             //then
         } catch (RuntimeException $e) {
-            $this->assertSame("Method SomeApi::getUserByName() parameter #1. Path parameter 'name' value must not be null.", $e->getMessage());
+            $this->assertSame("Method SomeApi::getUserByName() parameter #1. #[Path] parameter 'name' value must not be null.", $e->getMessage());
         }
     }
 
