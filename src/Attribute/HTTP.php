@@ -15,15 +15,12 @@ readonly class HTTP implements HttpRequest
 
     public function __construct(
         HttpMethod|string $httpMethod,
-        private string $path = '',
+        private ?string $path = null,
         private bool $hasBody = false
     )
     {
-        if (is_string($httpMethod)) {
-            $httpMethod = HttpMethod::from($httpMethod);
-        }
-        $this->httpMethod = $httpMethod;
-        $this->pathParameters = Utils::parsePathParameters($this->path);
+        $this->httpMethod = is_string($httpMethod) ? HttpMethod::from($httpMethod) : $httpMethod;
+        $this->pathParameters = is_null($this->path) ? [] : Utils::parsePathParameters($this->path);
     }
 
     public function httpMethod(): HttpMethod
@@ -31,7 +28,7 @@ readonly class HTTP implements HttpRequest
         return $this->httpMethod;
     }
 
-    public function path(): string
+    public function path(): ?string
     {
         return $this->path;
     }

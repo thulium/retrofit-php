@@ -25,7 +25,7 @@ class RetrofitTest extends TestCase
 
         /** @var SomeApi $someApi */
         $someApi = $retrofit->create(SomeApi::class);
-        $call = $someApi->getUserByName('Jon+Doe');
+        $call = $someApi->multipleUrl('https://example.com/users');
 
         $this->assertTrue(true);
     }

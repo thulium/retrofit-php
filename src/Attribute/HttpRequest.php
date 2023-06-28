@@ -9,7 +9,7 @@ interface HttpRequest
 {
     public function httpMethod(): HttpMethod;
 
-    public function path(): string;
+    public function path(): ?string;
 
     public function pathParameters(): array;
 

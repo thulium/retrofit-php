@@ -12,9 +12,9 @@ readonly class GET implements HttpRequest
 {
     private array $pathParameters;
 
-    public function __construct(private string $path)
+    public function __construct(private ?string $path = null)
     {
-        $this->pathParameters = Utils::parsePathParameters($this->path);
+        $this->pathParameters = is_null($this->path) ? [] : Utils::parsePathParameters($this->path);
     }
 
     public function httpMethod(): HttpMethod
@@ -22,7 +22,7 @@ readonly class GET implements HttpRequest
         return HttpMethod::GET;
     }
 
-    public function path(): string
+    public function path(): ?string
     {
         return $this->path;
     }

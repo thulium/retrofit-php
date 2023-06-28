@@ -7,6 +7,7 @@ use Retrofit\Attribute\Body;
 use Retrofit\Attribute\GET;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\POST;
+use Retrofit\Attribute\Url;
 use Retrofit\Call;
 
 interface SomeApi
@@ -22,4 +23,7 @@ interface SomeApi
 
     #[POST('/users')]
     public function createUser(#[Body] UserRequest $userRequest): Call;
+
+    #[POST]
+    public function multipleUrl(#[Url] string $url): Call;
 }

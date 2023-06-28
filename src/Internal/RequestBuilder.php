@@ -18,8 +18,10 @@ class RequestBuilder
         private readonly HttpRequest $httpRequest
     )
     {
-        $this->uri = (new Uri($baseUrl->__toString()))
-            ->withPath($this->httpRequest->path());
+        $this->uri = new Uri($baseUrl->__toString());
+        if (!is_null($this->httpRequest->path())) {
+            $this->uri = $this->uri->withPath($this->httpRequest->path());
+        }
     }
 
     public function addPathParam(string $name, string $value, bool $encoded): void
@@ -30,6 +32,11 @@ class RequestBuilder
         $path = rawurldecode($this->uri->getPath());
         $path = str_replace(sprintf('{%s}', $name), $value, $path);
         $this->uri = $this->uri->withPath($path);
+    }
+
+    public function setBaseUrl(string $value): void
+    {
+        $this->uri = new Uri($value);
     }
 
     public function build(): RequestInterface
