@@ -9,9 +9,19 @@ use Attribute;
 readonly class Query
 {
     public function __construct(
-        public string $name,
-        public bool $encoded = false
+        private string $name,
+        private bool $encoded = false
     )
     {
+    }
+
+    public function name(): string
+    {
+        return $this->name;
+    }
+
+    public function encoded(): bool
+    {
+        return $this->encoded;
     }
 }

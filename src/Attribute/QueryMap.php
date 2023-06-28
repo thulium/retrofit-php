@@ -8,9 +8,12 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PARAMETER)]
 readonly class QueryMap
 {
-    public function __construct(
-        public bool $encoded = false
-    )
+    public function __construct(private bool $encoded = false)
     {
+    }
+
+    public function encoded(): bool
+    {
+        return $this->encoded;
     }
 }

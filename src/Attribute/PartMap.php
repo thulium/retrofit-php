@@ -8,7 +8,12 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PARAMETER)]
 readonly class PartMap
 {
-    public function __construct(public string $encoding = 'binary')
+    public function __construct(private string $encoding = 'binary')
     {
+    }
+
+    public function encoding(): string
+    {
+        return $this->encoding;
     }
 }

@@ -9,9 +9,19 @@ use Attribute;
 readonly class Header
 {
     public function __construct(
-        public string $name,
-        public bool $allowUnsafeNonAsciiValues = false
+        private string $name,
+        private bool $allowUnsafeNonAsciiValues = false
     )
     {
+    }
+
+    public function name(): string
+    {
+        return $this->name;
+    }
+
+    public function allowUnsafeNonAsciiValues(): bool
+    {
+        return $this->allowUnsafeNonAsciiValues;
     }
 }
