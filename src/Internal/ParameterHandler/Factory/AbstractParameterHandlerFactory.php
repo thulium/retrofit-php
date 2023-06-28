@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal\ParameterHandler\Factory;
 
+use ReflectionMethod;
 use Retrofit\Attribute\HttpRequest;
 use Retrofit\Attribute\Path;
 use Retrofit\Internal\ConverterProvider;
@@ -17,5 +18,5 @@ readonly abstract class AbstractParameterHandlerFactory
     {
     }
 
-    abstract public function create(Path $path): ParameterHandler;
+    abstract public function create(Path $path, ReflectionMethod $reflectionMethod, int $position): ParameterHandler;
 }

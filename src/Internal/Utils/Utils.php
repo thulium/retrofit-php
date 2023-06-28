@@ -28,13 +28,17 @@ readonly class Utils
 
     public static function methodException(ReflectionMethod $reflectionMethod, string $message): RuntimeException
     {
-        $msg = "Method {$reflectionMethod->getDeclaringClass()->getShortName()}::{$reflectionMethod->getShortName()}(). {$message}";
+        $methodExceptionMessage = self::methodExceptionMessage($reflectionMethod);
+        $msg = "{$methodExceptionMessage}. {$message}";
         return new RuntimeException($msg);
     }
 
-    public static function parameterException(string $message): RuntimeException
+    public static function parameterException(ReflectionMethod $reflectionMethod, int $position, string $message): RuntimeException
     {
-        return new RuntimeException($message);
+        $methodExceptionMessage = self::methodExceptionMessage($reflectionMethod);
+        $position += 1;
+        $msg = "{$methodExceptionMessage} parameter #{$position}. {$message}";
+        return new RuntimeException($msg);
     }
 
     /**
@@ -50,5 +54,12 @@ readonly class Utils
             $patterns[] = $detail->get(1);
         }
         return array_unique($patterns);
+    }
+
+    private static function methodExceptionMessage(ReflectionMethod $reflectionMethod): string
+    {
+        $className = $reflectionMethod->getDeclaringClass()->getShortName();
+        $methodName = $reflectionMethod->getShortName();
+        return "Method {$className}::{$methodName}()";
     }
 }

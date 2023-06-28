@@ -66,14 +66,16 @@ readonly class ServiceMethodFactory
         $parameterHandlers = [];
         $reflectionParameters = $reflectionMethod->getParameters();
         foreach ($reflectionParameters as $reflectionParameter) {
+            $position = $reflectionParameter->getPosition();
             $reflectionAttributes = $reflectionParameter->getAttributes();
+
             $reflectionAttribute = $reflectionAttributes[0];
             $newInstance = $reflectionAttribute->newInstance();
 
             $parameterHandlerFactory = $pathParameterHandlerFactories[$reflectionAttribute->getName()];
-            $parameterHandler = $parameterHandlerFactory->create($newInstance);
+            $parameterHandler = $parameterHandlerFactory->create($newInstance, $reflectionMethod, $position);
 
-            $parameterHandlers[$reflectionParameter->getPosition()] = $parameterHandler;
+            $parameterHandlers[$position] = $parameterHandler;
         }
 
         ksort($parameterHandlers);
