@@ -55,6 +55,8 @@ readonly class Utils
     /**
      * Gets the set of unique path parameters used in the given URI. If a parameter is used twice in the URI, it will
      * only show up once in the set.
+     *
+     * @return string[]
      */
     public static function parsePathParameters(string $path): array
     {
