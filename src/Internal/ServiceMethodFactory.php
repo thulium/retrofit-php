@@ -30,7 +30,8 @@ readonly class ServiceMethodFactory
             ->collect();
 
         if ($httpRequestMethods->isEmpty()) {
-            throw Utils::methodException($reflectionMethod, 'HTTP method annotation is required (e.g., #[GET], #[POST], etc.).');
+            throw Utils::methodException($reflectionMethod,
+                'HTTP method annotation is required (e.g., #[GET], #[POST], etc.).');
         }
 
         //todo check issue https://github.com/nikic/PHP-Parser/issues/930 is fixed
@@ -79,10 +80,12 @@ readonly class ServiceMethodFactory
 
             if ($newInstance instanceof Url) {
                 if ($gotUrl) {
-                    throw Utils::parameterException($reflectionMethod, $position, 'Multiple #[Url] method attributes found.');
+                    throw Utils::parameterException($reflectionMethod, $position,
+                        'Multiple #[Url] method attributes found.');
                 }
                 if ($gotPath) {
-                    throw Utils::parameterException($reflectionMethod, $position, '#[Path] parameters may not be used with #[Url].');
+                    throw Utils::parameterException($reflectionMethod, $position,
+                        '#[Path] parameters may not be used with #[Url].');
                 }
 
                 $gotUrl = true;

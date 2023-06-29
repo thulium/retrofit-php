@@ -15,7 +15,8 @@ readonly class PathParameterHandlerFactory extends AbstractParameterHandlerFacto
     {
         $name = $path->name();
         if (!in_array($name, $this->httpRequest->pathParameters())) {
-            throw Utils::parameterException($reflectionMethod, $position, "URL '{$this->httpRequest->path()}' does not contain '{$name}'.");
+            throw Utils::parameterException($reflectionMethod, $position,
+                "URL '{$this->httpRequest->path()}' does not contain '{$name}'.");
         }
 
         $converter = $this->converterProvider->getStringConverter();

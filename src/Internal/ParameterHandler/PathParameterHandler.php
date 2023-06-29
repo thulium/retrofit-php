@@ -23,7 +23,8 @@ readonly class PathParameterHandler implements ParameterHandler
     public function apply(RequestBuilder $requestBuilder, mixed $value): void
     {
         if (is_null($value)) {
-            throw Utils::parameterException($this->reflectionMethod, $this->position, "#[Path] parameter '{$this->name}' value must not be null.");
+            throw Utils::parameterException($this->reflectionMethod, $this->position,
+                "#[Path] parameter '{$this->name}' value must not be null.");
         }
 
         $requestBuilder->addPathParam($this->name, $this->converter->convert($value), $this->encoded);

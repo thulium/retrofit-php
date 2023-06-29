@@ -38,8 +38,7 @@ readonly class Utils
     public static function methodException(ReflectionMethod $reflectionMethod, string $message): RuntimeException
     {
         $methodExceptionMessage = self::methodExceptionMessage($reflectionMethod);
-        $msg = "{$methodExceptionMessage}. {$message}";
-        return new RuntimeException($msg);
+        return new RuntimeException("{$methodExceptionMessage}. {$message}");
     }
 
     /**
@@ -49,8 +48,7 @@ readonly class Utils
     {
         $methodExceptionMessage = self::methodExceptionMessage($reflectionMethod);
         $position += 1;
-        $msg = "{$methodExceptionMessage} parameter #{$position}. {$message}";
-        return new RuntimeException($msg);
+        return new RuntimeException("{$methodExceptionMessage} parameter #{$position}. {$message}");
     }
 
     /**
