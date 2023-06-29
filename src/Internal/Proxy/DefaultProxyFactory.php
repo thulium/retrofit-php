@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal\Proxy;
 
-use LogicException;
+use PhpParser\Builder\Class_;
 use PhpParser\Builder\Method;
+use PhpParser\Builder\Namespace_;
 use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\FuncCall;
@@ -54,7 +55,8 @@ use Retrofit\Retrofit;
  */
 readonly class DefaultProxyFactory implements ProxyFactory
 {
-    private const PROXY_PREFIX = 'Retrofit\Proxy\\';
+    private const SERVICE_IMPLEMENTATION_NAMESPACE_PREFIX = 'Retrofit\Proxy\\';
+    private const SERVICE_IMPLEMENTATION_CLASS_SUFFIX = 'Impl';
 
     public function __construct(
         private BuilderFactory $builderFactory,
@@ -65,110 +67,75 @@ readonly class DefaultProxyFactory implements ProxyFactory
 
     public function create(Retrofit $retrofit, ReflectionClass $service): object
     {
-        $proxyServiceName = "{$service->getShortName()}Impl";
+        $proxyServiceNamespace = self::SERVICE_IMPLEMENTATION_NAMESPACE_PREFIX . $service->getNamespaceName();
+        $proxyServiceClassName = $service->getShortName() . self::SERVICE_IMPLEMENTATION_CLASS_SUFFIX;
+
+        $serviceClassImplementation = $this->serviceClassImplementation($service, $proxyServiceClassName);
+        $this->appendConstructor($serviceClassImplementation);
+        $this->appendMethods($service, $serviceClassImplementation);
+        $serviceClassImplementationInNamespace = $this->wrapInNamespace($proxyServiceNamespace, $serviceClassImplementation);
+
+        $proxyServiceClass = $this->prettyPrinterAbstract->prettyPrint([$serviceClassImplementationInNamespace->getNode()]);
+
+        eval($proxyServiceClass);
+
+        $proxyServiceFQCN = Utils::toFQCN($proxyServiceNamespace, $proxyServiceClassName);
+        return new $proxyServiceFQCN($retrofit);
+    }
+
+    private function serviceClassImplementation(ReflectionClass $service, string $proxyServiceName): Class_
+    {
         $serviceFQCN = Utils::toFQCN($service->getName());
-        $proxyServiceBuilder = $this->builderFactory
+        return $this->builderFactory
             ->class($proxyServiceName)
             ->implement($serviceFQCN);
+    }
 
-        $param1 = $this->builderFactory
+    private function appendConstructor(Class_ $serviceClassImplementation): void
+    {
+        $retrofitParameter = $this->builderFactory
             ->param('retrofit')
             ->makePrivate()
             ->setType(Utils::toFQCN(Retrofit::class));
         $constructor = $this->builderFactory
             ->method('__construct')
             ->makePublic()
-            ->addParam($param1->getNode());
-        $proxyServiceBuilder->addStmt($constructor->getNode());
+            ->addParam($retrofitParameter->getNode());
+        $serviceClassImplementation->addStmt($constructor->getNode());
+    }
 
-        $proxyServiceMethod = $this->createProxyServiceMethod($service);
+    private function appendMethods(ReflectionClass $service, Class_ $serviceClassImplementation): void
+    {
+        $serviceMethodInvokeReturnStmt = $this->createServiceMethodInvokeReturnStmt($service);
 
         $methods = $service->getMethods();
         foreach ($methods as $method) {
-            $this->validateReturnType($method, $service);
+            $this->validateMethodReturnType($method);
 
-            $proxyMethodBuilder = $this->builderFactory
+            $serviceClassMethodImplementation = $this->builderFactory
                 ->method($method->getName())
                 ->makePublic();
 
-            $this->attributes($method->getAttributes(), $proxyMethodBuilder);
+            $this->appendAttributes($method->getAttributes(), $serviceClassMethodImplementation);
 
-            $params = $this->params($method, $service);
-            $proxyMethodBuilder->addParams($params);
+            $methodParameters = $this->appendMethodParameters($method);
+            $serviceClassMethodImplementation->addParams($methodParameters);
 
-            $proxyMethodBuilder->setReturnType(Utils::toFQCN($method->getReturnType()->getName()));
-            $proxyMethodBuilder->addStmt(new Return_($proxyServiceMethod));
+            $serviceClassMethodImplementation->setReturnType(Utils::toFQCN($method->getReturnType()->getName()));
+            $serviceClassMethodImplementation->addStmt(new Return_($serviceMethodInvokeReturnStmt));
 
-            $proxyServiceBuilder->addStmt($proxyMethodBuilder->getNode());
+            $serviceClassImplementation->addStmt($serviceClassMethodImplementation->getNode());
         }
+    }
 
-        $namespace = self::PROXY_PREFIX . $service->getNamespaceName();
-        $proxyNamespaceBuilder = $this->builderFactory
+    private function wrapInNamespace(string $namespace, Class_ $serviceClassImplementation): Namespace_
+    {
+        return $this->builderFactory
             ->namespace($namespace)
-            ->addStmt($proxyServiceBuilder);
-
-        $proxyServiceClass = $this->prettyPrinterAbstract->prettyPrint([$proxyNamespaceBuilder->getNode()]);
-
-        eval($proxyServiceClass);
-
-        $proxyServiceFQCN = Utils::toFQCN($namespace, $proxyServiceName);
-        return new $proxyServiceFQCN($retrofit);
+            ->addStmt($serviceClassImplementation);
     }
 
-    /**
-     * @param ReflectionAttribute[] $attributes
-     */
-    private function attributes(array $attributes, Method|Param $destination): void
-    {
-        foreach ($attributes as $attribute) {
-            $name = new Name(Utils::toFQCN($attribute->getName()));
-            $attribute = $this->builderFactory->attribute($name, $attribute->getArguments());
-
-            $destination->addAttribute($attribute);
-        }
-    }
-
-    private function params(ReflectionMethod $method, ReflectionClass $service): array
-    {
-        $params = [];
-        foreach ($method->getParameters() as $parameter) {
-            $paramBuilder = $this->builderFactory->param($parameter->name);
-
-            if ($parameter->isDefaultValueAvailable()) {
-                $paramBuilder->setDefault($parameter->getDefaultValue());
-            }
-
-            if ($parameter->getType() === null) {
-                throw new LogicException(
-                    "Parameter types are required. " .
-                    "None found for parameter {$parameter->getName()} in {$service->getShortName()}::{$method->getShortName()}()."
-                );
-            }
-
-            $reflectionTypeName = $parameter->getType()->getName();
-            if (!($parameter->getType()->isBuiltin())) {
-                $reflectionTypeName = Utils::toFQCN($reflectionTypeName);
-            }
-
-            $type = $parameter->getType()->allowsNull() ? new NullableType($reflectionTypeName) : $reflectionTypeName;
-            $paramBuilder->setType($type);
-
-            if ($parameter->isPassedByReference()) {
-                $paramBuilder->makeByRef();
-            }
-
-            if ($parameter->isVariadic()) {
-                $paramBuilder->makeVariadic();
-            }
-
-            $this->attributes($parameter->getAttributes(), $paramBuilder);
-
-            $params[] = $paramBuilder->getNode();
-        }
-        return $params;
-    }
-
-    private function createProxyServiceMethod(ReflectionClass $service): MethodCall
+    private function createServiceMethodInvokeReturnStmt(ReflectionClass $service): MethodCall
     {
         $serviceMethodFactory = new StaticCall(
             new Name(Utils::toFQCN(ServiceMethodFactory::class)),
@@ -188,22 +155,68 @@ readonly class DefaultProxyFactory implements ProxyFactory
         );
     }
 
-    private function validateReturnType(ReflectionMethod $method, ReflectionClass $service): void
+    private function validateMethodReturnType(ReflectionMethod $method): void
     {
         if (!$method->hasReturnType()) {
-            throw new LogicException(
-                "Method return types are required. " .
-                "None found for {$service->getShortName()}::{$method->getShortName()}()."
-            );
+            throw Utils::methodException($method, 'Method return type is required, none found.');
         }
 
         $returnType = $method->getReturnType()->getName();
         $callClassReturnType = Call::class;
         if ($returnType !== $callClassReturnType) {
-            throw new LogicException(
-                "Method return type should be a {$callClassReturnType} class. " .
-                "'{$returnType}' return type found for {$service->getShortName()}::{$method->getShortName()}()."
-            );
+            throw Utils::methodException($method,
+                "Method return type should be a {$callClassReturnType} class. '{$returnType}' return type found.");
+        }
+    }
+
+    private function appendMethodParameters(ReflectionMethod $method): array
+    {
+        $params = [];
+        foreach ($method->getParameters() as $parameter) {
+            $paramBuilder = $this->builderFactory->param($parameter->name);
+
+            if ($parameter->isDefaultValueAvailable()) {
+                $paramBuilder->setDefault($parameter->getDefaultValue());
+            }
+
+            if ($parameter->getType() === null) {
+                throw Utils::parameterException($method, $parameter->getPosition(),
+                    "Parameter type is required, none found.");
+            }
+
+            $reflectionTypeName = $parameter->getType()->getName();
+            if (!($parameter->getType()->isBuiltin())) {
+                $reflectionTypeName = Utils::toFQCN($reflectionTypeName);
+            }
+
+            $type = $parameter->getType()->allowsNull() ? new NullableType($reflectionTypeName) : $reflectionTypeName;
+            $paramBuilder->setType($type);
+
+            if ($parameter->isPassedByReference()) {
+                $paramBuilder->makeByRef();
+            }
+
+            if ($parameter->isVariadic()) {
+                $paramBuilder->makeVariadic();
+            }
+
+            $this->appendAttributes($parameter->getAttributes(), $paramBuilder);
+
+            $params[] = $paramBuilder->getNode();
+        }
+        return $params;
+    }
+
+    /**
+     * @param ReflectionAttribute[] $attributes
+     */
+    private function appendAttributes(array $attributes, Method|Param $destination): void
+    {
+        foreach ($attributes as $attribute) {
+            $name = new Name(Utils::toFQCN($attribute->getName()));
+            $attribute = $this->builderFactory->attribute($name, $attribute->getArguments());
+
+            $destination->addAttribute($attribute);
         }
     }
 }

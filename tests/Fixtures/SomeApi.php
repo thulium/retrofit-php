@@ -9,6 +9,7 @@ use Retrofit\Attribute\Path;
 use Retrofit\Attribute\POST;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
+use Retrofit\Tests\Fixtures\Model\UserRequest;
 
 interface SomeApi
 {
