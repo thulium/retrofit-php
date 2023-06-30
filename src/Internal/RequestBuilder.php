@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal;
 
+use JetBrains\PhpStorm\ArrayShape;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
@@ -11,7 +12,11 @@ use Retrofit\Attribute\HttpRequest;
 
 class RequestBuilder
 {
+    private const PARAMETER_PLACEHOLDER = '{%s}';
+
     private UriInterface $uri;
+    #[ArrayShape([0 => ['name' => 'string', 'value' => 'string']])]
+    private array $pathParameters = [];
 
     public function __construct(
         UriInterface $baseUrl,
@@ -24,23 +29,37 @@ class RequestBuilder
         }
     }
 
+    public function setBaseUrl(Uri|string $value): void
+    {
+        if (is_string($value)) {
+            $value = new Uri($value);
+        }
+        $this->uri = $value;
+    }
+
     public function addPathParam(string $name, string $value, bool $encoded): void
     {
         if ($encoded) {
             $value = rawurlencode($value);
         }
-        $path = rawurldecode($this->uri->getPath());
-        $path = str_replace(sprintf('{%s}', $name), $value, $path);
-        $this->uri = $this->uri->withPath($path);
-    }
-
-    public function setBaseUrl(string $value): void
-    {
-        $this->uri = new Uri($value);
+        $this->pathParameters[] = ['name' => $name, 'value' => $value];
     }
 
     public function build(): RequestInterface
     {
+        $this->replacePathParameters();
+
         return new Request($this->httpRequest->httpMethod()->value, $this->uri);
+    }
+
+    private function replacePathParameters(): void
+    {
+        if (!empty($this->pathParameters)) {
+            $path = rawurldecode($this->uri->getPath());
+            foreach ($this->pathParameters as $pathParameter) {
+                $path = str_replace(sprintf(self::PARAMETER_PLACEHOLDER, $pathParameter['name']), $pathParameter['value'], $path);
+            }
+            $this->uri = $this->uri->withPath($path);
+        }
     }
 }

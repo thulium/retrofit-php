@@ -11,7 +11,7 @@ use Retrofit\HttpClient;
 use Retrofit\Response;
 use Throwable;
 
-final class HttpClientCall implements Call
+class HttpClientCall implements Call
 {
     private $requests;
 

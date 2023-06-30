@@ -7,12 +7,10 @@ use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
 use Retrofit\Attribute\HttpRequest;
-use Retrofit\Attribute\Path;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
 use Retrofit\HttpClient;
-use Retrofit\Internal\ParameterHandler\Factory\PathParameterHandlerFactory;
-use Retrofit\Internal\ParameterHandler\Factory\UrlParameterHandlerFactory;
+use Retrofit\Internal\ParameterHandler\Factory\ParameterHandlerFactoryProvider;
 use Retrofit\Internal\Utils\Utils;
 use Retrofit\Retrofit;
 
@@ -64,7 +62,7 @@ readonly class ServiceMethodFactory
 
     private static function getParameterHandlers(HttpRequest $httpRequest, Retrofit $retrofit, ReflectionMethod $reflectionMethod): array
     {
-        $pathParameterHandlerFactories = self::parameterHandlerFactories($httpRequest, $retrofit->converterProvider);
+        $parameterHandlerFactoryProvider = new ParameterHandlerFactoryProvider($httpRequest, $retrofit->converterProvider);
 
         $gotUrl = false;
         $gotPath = !is_null($httpRequest->path());
@@ -83,6 +81,7 @@ readonly class ServiceMethodFactory
                     throw Utils::parameterException($reflectionMethod, $position,
                         'Multiple #[Url] method attributes found.');
                 }
+                //todo do we really need this?
                 if ($gotPath) {
                     throw Utils::parameterException($reflectionMethod, $position,
                         '#[Path] parameters may not be used with #[Url].');
@@ -91,7 +90,7 @@ readonly class ServiceMethodFactory
                 $gotUrl = true;
             }
 
-            $parameterHandlerFactory = $pathParameterHandlerFactories[$reflectionAttribute->getName()];
+            $parameterHandlerFactory = $parameterHandlerFactoryProvider->get($reflectionAttribute->getName());
             $parameterHandler = $parameterHandlerFactory->create($newInstance, $reflectionMethod, $position);
 
             $parameterHandlers[$position] = $parameterHandler;
@@ -100,13 +99,5 @@ readonly class ServiceMethodFactory
         ksort($parameterHandlers);
 
         return $parameterHandlers;
-    }
-
-    private static function parameterHandlerFactories(HttpRequest $httpRequest, ConverterProvider $converterProvider): array
-    {
-        return [
-            Path::class => new PathParameterHandlerFactory($httpRequest, $converterProvider),
-            Url::class => new UrlParameterHandlerFactory($httpRequest, $converterProvider),
-        ];
     }
 }

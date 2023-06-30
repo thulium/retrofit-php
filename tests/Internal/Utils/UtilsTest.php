@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Retrofit\Internal\Utils\Utils;
-use Retrofit\Tests\Fixtures\Api\ValidApi;
+use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 
 class UtilsTest extends TestCase
 {
@@ -67,28 +67,28 @@ class UtilsTest extends TestCase
     public function shouldReturnExceptionWithMethodDetails(): void
     {
         //given
-        $reflectionClass = new ReflectionClass(ValidApi::class);
+        $reflectionClass = new ReflectionClass(FullyValidApi::class);
         $reflectionMethod = $reflectionClass->getMethod('getInfo');
 
         //when
         $runtimeException = Utils::methodException($reflectionMethod, 'Some message to throw.');
 
         //then
-        $this->assertSame('Method ValidApi::getInfo(). Some message to throw.', $runtimeException->getMessage());
+        $this->assertSame('Method FullyValidApi::getInfo(). Some message to throw.', $runtimeException->getMessage());
     }
 
     #[Test]
     public function shouldReturnExceptionWithMethodAndParameterDetails(): void
     {
         //given
-        $reflectionClass = new ReflectionClass(ValidApi::class);
+        $reflectionClass = new ReflectionClass(FullyValidApi::class);
         $reflectionMethod = $reflectionClass->getMethod('getInfo');
 
         //when
         $runtimeException = Utils::parameterException($reflectionMethod, 0, 'Some message to throw.');
 
         //then
-        $this->assertSame('Method ValidApi::getInfo() parameter #1. Some message to throw.', $runtimeException->getMessage());
+        $this->assertSame('Method FullyValidApi::getInfo() parameter #1. Some message to throw.', $runtimeException->getMessage());
     }
 
     #[Test]

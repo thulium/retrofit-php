@@ -4,14 +4,15 @@ declare(strict_types=1);
 namespace Retrofit\Tests\Internal\ParameterHandler;
 
 use Nyholm\Psr7\Uri;
+use Ouzo\Tests\CatchException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
-use Retrofit\Attribute\GET;
+use Retrofit\Attribute\POST;
 use Retrofit\Internal\BuiltInConverters;
 use Retrofit\Internal\ParameterHandler\PathParameterHandler;
 use Retrofit\Internal\RequestBuilder;
-use Retrofit\Tests\Fixtures\SomeApi;
+use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 use RuntimeException;
 
 class PathParameterHandlerTest extends TestCase
@@ -22,30 +23,30 @@ class PathParameterHandlerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users/{name}'));
-        $this->reflectionMethod = new ReflectionMethod(SomeApi::class, 'getUserByName');
+        $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new POST('/users/{login}'));
+        $this->reflectionMethod = new ReflectionMethod(FullyValidApi::class, 'createUser');
     }
 
     #[Test]
     public function shouldThrowExceptionWhenValueIsNull(): void
     {
         //given
-        $pathParameterHandler = new PathParameterHandler('name', false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $pathParameterHandler = new PathParameterHandler('login', false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
 
         //when
-        try {
-            $pathParameterHandler->apply($this->requestBuilder, null);
-            //then
-        } catch (RuntimeException $e) {
-            $this->assertSame("Method SomeApi::getUserByName() parameter #1. #[Path] parameter 'name' value must not be null.", $e->getMessage());
-        }
+        CatchException::when($pathParameterHandler)->apply($this->requestBuilder, null);
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage("Method FullyValidApi::createUser() parameter #1. #[Path] parameter 'login' value must not be null.");
     }
 
     #[Test]
     public function shouldReplaceNotEncodedValue(): void
     {
         //given
-        $pathParameterHandler = new PathParameterHandler('name', false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $pathParameterHandler = new PathParameterHandler('login', false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $pathParameterHandler->apply($this->requestBuilder, 'Jon+Doe');
@@ -59,7 +60,7 @@ class PathParameterHandlerTest extends TestCase
     public function shouldReplaceEncodedValue(): void
     {
         //given
-        $pathParameterHandler = new PathParameterHandler('name', true, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $pathParameterHandler = new PathParameterHandler('login', true, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $pathParameterHandler->apply($this->requestBuilder, 'Jon+Doe');

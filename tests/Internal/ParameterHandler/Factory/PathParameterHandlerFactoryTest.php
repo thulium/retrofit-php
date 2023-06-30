@@ -3,51 +3,54 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Internal\ParameterHandler\Factory;
 
+use Ouzo\Tests\CatchException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
-use Retrofit\Attribute\GET;
 use Retrofit\Attribute\Path;
-use Retrofit\Internal\BuiltInConverters;
+use Retrofit\Attribute\POST;
+use Retrofit\Internal\BuiltInConverterFactory;
 use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\ParameterHandler\Factory\PathParameterHandlerFactory;
 use Retrofit\Internal\ParameterHandler\PathParameterHandler;
-use Retrofit\Tests\Fixtures\SomeApi;
+use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 use RuntimeException;
 
 class PathParameterHandlerFactoryTest extends TestCase
 {
     private ReflectionMethod $reflectionMethod;
+    private ConverterProvider $converterProvider;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->reflectionMethod = new ReflectionMethod(SomeApi::class, 'getUserByName');
+        $this->reflectionMethod = new ReflectionMethod(FullyValidApi::class, 'createUser');
+        $this->converterProvider = new ConverterProvider([new BuiltInConverterFactory()]);
     }
 
     #[Test]
     public function shouldThrowExceptionWhenPathNameDoesNotPresentInUrl(): void
     {
         //given
-        $pathParameterHandlerFactory = new PathParameterHandlerFactory(new GET('/user/{name}'), new ConverterProvider([new BuiltInConverters()]));
+        $pathParameterHandlerFactory = new PathParameterHandlerFactory(new POST('/users/{login}'), $this->converterProvider);
 
         //when
-        try {
-            $pathParameterHandlerFactory->create(new Path('not-matching'), $this->reflectionMethod, 0);
-            //then
-        } catch (RuntimeException $e) {
-            $this->assertSame("Method SomeApi::getUserByName() parameter #1. URL '/user/{name}' does not contain 'not-matching'.", $e->getMessage());
-        }
+        CatchException::when($pathParameterHandlerFactory)->create(new Path('not-matching'), $this->reflectionMethod, 0);
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage("Method FullyValidApi::createUser() parameter #1. URL '/users/{login}' does not contain 'not-matching'.");
     }
 
     #[Test]
     public function shouldCreatePathParameterHandler(): void
     {
         //given
-        $pathParameterHandlerFactory = new PathParameterHandlerFactory(new GET('/user/{name}'), new ConverterProvider([new BuiltInConverters()]));
+        $pathParameterHandlerFactory = new PathParameterHandlerFactory(new POST('/users/{login}'), $this->converterProvider);
 
         //when
-        $parameterHandler = $pathParameterHandlerFactory->create(new Path('name'), $this->reflectionMethod, 0);
+        $parameterHandler = $pathParameterHandlerFactory->create(new Path('login'), $this->reflectionMethod, 0);
 
         //then
         $this->assertInstanceOf(PathParameterHandler::class, $parameterHandler);

@@ -22,6 +22,7 @@ use PhpParser\PrettyPrinterAbstract;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionParameter;
 use Retrofit\Call;
 use Retrofit\Internal\ServiceMethod;
 use Retrofit\Internal\ServiceMethodFactory;
@@ -169,23 +170,23 @@ readonly class DefaultProxyFactory implements ProxyFactory
         }
     }
 
+    /**
+     * @return Param[]
+     */
     private function appendMethodParameters(ReflectionMethod $method): array
     {
         $params = [];
         foreach ($method->getParameters() as $parameter) {
+            $this->validateParameter($parameter, $method);
+
             $paramBuilder = $this->builderFactory->param($parameter->name);
 
             if ($parameter->isDefaultValueAvailable()) {
                 $paramBuilder->setDefault($parameter->getDefaultValue());
             }
 
-            if ($parameter->getType() === null) {
-                throw Utils::parameterException($method, $parameter->getPosition(),
-                    "Parameter type is required, none found.");
-            }
-
             $reflectionTypeName = $parameter->getType()->getName();
-            if (!($parameter->getType()->isBuiltin())) {
+            if (!$parameter->getType()->isBuiltin()) {
                 $reflectionTypeName = Utils::toFQCN($reflectionTypeName);
             }
 
@@ -205,6 +206,13 @@ readonly class DefaultProxyFactory implements ProxyFactory
             $params[] = $paramBuilder->getNode();
         }
         return $params;
+    }
+
+    private function validateParameter(ReflectionParameter $parameter, ReflectionMethod $method): void
+    {
+        if (is_null($parameter->getType())) {
+            throw Utils::parameterException($method, $parameter->getPosition(), "Parameter type is required, none found.");
+        }
     }
 
     /**
