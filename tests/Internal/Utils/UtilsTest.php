@@ -3,12 +3,16 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Internal\Utils;
 
+use Ouzo\Tests\Assert;
 use Ouzo\Utilities\Strings;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use ReflectionMethod;
+use ReflectionParameter;
 use Retrofit\Internal\Utils\Utils;
+use Retrofit\Tests\Fixtures\Api\AllAttributeParametersInOneMethod;
 use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 
 class UtilsTest extends TestCase
@@ -134,5 +138,25 @@ class UtilsTest extends TestCase
 
         //then
         $this->assertSame(['id'], $pathParameters);
+    }
+
+    #[Test]
+    public function shouldSortParameterAttributesUsingPriorities(): void
+    {
+        //given
+        $reflectionMethod = new ReflectionMethod(AllAttributeParametersInOneMethod::class, 'allInOne');
+        $reflectionParameters = $reflectionMethod->getParameters();
+
+        shuffle($reflectionParameters);
+        shuffle($reflectionParameters);
+        shuffle($reflectionParameters);
+
+        //when
+        $sortedReflectionParameters = Utils::sortParameterAttributesByPriorities($reflectionParameters);
+
+        //then
+        Assert::thatArray(array_values($sortedReflectionParameters))
+            ->extracting(fn(ReflectionParameter $p): string => $p->getName())
+            ->containsExactly('url', 'path');
     }
 }

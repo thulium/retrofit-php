@@ -5,6 +5,7 @@ namespace Retrofit\Tests\Fixtures\Api;
 
 use Retrofit\Attribute\GET;
 use Retrofit\Attribute\HTTP;
+use Retrofit\Attribute\Path;
 use Retrofit\Attribute\Url;
 use Retrofit\HttpMethod;
 
@@ -18,4 +19,7 @@ interface InvalidMethods
 
     #[GET]
     public function multipleUrlAttributes(#[Url] string $url1, #[Url] string $url2);
+
+    #[GET]
+    public function urlAndPathSetTogether(#[Url] string $url, #[Path('name')] string $path);
 }

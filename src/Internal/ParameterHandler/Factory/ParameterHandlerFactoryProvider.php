@@ -9,11 +9,11 @@ use Retrofit\Internal\ConverterProvider;
 
 class ParameterHandlerFactoryProvider
 {
-    private static array $attributeNameToFactory;
+    private array $attributeNameToFactory;
 
     public function __construct(ConverterProvider $converterProvider)
     {
-        self::$attributeNameToFactory = [
+        $this->attributeNameToFactory = [
             Path::class => new PathParameterHandlerFactory($converterProvider),
             Url::class => new UrlParameterHandlerFactory($converterProvider),
         ];
@@ -21,6 +21,6 @@ class ParameterHandlerFactoryProvider
 
     public function get(string $attributeName): AbstractParameterHandlerFactory
     {
-        return self::$attributeNameToFactory[$attributeName];
+        return $this->attributeNameToFactory[$attributeName];
     }
 }

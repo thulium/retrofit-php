@@ -5,6 +5,8 @@ namespace Retrofit\Internal\Utils;
 
 use Ouzo\Utilities\Strings;
 use ReflectionMethod;
+use ReflectionParameter;
+use Retrofit\Attribute\Url;
 use RuntimeException;
 use TRegx\CleanRegex\Match\Detail;
 
@@ -67,6 +69,28 @@ readonly class Utils
             $patterns[] = $detail->get(1);
         }
         return array_unique($patterns);
+    }
+
+    /**
+     * Sorts parameters using their priorities.
+     *
+     * @param ReflectionParameter[] $reflectionParameters
+     * @return ReflectionParameter[]
+     */
+    public static function sortParameterAttributesByPriorities(array $reflectionParameters): array
+    {
+        static $attributeToPriority = [
+            Url::class => 1,
+        ];
+        static $defaultNoPriorityFactor = 1_000;
+
+        return collect($reflectionParameters)
+            ->sort(function (ReflectionParameter $a, ReflectionParameter $b) use ($attributeToPriority, $defaultNoPriorityFactor) {
+                $aPriority = $attributeToPriority[$a->getAttributes()[0]->getName()] ?? $defaultNoPriorityFactor;
+                $bPriority = $attributeToPriority[$b->getAttributes()[0]->getName()] ?? $defaultNoPriorityFactor;
+                return $aPriority <=> $bPriority;
+            })
+            ->all();
     }
 
     private static function methodExceptionMessage(ReflectionMethod $reflectionMethod): string

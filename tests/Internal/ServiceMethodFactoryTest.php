@@ -22,10 +22,11 @@ use RuntimeException;
 
 class ServiceMethodFactoryTest extends TestCase
 {
-    #[Test]
-    public function shouldThrowExceptionWhenMethodDoesNotHaveHttpAttribute(): void
+    private ServiceMethodFactory $serviceMethodFactory;
+
+    public function setUp(): void
     {
-        //given
+        parent::setUp();
         /** @var HttpClient|MockInterface $httpClient */
         $httpClient = Mock::create(HttpClient::class);
         $baseUrl = new Uri('https://example.com');
@@ -34,10 +35,14 @@ class ServiceMethodFactoryTest extends TestCase
 
         $retrofit = new Retrofit($httpClient, $baseUrl, $converterProvider, $proxyFactory);
 
-        $serviceMethodFactory = new ServiceMethodFactory($retrofit);
+        $this->serviceMethodFactory = new ServiceMethodFactory($retrofit);
+    }
 
+    #[Test]
+    public function shouldThrowExceptionWhenMethodDoesNotHaveHttpAttribute(): void
+    {
         //when
-        CatchException::when($serviceMethodFactory)->create(InvalidMethods::class, 'withoutHttpAttribute');
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'withoutHttpAttribute');
 
         //then
         CatchException::assertThat()
@@ -48,19 +53,8 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenMethodHasMultipleHttpAttributes(): void
     {
-        //given
-        /** @var HttpClient|MockInterface $httpClient */
-        $httpClient = Mock::create(HttpClient::class);
-        $baseUrl = new Uri('https://example.com');
-        $converterProvider = new ConverterProvider([new BuiltInConverterFactory()]);
-        $proxyFactory = new DefaultProxyFactory(new BuilderFactory(), new Standard());
-
-        $retrofit = new Retrofit($httpClient, $baseUrl, $converterProvider, $proxyFactory);
-
-        $serviceMethodFactory = new ServiceMethodFactory($retrofit);
-
         //when
-        CatchException::when($serviceMethodFactory)->create(InvalidMethods::class, 'multipleHttpAttribute');
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'multipleHttpAttribute');
 
         //then
         CatchException::assertThat()
@@ -71,23 +65,24 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenMultipleUrlAttributesFound(): void
     {
-        //given
-        /** @var HttpClient|MockInterface $httpClient */
-        $httpClient = Mock::create(HttpClient::class);
-        $baseUrl = new Uri('https://example.com');
-        $converterProvider = new ConverterProvider([new BuiltInConverterFactory()]);
-        $proxyFactory = new DefaultProxyFactory(new BuilderFactory(), new Standard());
-
-        $retrofit = new Retrofit($httpClient, $baseUrl, $converterProvider, $proxyFactory);
-
-        $serviceMethodFactory = new ServiceMethodFactory($retrofit);
-
         //when
-        CatchException::when($serviceMethodFactory)->create(InvalidMethods::class, 'multipleUrlAttributes');
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'multipleUrlAttributes');
 
         //then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::multipleUrlAttributes() parameter #2. Multiple #[Url] method attributes found.');
+    }
+
+    #[Test]
+    public function shouldThrowExceptionWhenPathAndUrlAttributesAreSetTogether(): void
+    {
+        //when
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'urlAndPathSetTogether');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::urlAndPathSetTogether() parameter #2. #[Path] parameters may not be used with #[Url].');
     }
 }

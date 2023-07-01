@@ -7,6 +7,7 @@ use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
 use Retrofit\Attribute\HttpRequest;
+use Retrofit\Attribute\Path;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
 use Retrofit\HttpClient;
@@ -70,10 +71,9 @@ readonly class ServiceMethodFactory
     private function getParameterHandlers(HttpRequest $httpRequest, ReflectionMethod $reflectionMethod): array
     {
         $gotUrl = false;
-        $gotPath = !is_null($httpRequest->path());
 
         $parameterHandlers = [];
-        $reflectionParameters = $reflectionMethod->getParameters();
+        $reflectionParameters = Utils::sortParameterAttributesByPriorities($reflectionMethod->getParameters());
         foreach ($reflectionParameters as $reflectionParameter) {
             $position = $reflectionParameter->getPosition();
             $reflectionAttributes = $reflectionParameter->getAttributes();
@@ -86,13 +86,13 @@ readonly class ServiceMethodFactory
                     throw Utils::parameterException($reflectionMethod, $position,
                         'Multiple #[Url] method attributes found.');
                 }
-                //todo do we really need this?
-                if ($gotPath) {
+
+                $gotUrl = true;
+            } elseif ($newInstance instanceof Path) {
+                if ($gotUrl) {
                     throw Utils::parameterException($reflectionMethod, $position,
                         '#[Path] parameters may not be used with #[Url].');
                 }
-
-                $gotUrl = true;
             }
 
             $parameterHandlerFactory = $this->parameterHandlerFactoryProvider->get($reflectionAttribute->getName());
