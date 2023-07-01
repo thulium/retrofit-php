@@ -8,10 +8,11 @@ use PhpParser\Builder\Method;
 use PhpParser\Builder\Namespace_;
 use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
@@ -40,16 +41,19 @@ use Retrofit\Retrofit;
  * <pre>
  * namespace Retrofit\Proxy\Retrofit\Tests\Fixtures;
  *
- * class SomeApiImpl implements \Retrofit\Tests\Fixtures\SomeApi
+ * readonly class SomeApiImpl implements \Retrofit\Tests\Fixtures\SomeApi
  * {
- *      public function __construct(private \Retrofit\Retrofit $retrofit)
+ *      private \Retrofit\Internal\ServiceMethodFactory $serviceMethodFactory;
+ *
+ *      public function __construct(\Retrofit\Retrofit $retrofit)
  *      {
+ *          $this->serviceMethodFactory = new \Retrofit\Internal\ServiceMethodFactory($retrofit);
  *      }
  *
  *      #[\Retrofit\Attribute\GET('/users/{id}')]
  *      public function getUser(#[\Retrofit\Attribute\Path('id')] int $id): \Retrofit\Call
  *      {
- *          return \Retrofit\Internal\ServiceMethodFactory::create($this->retrofit, '\\Retrofit\\Tests\\Fixtures\\SomeApi', __FUNCTION__)->invoke(func_get_args());
+ *          return $this->serviceMethodFactory->create('\\Retrofit\\Tests\\Fixtures\\SomeApi', __FUNCTION__)->invoke(func_get_args());
  *      }
  * }
  * </pre>
@@ -72,6 +76,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
         $proxyServiceClassName = $service->getShortName() . self::SERVICE_IMPLEMENTATION_CLASS_SUFFIX;
 
         $serviceClassImplementation = $this->serviceClassImplementation($service, $proxyServiceClassName);
+        $this->appendServiceMethodFactoryProperty($serviceClassImplementation);
         $this->appendConstructor($serviceClassImplementation);
         $this->appendMethods($service, $serviceClassImplementation);
         $serviceClassImplementationInNamespace = $this->wrapInNamespace($proxyServiceNamespace, $serviceClassImplementation);
@@ -89,19 +94,39 @@ readonly class DefaultProxyFactory implements ProxyFactory
         $serviceFQCN = Utils::toFQCN($service->getName());
         return $this->builderFactory
             ->class($proxyServiceName)
-            ->implement($serviceFQCN);
+            ->implement($serviceFQCN)
+            ->makeReadonly();
+    }
+
+    private function appendServiceMethodFactoryProperty(Class_ $serviceClassImplementation): void
+    {
+        $property = $this->builderFactory->property('serviceMethodFactory')
+            ->makePrivate()
+            ->setType(Utils::toFQCN(ServiceMethodFactory::class));
+        $serviceClassImplementation->addStmt($property->getNode());
     }
 
     private function appendConstructor(Class_ $serviceClassImplementation): void
     {
         $retrofitParameter = $this->builderFactory
             ->param('retrofit')
-            ->makePrivate()
             ->setType(Utils::toFQCN(Retrofit::class));
+
+        $serviceMethodFactoryProperty = new PropertyFetch(new Variable('this'), 'serviceMethodFactory');
+        $serviceMethodFactoryInstance = new New_(
+            new Name(Utils::toFQCN(ServiceMethodFactory::class)),
+            [
+                new Variable('retrofit'),
+            ]
+        );
+        $assign = new Assign($serviceMethodFactoryProperty, $serviceMethodFactoryInstance);
+
         $constructor = $this->builderFactory
             ->method('__construct')
             ->makePublic()
-            ->addParam($retrofitParameter->getNode());
+            ->addParam($retrofitParameter->getNode())
+            ->addStmt($assign);
+
         $serviceClassImplementation->addStmt($constructor->getNode());
     }
 
@@ -138,17 +163,16 @@ readonly class DefaultProxyFactory implements ProxyFactory
 
     private function createServiceMethodInvokeReturnStmt(ReflectionClass $service): MethodCall
     {
-        $serviceMethodFactory = new StaticCall(
-            new Name(Utils::toFQCN(ServiceMethodFactory::class)),
+        $serviceMethodFactoryCreateMethodCall = new MethodCall(
+            new PropertyFetch(new Variable('this'), 'serviceMethodFactory'),
             'create',
             [
-                new PropertyFetch(new Variable('this'), 'retrofit'),
                 new String_(Utils::toFQCN($service->getName())),
                 new Function_(),
             ]
         );
         return new MethodCall(
-            $serviceMethodFactory,
+            $serviceMethodFactoryCreateMethodCall,
             'invoke',
             [
                 new FuncCall(new Name('func_get_args')),

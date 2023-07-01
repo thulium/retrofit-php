@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Retrofit\Tests\Internal;
 
 use Nyholm\Psr7\Uri;
+use Ouzo\Tests\CatchException;
 use Ouzo\Tests\Mock\Mock;
 use Ouzo\Tests\Mock\MockInterface;
 use PhpParser\BuilderFactory;
@@ -33,13 +34,15 @@ class ServiceMethodFactoryTest extends TestCase
 
         $retrofit = new Retrofit($httpClient, $baseUrl, $converterProvider, $proxyFactory);
 
+        $serviceMethodFactory = new ServiceMethodFactory($retrofit);
+
         //when
-        try {
-            ServiceMethodFactory::create($retrofit, InvalidMethods::class, 'withoutHttpAttribute');
-        } catch (RuntimeException $e) {
-            //then
-            $this->assertSame('Method InvalidMethods::withoutHttpAttribute(). HTTP method annotation is required (e.g., #[GET], #[POST], etc.).', $e->getMessage());
-        }
+        CatchException::when($serviceMethodFactory)->create(InvalidMethods::class, 'withoutHttpAttribute');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::withoutHttpAttribute(). HTTP method annotation is required (e.g., #[GET], #[POST], etc.).');
     }
 
     #[Test]
@@ -54,13 +57,15 @@ class ServiceMethodFactoryTest extends TestCase
 
         $retrofit = new Retrofit($httpClient, $baseUrl, $converterProvider, $proxyFactory);
 
+        $serviceMethodFactory = new ServiceMethodFactory($retrofit);
+
         //when
-        try {
-            ServiceMethodFactory::create($retrofit, InvalidMethods::class, 'multipleHttpAttribute');
-        } catch (RuntimeException $e) {
-            //then
-            $this->assertSame('Method InvalidMethods::multipleHttpAttribute(). Only one HTTP method is allowed. Found: [Retrofit\Attribute\GET, Retrofit\Attribute\HTTP].', $e->getMessage());
-        }
+        CatchException::when($serviceMethodFactory)->create(InvalidMethods::class, 'multipleHttpAttribute');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::multipleHttpAttribute(). Only one HTTP method is allowed. Found: [Retrofit\Attribute\GET, Retrofit\Attribute\HTTP].');
     }
 
     #[Test]
@@ -75,12 +80,14 @@ class ServiceMethodFactoryTest extends TestCase
 
         $retrofit = new Retrofit($httpClient, $baseUrl, $converterProvider, $proxyFactory);
 
+        $serviceMethodFactory = new ServiceMethodFactory($retrofit);
+
         //when
-        try {
-            ServiceMethodFactory::create($retrofit, InvalidMethods::class, 'multipleUrlAttributes');
-        } catch (RuntimeException $e) {
-            //then
-            $this->assertSame('Method InvalidMethods::multipleUrlAttributes() parameter #2. Multiple #[Url] method attributes found.', $e->getMessage());
-        }
+        CatchException::when($serviceMethodFactory)->create(InvalidMethods::class, 'multipleUrlAttributes');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::multipleUrlAttributes() parameter #2. Multiple #[Url] method attributes found.');
     }
 }

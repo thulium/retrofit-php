@@ -12,12 +12,9 @@ use Retrofit\Internal\ParameterHandler\ParameterHandler;
 
 readonly abstract class AbstractParameterHandlerFactory
 {
-    public function __construct(
-        protected HttpRequest $httpRequest,
-        protected ConverterProvider $converterProvider
-    )
+    public function __construct(protected ConverterProvider $converterProvider)
     {
     }
 
-    abstract public function create(Path & Url $path, ReflectionMethod $reflectionMethod, int $position): ParameterHandler;
+    abstract public function create(Path & Url $path, HttpRequest $httpRequest, ReflectionMethod $reflectionMethod, int $position): ParameterHandler;
 }

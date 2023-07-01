@@ -16,10 +16,17 @@ use Retrofit\Retrofit;
 
 readonly class ServiceMethodFactory
 {
+    private ParameterHandlerFactoryProvider $parameterHandlerFactoryProvider;
+
+    public function __construct(private Retrofit $retrofit)
+    {
+        $this->parameterHandlerFactoryProvider = new ParameterHandlerFactoryProvider($this->retrofit->converterProvider);
+    }
+
     /**
      * @throws ReflectionException
      */
-    public static function create(Retrofit $retrofit, string $service, string $method): ServiceMethod
+    public function create(string $service, string $method): ServiceMethod
     {
         $reflectionMethod = new ReflectionMethod($service, $method);
         $httpRequestMethods = collect($reflectionMethod->getAttributes())
@@ -40,11 +47,11 @@ readonly class ServiceMethodFactory
 
         $httpRequest = $httpRequestMethods->first();
 
-        $parameterHandlers = self::getParameterHandlers($httpRequest, $retrofit, $reflectionMethod);
+        $parameterHandlers = $this->getParameterHandlers($httpRequest, $reflectionMethod);
 
-        $requestFactory = new RequestFactory($retrofit->baseUrl, $httpRequest, $parameterHandlers);
+        $requestFactory = new RequestFactory($this->retrofit->baseUrl, $httpRequest, $parameterHandlers);
 
-        return new class($retrofit->httpClient, $requestFactory) implements ServiceMethod {
+        return new class($this->retrofit->httpClient, $requestFactory) implements ServiceMethod {
             public function __construct(
                 private readonly HttpClient $httpClient,
                 private readonly RequestFactory $requestFactory
@@ -60,10 +67,8 @@ readonly class ServiceMethodFactory
         };
     }
 
-    private static function getParameterHandlers(HttpRequest $httpRequest, Retrofit $retrofit, ReflectionMethod $reflectionMethod): array
+    private function getParameterHandlers(HttpRequest $httpRequest, ReflectionMethod $reflectionMethod): array
     {
-        $parameterHandlerFactoryProvider = new ParameterHandlerFactoryProvider($httpRequest, $retrofit->converterProvider);
-
         $gotUrl = false;
         $gotPath = !is_null($httpRequest->path());
 
@@ -90,8 +95,8 @@ readonly class ServiceMethodFactory
                 $gotUrl = true;
             }
 
-            $parameterHandlerFactory = $parameterHandlerFactoryProvider->get($reflectionAttribute->getName());
-            $parameterHandler = $parameterHandlerFactory->create($newInstance, $reflectionMethod, $position);
+            $parameterHandlerFactory = $this->parameterHandlerFactoryProvider->get($reflectionAttribute->getName());
+            $parameterHandler = $parameterHandlerFactory->create($newInstance, $httpRequest, $reflectionMethod, $position);
 
             $parameterHandlers[$position] = $parameterHandler;
         }

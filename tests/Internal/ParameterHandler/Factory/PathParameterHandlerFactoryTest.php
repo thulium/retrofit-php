@@ -32,10 +32,10 @@ class PathParameterHandlerFactoryTest extends TestCase
     public function shouldThrowExceptionWhenPathNameDoesNotPresentInUrl(): void
     {
         //given
-        $pathParameterHandlerFactory = new PathParameterHandlerFactory(new POST('/users/{login}'), $this->converterProvider);
+        $pathParameterHandlerFactory = new PathParameterHandlerFactory($this->converterProvider);
 
         //when
-        CatchException::when($pathParameterHandlerFactory)->create(new Path('not-matching'), $this->reflectionMethod, 0);
+        CatchException::when($pathParameterHandlerFactory)->create(new Path('not-matching'), new POST('/users/{login}'), $this->reflectionMethod, 0);
 
         //then
         CatchException::assertThat()
@@ -47,10 +47,10 @@ class PathParameterHandlerFactoryTest extends TestCase
     public function shouldCreatePathParameterHandler(): void
     {
         //given
-        $pathParameterHandlerFactory = new PathParameterHandlerFactory(new POST('/users/{login}'), $this->converterProvider);
+        $pathParameterHandlerFactory = new PathParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $pathParameterHandlerFactory->create(new Path('login'), $this->reflectionMethod, 0);
+        $parameterHandler = $pathParameterHandlerFactory->create(new Path('login'), new POST('/users/{login}'), $this->reflectionMethod, 0);
 
         //then
         $this->assertInstanceOf(PathParameterHandler::class, $parameterHandler);

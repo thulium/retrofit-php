@@ -86,7 +86,7 @@ class DefaultProxyFactoryTest extends TestCase
         $reflectionParameter = $reflectionParameters[0];
         $this->assertSame(Retrofit::class, $reflectionParameter->getType()->getName());
         $this->assertSame('retrofit', $reflectionParameter->getName());
-        $this->assertTrue($reflectionParameter->isPromoted());
+        $this->assertFalse($reflectionParameter->isPromoted());
         $this->assertFalse($reflectionParameter->allowsNull());
     }
 
