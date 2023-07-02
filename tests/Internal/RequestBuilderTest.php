@@ -26,6 +26,7 @@ class RequestBuilderTest extends TestCase
         $this->assertSame('https://example.com/users', $request->getUri()->__toString());
     }
 
+    #[Test]
     #[TestWith(['https://foo.bar/api/users'])]
     #[TestWith([new Uri('https://foo.bar/api/users')])]
     public function shouldSetNewBaseUrl(Uri|string $uri): void

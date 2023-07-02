@@ -19,7 +19,7 @@ readonly class POST implements HttpRequest
 
     public function httpMethod(): HttpMethod
     {
-        return HttpMethod::PATCH;
+        return HttpMethod::POST;
     }
 
     public function path(): ?string

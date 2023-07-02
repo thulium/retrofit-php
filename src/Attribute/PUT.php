@@ -19,7 +19,7 @@ readonly class PUT implements HttpRequest
 
     public function httpMethod(): HttpMethod
     {
-        return HttpMethod::PATCH;
+        return HttpMethod::PUT;
     }
 
     public function path(): ?string

@@ -10,6 +10,7 @@ use Ouzo\Tests\Mock\MockInterface;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Retrofit\HttpClient;
 use Retrofit\Internal\BuiltInConverterFactory;
@@ -17,6 +18,7 @@ use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\Proxy\DefaultProxyFactory;
 use Retrofit\Internal\ServiceMethodFactory;
 use Retrofit\Retrofit;
+use Retrofit\Tests\Fixtures\Api\AllHttpRequestMethods;
 use Retrofit\Tests\Fixtures\Api\InvalidMethods;
 use RuntimeException;
 
@@ -84,5 +86,24 @@ class ServiceMethodFactoryTest extends TestCase
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::urlAndPathSetTogether() parameter #2. #[Path] parameters may not be used with #[Url].');
+    }
+
+    #[Test]
+    #[TestWith(['delete'])]
+    #[TestWith(['get'])]
+    #[TestWith(['head'])]
+    #[TestWith(['options'])]
+    #[TestWith(['patch'])]
+    #[TestWith(['post'])]
+    #[TestWith(['put'])]
+    public function shouldInvokeAllHttpMethods(string $method): void
+    {
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(AllHttpRequestMethods::class, $method);
+
+        //then
+        $request = $serviceMethod->invoke([])->request();
+        $this->assertSame(strtoupper($method), $request->getMethod());
+        $this->assertSame("https://example.com/{$method}", $request->getUri()->__toString());
     }
 }

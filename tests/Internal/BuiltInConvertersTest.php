@@ -26,6 +26,7 @@ class BuiltInConvertersTest extends TestCase
         $this->assertSame(Strings::EMPTY, $value);
     }
 
+    #[Test]
     #[TestWith([true, 'true'])]
     #[TestWith([false, 'false'])]
     public function toStringConverterShouldConvertBoolToString(bool $bool, string $string): void
