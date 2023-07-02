@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Internal;
 
-use Nyholm\Psr7\Uri;
+use GuzzleHttp\Psr7\Uri;
 use Ouzo\Tests\Mock\Mock;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

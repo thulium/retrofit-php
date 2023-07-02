@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Internal;
 
-use Nyholm\Psr7\Uri;
+use GuzzleHttp\Psr7\Uri;
 use Ouzo\Tests\CatchException;
 use Ouzo\Tests\Mock\Mock;
 use Ouzo\Tests\Mock\MockInterface;
@@ -19,7 +19,9 @@ use Retrofit\Internal\Proxy\DefaultProxyFactory;
 use Retrofit\Internal\ServiceMethodFactory;
 use Retrofit\Retrofit;
 use Retrofit\Tests\Fixtures\Api\AllHttpRequestMethods;
+use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 use Retrofit\Tests\Fixtures\Api\InvalidMethods;
+use Retrofit\Tests\Fixtures\Api\UrlAttributeVarious;
 use RuntimeException;
 
 class ServiceMethodFactoryTest extends TestCase
@@ -77,18 +79,6 @@ class ServiceMethodFactoryTest extends TestCase
     }
 
     #[Test]
-    public function shouldThrowExceptionWhenPathAndUrlAttributesAreSetTogether(): void
-    {
-        //when
-        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'urlAndPathSetTogether');
-
-        //then
-        CatchException::assertThat()
-            ->isInstanceOf(RuntimeException::class)
-            ->hasMessage('Method InvalidMethods::urlAndPathSetTogether() parameter #2. #[Path] parameters may not be used with #[Url].');
-    }
-
-    #[Test]
     #[TestWith(['delete'])]
     #[TestWith(['get'])]
     #[TestWith(['head'])]
@@ -105,5 +95,38 @@ class ServiceMethodFactoryTest extends TestCase
         $request = $serviceMethod->invoke([])->request();
         $this->assertSame(strtoupper($method), $request->getMethod());
         $this->assertSame("https://example.com/{$method}", $request->getUri()->__toString());
+    }
+
+    #[Test]
+    public function shouldProcessUrlBeforePath(): void
+    {
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(UrlAttributeVarious::class, 'methodWhenPathIsBeforeUrl');
+
+        //then
+        $request = $serviceMethod->invoke(['jon', 'https://example.com/users/{login}'])->request();
+        $this->assertSame('https://example.com/users/jon', $request->getUri()->__toString());
+    }
+
+    #[Test]
+    public function shouldAddQueryStringToUrlAttribute(): void
+    {
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(UrlAttributeVarious::class, 'methodWithQuery');
+
+        //then
+        $request = $serviceMethod->invoke(['new', 'https://example.com/users'])->request();
+        $this->assertSame('https://example.com/users?group=new', $request->getUri()->__toString());
+    }
+
+    #[Test]
+    public function shouldAddPathAndQueryString(): void
+    {
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'pathAndQuery');
+
+        //then
+        $request = $serviceMethod->invoke(['jon', 'new'])->request();
+        $this->assertSame('https://example.com/users/jon?group=new', $request->getUri()->__toString());
     }
 }

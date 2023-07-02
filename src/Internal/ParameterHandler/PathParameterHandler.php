@@ -27,6 +27,7 @@ readonly class PathParameterHandler implements ParameterHandler
                 "#[Path] parameter '{$this->name}' value must not be null.");
         }
 
-        $requestBuilder->addPathParam($this->name, $this->converter->convert($value), $this->encoded);
+        $value = $this->converter->convert($value);
+        $requestBuilder->addPathParam($this->name, $value, $this->encoded);
     }
 }

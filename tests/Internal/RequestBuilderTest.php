@@ -3,12 +3,15 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Internal;
 
-use Nyholm\Psr7\Uri;
+use GuzzleHttp\Psr7\Uri;
+use Ouzo\Tests\CatchException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Retrofit\Attribute\GET;
+use Retrofit\Attribute\POST;
 use Retrofit\Internal\RequestBuilder;
+use RuntimeException;
 
 class RequestBuilderTest extends TestCase
 {
@@ -71,7 +74,7 @@ class RequestBuilderTest extends TestCase
     }
 
     #[Test]
-    public function shouldReplaceMultipleParameters(): void
+    public function shouldReplaceMultiplePathParameters(): void
     {
         //given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users/{login}/tickets/{id}'));
@@ -83,6 +86,22 @@ class RequestBuilderTest extends TestCase
         //then
         $request = $requestBuilder->build();
         $this->assertSame('https://example.com/users/Jon+Doe/tickets/1', $request->getUri()->__toString());
+    }
+
+    #[Test]
+    public function shouldThrowExceptionWhenPathNameDoesNotPresentInUrl(): void
+    {
+        //given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new POST('/users/{login}'));
+
+        //when
+        $requestBuilder->addPathParam('not-matching', 'joe', false);
+        CatchException::when($requestBuilder)->build();
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage("URL '/users/{login}' does not contain 'not-matching'.");
     }
 
     #[Test]
@@ -98,5 +117,61 @@ class RequestBuilderTest extends TestCase
         //then
         $request = $requestBuilder->build();
         $this->assertSame('https://foo.bar/api/users/Jon+Doe', $request->getUri()->__toString());
+    }
+
+    #[Test]
+    public function shouldAddQueryParameter(): void
+    {
+        //given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+
+        //when
+        $requestBuilder->addQueryParam('groups', 'new,old', false);
+
+        //then
+        $request = $requestBuilder->build();
+        $this->assertSame('https://example.com?groups=new,old', $request->getUri()->__toString());
+    }
+
+    #[Test]
+    public function shouldAddEncodedQueryParameter(): void
+    {
+        //given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+
+        //when
+        $requestBuilder->addQueryParam('groups', 'new,old', true);
+
+        //then
+        $request = $requestBuilder->build();
+        $this->assertSame('https://example.com?groups=new%2Cold', $request->getUri()->__toString());
+    }
+
+    #[Test]
+    public function shouldAddArrayOfQueryParameters(): void
+    {
+        //given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+
+        //when
+        $requestBuilder->addQueryParam('groups', ['new', 'old'], false);
+
+        //then
+        $request = $requestBuilder->build();
+        $this->assertSame('https://example.com?groups=new&groups=old', $request->getUri()->__toString());
+    }
+
+    #[Test]
+    public function shouldAddEncodedArrayOfQueryParameters(): void
+    {
+        //given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+
+        //when
+        $requestBuilder->addQueryParam('groups', ['new+users', 'old'], true);
+
+        //then
+        $request = $requestBuilder->build();
+        $this->assertSame('https://example.com?groups=new%2Busers&groups=old', $request->getUri()->__toString());
     }
 }

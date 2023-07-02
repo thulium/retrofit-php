@@ -7,7 +7,6 @@ use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
 use Retrofit\Attribute\HttpRequest;
-use Retrofit\Attribute\Path;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
 use Retrofit\HttpClient;
@@ -88,11 +87,6 @@ readonly class ServiceMethodFactory
                 }
 
                 $gotUrl = true;
-            } elseif ($newInstance instanceof Path) {
-                if ($gotUrl) {
-                    throw Utils::parameterException($reflectionMethod, $position,
-                        '#[Path] parameters may not be used with #[Url].');
-                }
             }
 
             $parameterHandlerFactory = $this->parameterHandlerFactoryProvider->get($reflectionAttribute->getName());

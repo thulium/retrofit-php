@@ -11,7 +11,7 @@ use Retrofit\Internal\ParameterHandler\UrlParameterHandler;
 
 readonly class UrlParameterHandlerFactory extends AbstractParameterHandlerFactory
 {
-    public function create(Url $path, HttpRequest $httpRequest, ReflectionMethod $reflectionMethod, int $position): ParameterHandler
+    public function create(Url $param, HttpRequest $httpRequest, ReflectionMethod $reflectionMethod, int $position): ParameterHandler
     {
         return new UrlParameterHandler($reflectionMethod, $position);
     }

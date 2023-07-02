@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Internal\ParameterHandler;
 
-use Nyholm\Psr7\Uri;
+use GuzzleHttp\Psr7\Uri;
 use Ouzo\Tests\CatchException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +23,7 @@ class UrlParameterHandlerTest extends TestCase
     {
         parent::setUp();
         $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users/{name}'));
-        $reflectionMethod = new ReflectionMethod(FullyValidApi::class, 'multipleUrl');
+        $reflectionMethod = new ReflectionMethod(FullyValidApi::class, 'onlyUrl');
         $this->urlParameterHandler = new UrlParameterHandler($reflectionMethod, 0);
     }
 
@@ -36,7 +36,7 @@ class UrlParameterHandlerTest extends TestCase
         //then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
-            ->hasMessage('Method FullyValidApi::multipleUrl() parameter #1. #[Url] parameter value must not be null.');
+            ->hasMessage('Method FullyValidApi::onlyUrl() parameter #1. #[Url] parameter value must not be null.');
     }
 
     #[Test]

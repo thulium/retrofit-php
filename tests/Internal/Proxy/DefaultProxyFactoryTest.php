@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Internal\Proxy;
 
-use Nyholm\Psr7\Uri;
+use GuzzleHttp\Psr7\Uri;
 use Ouzo\Tests\Assert;
 use Ouzo\Tests\CatchException;
 use Ouzo\Tests\Mock\Mock;

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Retrofit;
 
+use GuzzleHttp\Psr7\Uri;
 use LogicException;
-use Nyholm\Psr7\Uri;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Psr\Http\Message\UriInterface;

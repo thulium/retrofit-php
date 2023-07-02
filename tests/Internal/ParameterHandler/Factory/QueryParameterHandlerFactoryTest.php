@@ -6,15 +6,15 @@ namespace Retrofit\Tests\Internal\ParameterHandler\Factory;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
-use Retrofit\Attribute\Path;
-use Retrofit\Attribute\POST;
+use Retrofit\Attribute\GET;
+use Retrofit\Attribute\Query;
 use Retrofit\Internal\BuiltInConverterFactory;
 use Retrofit\Internal\ConverterProvider;
-use Retrofit\Internal\ParameterHandler\Factory\PathParameterHandlerFactory;
-use Retrofit\Internal\ParameterHandler\PathParameterHandler;
+use Retrofit\Internal\ParameterHandler\Factory\QueryParameterHandlerFactory;
+use Retrofit\Internal\ParameterHandler\QueryParameterHandler;
 use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 
-class PathParameterHandlerFactoryTest extends TestCase
+class QueryParameterHandlerFactoryTest extends TestCase
 {
     private ReflectionMethod $reflectionMethod;
     private ConverterProvider $converterProvider;
@@ -27,15 +27,15 @@ class PathParameterHandlerFactoryTest extends TestCase
     }
 
     #[Test]
-    public function shouldCreatePathParameterHandler(): void
+    public function shouldCreateQueryParameterHandler(): void
     {
         //given
-        $pathParameterHandlerFactory = new PathParameterHandlerFactory($this->converterProvider);
+        $pathParameterHandlerFactory = new QueryParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $pathParameterHandlerFactory->create(new Path('login'), new POST('/users/{login}'), $this->reflectionMethod, 0);
+        $parameterHandler = $pathParameterHandlerFactory->create(new Query('group'), new GET('/users/{login}'), $this->reflectionMethod, 1);
 
         //then
-        $this->assertInstanceOf(PathParameterHandler::class, $parameterHandler);
+        $this->assertInstanceOf(QueryParameterHandler::class, $parameterHandler);
     }
 }
