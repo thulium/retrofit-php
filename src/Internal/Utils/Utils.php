@@ -85,7 +85,7 @@ readonly class Utils
         static $defaultNoPriorityFactor = 1_000;
 
         return collect($reflectionParameters)
-            ->sort(function (ReflectionParameter $a, ReflectionParameter $b) use ($attributeToPriority, $defaultNoPriorityFactor) {
+            ->sort(function (ReflectionParameter $a, ReflectionParameter $b) use ($attributeToPriority, $defaultNoPriorityFactor): int {
                 $aPriority = $attributeToPriority[$a->getAttributes()[0]->getName()] ?? $defaultNoPriorityFactor;
                 $bPriority = $attributeToPriority[$b->getAttributes()[0]->getName()] ?? $defaultNoPriorityFactor;
                 return $aPriority <=> $bPriority;
