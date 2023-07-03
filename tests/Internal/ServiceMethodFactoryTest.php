@@ -129,4 +129,15 @@ class ServiceMethodFactoryTest extends TestCase
         $request = $serviceMethod->invoke(['jon', 'new'])->request();
         $this->assertSame('https://example.com/users/jon?group=new', $request->getUri()->__toString());
     }
+
+    #[Test]
+    public function shouldAddPathAndQueryName(): void
+    {
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addQueryName');
+
+        //then
+        $request = $serviceMethod->invoke(['user(jon)'])->request();
+        $this->assertSame('https://example.com/users?user(jon)', $request->getUri()->__toString());
+    }
 }

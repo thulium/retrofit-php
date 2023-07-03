@@ -70,7 +70,7 @@ class RequestBuilderTest extends TestCase
 
         //then
         $request = $requestBuilder->build();
-        $this->assertSame('https://example.com/users/Jon%2BDoe', $request->getUri()->__toString());
+        $this->assertSame('https://example.com/users/Jon+Doe', $request->getUri()->__toString());
     }
 
     #[Test]
@@ -85,7 +85,7 @@ class RequestBuilderTest extends TestCase
 
         //then
         $request = $requestBuilder->build();
-        $this->assertSame('https://example.com/users/Jon+Doe/tickets/1', $request->getUri()->__toString());
+        $this->assertSame('https://example.com/users/Jon%2BDoe/tickets/1', $request->getUri()->__toString());
     }
 
     #[Test]
@@ -116,7 +116,7 @@ class RequestBuilderTest extends TestCase
 
         //then
         $request = $requestBuilder->build();
-        $this->assertSame('https://foo.bar/api/users/Jon+Doe', $request->getUri()->__toString());
+        $this->assertSame('https://foo.bar/api/users/Jon%2BDoe', $request->getUri()->__toString());
     }
 
     #[Test]
@@ -130,7 +130,7 @@ class RequestBuilderTest extends TestCase
 
         //then
         $request = $requestBuilder->build();
-        $this->assertSame('https://example.com?groups=new,old', $request->getUri()->__toString());
+        $this->assertSame('https://example.com?groups=new%2Cold', $request->getUri()->__toString());
     }
 
     #[Test]
@@ -144,7 +144,7 @@ class RequestBuilderTest extends TestCase
 
         //then
         $request = $requestBuilder->build();
-        $this->assertSame('https://example.com?groups=new%2Cold', $request->getUri()->__toString());
+        $this->assertSame('https://example.com?groups=new,old', $request->getUri()->__toString());
     }
 
     #[Test]
@@ -172,6 +172,6 @@ class RequestBuilderTest extends TestCase
 
         //then
         $request = $requestBuilder->build();
-        $this->assertSame('https://example.com?groups=new%2Busers&groups=old', $request->getUri()->__toString());
+        $this->assertSame('https://example.com?groups=new+users&groups=old', $request->getUri()->__toString());
     }
 }

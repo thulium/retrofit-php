@@ -6,6 +6,7 @@ namespace Retrofit\Internal;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use JetBrains\PhpStorm\ArrayShape;
+use Ouzo\Utilities\Arrays;
 use Ouzo\Utilities\Strings;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
@@ -42,36 +43,39 @@ class RequestBuilder
 
     public function addPathParam(string $name, string $value, bool $encoded): void
     {
-        if ($encoded) {
+        if (!$encoded) {
             $value = rawurlencode($value);
         }
         $this->pathParameters[] = ['name' => $name, 'value' => $value];
     }
 
-    public function addQueryParam(string $name, string|array $value, bool $encoded): void
-    {
-        if (is_array($value)) {
-            foreach ($value as $v) {
-                if ($encoded) {
-                    $v = rawurlencode($v);
-                }
+    private array $queries = [];
 
-                $currentQuery = $this->uri->getQuery();
-                $newQueryPart = "{$name}={$v}";
-                $query = Strings::isNotBlank($currentQuery) ? implode('&', [$currentQuery, $newQueryPart]) : $newQueryPart;
-                $this->uri = $this->uri->withQuery($query);
+    public function addQueryParam(string|array $name, string|array|null $value, bool $encoded): void
+    {
+        if (is_null($value)) {
+            $name = Arrays::toArray($name);
+            foreach ($name as $item) {
+                if (!$encoded) {
+                    $item = rawurlencode($item);
+                }
+                $this->queries[] = $item;
             }
         } else {
-            if ($encoded) {
-                $value = rawurlencode($value);
+            $value = Arrays::toArray($value);
+            foreach ($value as $item) {
+                if (!$encoded) {
+                    $item = rawurlencode($item);
+                }
+                $this->queries[] = "{$name}={$item}";
             }
-            $this->uri = Uri::withQueryValue($this->uri, $name, $value);
         }
     }
 
     public function build(): RequestInterface
     {
         $this->replacePathParameters();
+        $this->initializeQueryString();
 
         return new Request($this->httpRequest->httpMethod()->value, $this->uri);
     }
@@ -90,6 +94,14 @@ class RequestBuilder
                 $path = str_replace(sprintf(self::PARAMETER_PLACEHOLDER, $pathParameter['name']), $pathParameter['value'], $path);
             }
             $this->uri = $this->uri->withPath($path);
+        }
+    }
+
+    private function initializeQueryString(): void
+    {
+        if (!empty($this->queries)) {
+            $query = implode('&', $this->queries);
+            $this->uri = Strings::isBlank($this->uri->getQuery()) ? $this->uri->withQuery($query) : $this->uri->withQuery("{$query}&{$this->uri->getQuery()}");
         }
     }
 }

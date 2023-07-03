@@ -8,6 +8,7 @@ use Retrofit\Attribute\GET;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\POST;
 use Retrofit\Attribute\Query;
+use Retrofit\Attribute\QueryName;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
 use Retrofit\Tests\Fixtures\Model\UserRequest;
@@ -25,4 +26,7 @@ interface FullyValidApi
 
     #[GET('/users/{login}')]
     public function pathAndQuery(#[Path('login')] string $login, #[Query('group')] string $group): Call;
+
+    #[GET('/users')]
+    public function addQueryName(#[QueryName(true)] string $queryName): Call;
 }

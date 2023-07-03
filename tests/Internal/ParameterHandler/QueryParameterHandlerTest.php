@@ -49,11 +49,11 @@ class QueryParameterHandlerTest extends TestCase
         $queryParameterHandler = new QueryParameterHandler('group', false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
 
         //when
-        $queryParameterHandler->apply($this->requestBuilder, 'new');
+        $queryParameterHandler->apply($this->requestBuilder, 'new+users');
 
         //then
         $request = $this->requestBuilder->build();
-        $this->assertSame('https://example.com/users?group=new', $request->getUri()->__toString());
+        $this->assertSame('https://example.com/users?group=new%2Busers', $request->getUri()->__toString());
     }
 
     #[Test]
@@ -67,7 +67,7 @@ class QueryParameterHandlerTest extends TestCase
 
         //then
         $request = $this->requestBuilder->build();
-        $this->assertSame('https://example.com/users?group=new%2Busers', $request->getUri()->__toString());
+        $this->assertSame('https://example.com/users?group=new+users', $request->getUri()->__toString());
     }
 
     #[Test]
@@ -77,11 +77,11 @@ class QueryParameterHandlerTest extends TestCase
         $queryParameterHandler = new QueryParameterHandler('groups', false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
 
         //when
-        $queryParameterHandler->apply($this->requestBuilder, ['new', 'old']);
+        $queryParameterHandler->apply($this->requestBuilder, ['new+users', 'old']);
 
         //then
         $request = $this->requestBuilder->build();
-        $this->assertSame('https://example.com/users?groups=new&groups=old', $request->getUri()->__toString());
+        $this->assertSame('https://example.com/users?groups=new%2Busers&groups=old', $request->getUri()->__toString());
     }
 
     #[Test]
@@ -95,7 +95,7 @@ class QueryParameterHandlerTest extends TestCase
 
         //then
         $request = $this->requestBuilder->build();
-        $this->assertSame('https://example.com/users?groups=new%2Busers&groups=old', $request->getUri()->__toString());
+        $this->assertSame('https://example.com/users?groups=new+users&groups=old', $request->getUri()->__toString());
     }
 
     #[Test]

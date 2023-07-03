@@ -7,12 +7,11 @@ use ReflectionMethod;
 use Retrofit\Converter;
 use Retrofit\Internal\RequestBuilder;
 
-readonly class QueryParameterHandler implements ParameterHandler
+readonly class QueryNameParameterHandler implements ParameterHandler
 {
     use WithQueryParameter;
 
     public function __construct(
-        private string $name,
         private bool $encoded,
         private Converter $converter,
         private ReflectionMethod $reflectionMethod,
@@ -28,6 +27,6 @@ readonly class QueryParameterHandler implements ParameterHandler
         }
 
         $value = $this->validateAndConvert($value);
-        $requestBuilder->addQueryParam($this->name, $value, $this->encoded);
+        $requestBuilder->addQueryParam($value, null, $this->encoded);
     }
 }

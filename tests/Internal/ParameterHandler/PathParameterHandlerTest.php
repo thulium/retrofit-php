@@ -53,7 +53,7 @@ class PathParameterHandlerTest extends TestCase
 
         //then
         $request = $this->requestBuilder->build();
-        $this->assertSame('https://example.com/users/Jon+Doe', $request->getUri()->__toString());
+        $this->assertSame('https://example.com/users/Jon%2BDoe', $request->getUri()->__toString());
     }
 
     #[Test]
@@ -67,6 +67,6 @@ class PathParameterHandlerTest extends TestCase
 
         //then
         $request = $this->requestBuilder->build();
-        $this->assertSame('https://example.com/users/Jon%2BDoe', $request->getUri()->__toString());
+        $this->assertSame('https://example.com/users/Jon+Doe', $request->getUri()->__toString());
     }
 }
