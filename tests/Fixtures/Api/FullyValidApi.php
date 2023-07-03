@@ -8,6 +8,7 @@ use Retrofit\Attribute\GET;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\POST;
 use Retrofit\Attribute\Query;
+use Retrofit\Attribute\QueryMap;
 use Retrofit\Attribute\QueryName;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
@@ -29,4 +30,7 @@ interface FullyValidApi
 
     #[GET('/users')]
     public function addQueryName(#[QueryName(true)] string $queryName): Call;
+
+    #[GET('/users')]
+    public function addQueryMap(#[QueryMap] array $queries): Call;
 }

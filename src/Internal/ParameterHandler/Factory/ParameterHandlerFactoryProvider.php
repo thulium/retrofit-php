@@ -5,6 +5,7 @@ namespace Retrofit\Internal\ParameterHandler\Factory;
 
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\Query;
+use Retrofit\Attribute\QueryMap;
 use Retrofit\Attribute\QueryName;
 use Retrofit\Attribute\Url;
 use Retrofit\Internal\ConverterProvider;
@@ -18,6 +19,7 @@ class ParameterHandlerFactoryProvider
         $this->attributeNameToFactory = [
             Path::class => new PathParameterHandlerFactory($converterProvider),
             Query::class => new QueryParameterHandlerFactory($converterProvider),
+            QueryMap::class => new QueryMapParameterHandlerFactory($converterProvider),
             QueryName::class => new QueryNameParameterHandlerFactory($converterProvider),
             Url::class => new UrlParameterHandlerFactory($converterProvider),
         ];

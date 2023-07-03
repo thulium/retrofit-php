@@ -7,14 +7,14 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use Retrofit\Attribute\GET;
-use Retrofit\Attribute\Query;
+use Retrofit\Attribute\QueryName;
 use Retrofit\Internal\BuiltInConverterFactory;
 use Retrofit\Internal\ConverterProvider;
-use Retrofit\Internal\ParameterHandler\Factory\QueryParameterHandlerFactory;
-use Retrofit\Internal\ParameterHandler\QueryParameterHandler;
+use Retrofit\Internal\ParameterHandler\Factory\QueryNameParameterHandlerFactory;
+use Retrofit\Internal\ParameterHandler\QueryNameParameterHandler;
 use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 
-class QueryParameterHandlerFactoryTest extends TestCase
+class QueryNameParameterHandlerFactoryTest extends TestCase
 {
     private ReflectionMethod $reflectionMethod;
     private ConverterProvider $converterProvider;
@@ -30,12 +30,12 @@ class QueryParameterHandlerFactoryTest extends TestCase
     public function shouldCreateQueryParameterHandler(): void
     {
         //given
-        $queryParameterHandlerFactory = new QueryParameterHandlerFactory($this->converterProvider);
+        $queryNameParameterHandlerFactory = new QueryNameParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $queryParameterHandlerFactory->create(new Query('group'), new GET('/users/{login}'), $this->reflectionMethod, 1);
+        $parameterHandler = $queryNameParameterHandlerFactory->create(new QueryName(), new GET('/users'), $this->reflectionMethod, 1);
 
         //then
-        $this->assertInstanceOf(QueryParameterHandler::class, $parameterHandler);
+        $this->assertInstanceOf(QueryNameParameterHandler::class, $parameterHandler);
     }
 }

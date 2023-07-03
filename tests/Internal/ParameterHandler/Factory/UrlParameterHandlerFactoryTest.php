@@ -30,10 +30,10 @@ class UrlParameterHandlerFactoryTest extends TestCase
     public function shouldCreateQueryParameterHandler(): void
     {
         //given
-        $pathParameterHandlerFactory = new UrlParameterHandlerFactory($this->converterProvider);
+        $urlParameterHandlerFactory = new UrlParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $pathParameterHandlerFactory->create(new Url(), new POST(), $this->reflectionMethod, 0);
+        $parameterHandler = $urlParameterHandlerFactory->create(new Url(), new POST(), $this->reflectionMethod, 0);
 
         //then
         $this->assertInstanceOf(UrlParameterHandler::class, $parameterHandler);
