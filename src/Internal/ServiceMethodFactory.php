@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal;
 
+use Ouzo\Utilities\Strings;
 use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
+use Retrofit\Attribute\Headers;
 use Retrofit\Attribute\HttpRequest;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
@@ -29,10 +31,12 @@ readonly class ServiceMethodFactory
     public function create(string $service, string $method): ServiceMethod
     {
         $reflectionMethod = new ReflectionMethod($service, $method);
+
         $httpRequest = $this->getHttpRequest($reflectionMethod);
+        $defaultHeaders = $this->getDefaultHeaders($reflectionMethod);
         $parameterHandlers = $this->getParameterHandlers($httpRequest, $reflectionMethod);
 
-        $requestFactory = new RequestFactory($this->retrofit->baseUrl, $httpRequest, $parameterHandlers);
+        $requestFactory = new RequestFactory($this->retrofit->baseUrl, $httpRequest, $defaultHeaders, $parameterHandlers);
 
         return new class($this->retrofit->httpClient, $requestFactory) implements ServiceMethod {
             public function __construct(
@@ -69,6 +73,32 @@ readonly class ServiceMethodFactory
         }
 
         return $httpRequestMethods->first();
+    }
+
+    private function getDefaultHeaders(ReflectionMethod $reflectionMethod): array
+    {
+        $defaultHeaders = [];
+        /** @var Headers|null $headers */
+        $headers = collect($reflectionMethod->getAttributes())
+            ->map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance())
+            ->filter(fn(object $instance): bool => $instance instanceof Headers)
+            ->first();
+        if (!is_null($headers)) {
+            $converter = $this->retrofit->converterProvider->getStringConverter();
+            $value = $headers->value();
+            foreach ($value as $entryKey => $entryValue) {
+                if (Strings::isBlank($entryKey)) {
+                    throw Utils::methodException($reflectionMethod, 'Headers map contained empty key.');
+                }
+                if (is_null($entryValue)) {
+                    throw Utils::methodException($reflectionMethod, "Headers map contained null value for key '{$entryKey}'.");
+                }
+
+                $entryValue = $converter->convert($entryValue);
+                $defaultHeaders[$entryKey] = $entryValue;
+            }
+        }
+        return $defaultHeaders;
     }
 
     private function getParameterHandlers(HttpRequest $httpRequest, ReflectionMethod $reflectionMethod): array

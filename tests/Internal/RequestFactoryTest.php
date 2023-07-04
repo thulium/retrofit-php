@@ -22,7 +22,7 @@ class RequestFactoryTest extends TestCase
         $idParameterHandler = Mock::create(ParameterHandler::class);
         $parameterHandlers = [$loginParameterHandler, $idParameterHandler];
 
-        $requestFactory = new RequestFactory(new Uri('https://example.com'), new GET('/users/{login}/tickets/{id}'), $parameterHandlers);
+        $requestFactory = new RequestFactory(new Uri('https://example.com'), new GET('/users/{login}/tickets/{id}'), [], $parameterHandlers);
 
         $args = ['Jon+Doe', 1];
 

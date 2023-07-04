@@ -8,12 +8,12 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD)]
 readonly class Headers
 {
-    public function __construct(private array $headers)
+    public function __construct(private array $value)
     {
     }
 
-    public function headers(): array
+    public function value(): array
     {
-        return $this->headers;
+        return $this->value;
     }
 }

@@ -203,4 +203,27 @@ class RequestBuilderTest extends TestCase
         $request = $requestBuilder->build();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['value']]);
     }
+
+    #[Test]
+    public function shouldAddDefaultHeaders(): void
+    {
+        //when
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['X-CusTom' => 'value']);
+
+        //then
+        $request = $requestBuilder->build();
+        Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['value']]);
+    }
+    #[Test]
+    public function shouldAddOverrideDefaultHeaders(): void
+    {
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['x-age' => '10']);
+
+        //when
+        $requestBuilder->addHeader('x-age', '20');
+
+        //then
+        $request = $requestBuilder->build();
+        Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-age' => ['20']]);
+    }
 }

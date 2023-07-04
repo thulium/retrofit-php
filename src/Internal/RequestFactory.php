@@ -11,11 +11,13 @@ use Retrofit\Internal\ParameterHandler\ParameterHandler;
 readonly class RequestFactory
 {
     /**
+     * @param array<string, string> $defaultHeaders
      * @param ParameterHandler[] $parameterHandlers
      */
     public function __construct(
         private UriInterface $baseUrl,
         private HttpRequest $httpRequest,
+        private array $defaultHeaders,
         private array $parameterHandlers
     )
     {
@@ -23,7 +25,7 @@ readonly class RequestFactory
 
     public function create(array $args): RequestInterface
     {
-        $requestBuilder = new RequestBuilder($this->baseUrl, $this->httpRequest);
+        $requestBuilder = new RequestBuilder($this->baseUrl, $this->httpRequest, $this->defaultHeaders);
 
         foreach ($this->parameterHandlers as $i => $parameterHandler) {
             $parameterHandler->apply($requestBuilder, $args[$i]);

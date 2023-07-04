@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Retrofit\Tests\Fixtures\Api;
 
 use Retrofit\Attribute\GET;
+use Retrofit\Attribute\Headers;
 use Retrofit\Attribute\HTTP;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\Url;
@@ -23,4 +24,12 @@ interface InvalidMethods
 
     #[GET]
     public function urlAndPathSetTogether(#[Url] string $url, #[Path('name')] string $path): Call;
+
+    #[GET('/users')]
+    #[Headers([null => 'value'])]
+    public function headersKeyIsNull(): Call;
+
+    #[GET('/users')]
+    #[Headers(['key' => null])]
+    public function headersValueIsNull(): Call;
 }

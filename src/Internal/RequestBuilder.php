@@ -23,15 +23,23 @@ class RequestBuilder
     private array $pathParameters = [];
     private array $headers = [];
 
+    /**
+     * @param array<string, string> $defaultHeaders
+     */
     public function __construct(
         UriInterface $baseUrl,
-        private readonly HttpRequest $httpRequest
+        private readonly HttpRequest $httpRequest,
+        array $defaultHeaders = []
     )
     {
         $this->uri = new Uri($baseUrl->__toString());
         if (!is_null($this->httpRequest->path())) {
             $this->uri = $this->uri->withPath($this->httpRequest->path());
         }
+
+        collect($defaultHeaders)->each(function (string $value, string $name): void {
+            $this->addHeader($name, $value);
+        });
     }
 
     public function setBaseUrl(UriInterface|string $value): void

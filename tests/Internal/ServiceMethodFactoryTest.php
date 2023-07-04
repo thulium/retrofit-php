@@ -174,4 +174,52 @@ class ServiceMethodFactoryTest extends TestCase
         Assert::thatArray($request->getHeaders())
             ->containsKeyAndValue(['x-custom' => ['jon+doe'], 'x-age' => ['34'], 'content-type' => ['application/json']]);
     }
+
+    #[Test]
+    public function shouldSetDefaultHeaders(): void
+    {
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addHeaders');
+
+        //then
+        $request = $serviceMethod->invoke([['x-custom' => 'jon+doe', 'x-age' => 34, 'Content-Type' => 'application/json']])->request();
+        Assert::thatArray($request->getHeaders())
+            ->containsKeyAndValue(['x-custom' => ['jon+doe'], 'x-age' => ['34'], 'content-type' => ['application/json']]);
+    }
+
+    #[Test]
+    public function shouldParameterHeaderHaveHighestPrecedenceThanMethodHeaders(): void
+    {
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addHeadersWithParameterHeader');
+
+        //then
+        $request = $serviceMethod->invoke([100])->request();
+        Assert::thatArray($request->getHeaders())
+            ->containsKeyAndValue(['x-custom' => ['jon+doe'], 'x-age' => ['100'], 'content-type' => ['application/json']]);
+    }
+
+    #[Test]
+    public function shouldThrowExceptionWhenKeyInHeadersAttributeIsNull(): void
+    {
+        //when
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'headersKeyIsNull');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::headersKeyIsNull(). Headers map contained empty key.');
+    }
+
+    #[Test]
+    public function shouldThrowExceptionWhenValueInHeadersAttributeIsNull(): void
+    {
+        //when
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'headersValueIsNull');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage("Method InvalidMethods::headersValueIsNull(). Headers map contained null value for key 'key'.");
+    }
 }

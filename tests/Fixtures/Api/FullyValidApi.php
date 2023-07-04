@@ -7,6 +7,7 @@ use Retrofit\Attribute\Body;
 use Retrofit\Attribute\GET;
 use Retrofit\Attribute\Header;
 use Retrofit\Attribute\HeaderMap;
+use Retrofit\Attribute\Headers;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\POST;
 use Retrofit\Attribute\Query;
@@ -44,4 +45,20 @@ interface FullyValidApi
 
     #[GET('/users')]
     public function addHeaderMap(#[HeaderMap] array $headerMap): Call;
+
+    #[GET('/users')]
+    #[Headers([
+        'x-custom' => 'jon+doe',
+        'x-age' => 34,
+        'Content-Type' => 'application/json',
+    ])]
+    public function addHeaders(): Call;
+
+    #[GET('/users')]
+    #[Headers([
+        'x-custom' => 'jon+doe',
+        'x-age' => 34,
+        'Content-Type' => 'application/json',
+    ])]
+    public function addHeadersWithParameterHeader(#[Header('x-age')] int $age): Call;
 }
