@@ -12,7 +12,7 @@ use Retrofit\Attribute\GET;
 use Retrofit\Internal\BuiltInConverters;
 use Retrofit\Internal\ParameterHandler\QueryMapParameterHandler;
 use Retrofit\Internal\RequestBuilder;
-use Retrofit\Tests\Fixtures\Api\QueryMapAttribute;
+use Retrofit\Tests\Fixtures\Api\MockMethod;
 use RuntimeException;
 
 class QueryMapParameterHandlerTest extends TestCase
@@ -24,7 +24,7 @@ class QueryMapParameterHandlerTest extends TestCase
     {
         parent::setUp();
         $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users'));
-        $this->reflectionMethod = new ReflectionMethod(QueryMapAttribute::class, 'nullableParameter');
+        $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
     }
 
     #[Test]
@@ -53,7 +53,7 @@ class QueryMapParameterHandlerTest extends TestCase
         //then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
-            ->hasMessage('Method QueryMapAttribute::nullableParameter() parameter #1. Parameter should be an array.');
+            ->hasMessage('Method MockMethod::mockMethod() parameter #1. Parameter should be an array.');
     }
 
     #[Test]
@@ -68,7 +68,7 @@ class QueryMapParameterHandlerTest extends TestCase
         //then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
-            ->hasMessage('Method QueryMapAttribute::nullableParameter() parameter #1. Query map contained empty key.');
+            ->hasMessage('Method MockMethod::mockMethod() parameter #1. Query map contained empty key.');
     }
 
     #[Test]
@@ -83,7 +83,7 @@ class QueryMapParameterHandlerTest extends TestCase
         //then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
-            ->hasMessage("Method QueryMapAttribute::nullableParameter() parameter #1. Query map contained null value for key 'key'.");
+            ->hasMessage("Method MockMethod::mockMethod() parameter #1. Query map contained null value for key 'key'.");
     }
 
     #[Test]

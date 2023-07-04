@@ -12,7 +12,7 @@ use Retrofit\Internal\BuiltInConverterFactory;
 use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\ParameterHandler\Factory\UrlParameterHandlerFactory;
 use Retrofit\Internal\ParameterHandler\UrlParameterHandler;
-use Retrofit\Tests\Fixtures\Api\FullyValidApi;
+use Retrofit\Tests\Fixtures\Api\MockMethod;
 
 class UrlParameterHandlerFactoryTest extends TestCase
 {
@@ -22,12 +22,12 @@ class UrlParameterHandlerFactoryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->reflectionMethod = new ReflectionMethod(FullyValidApi::class, 'onlyUrl');
+        $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
         $this->converterProvider = new ConverterProvider([new BuiltInConverterFactory()]);
     }
 
     #[Test]
-    public function shouldCreateQueryParameterHandler(): void
+    public function shouldCreateUrlParameterHandler(): void
     {
         //given
         $urlParameterHandlerFactory = new UrlParameterHandlerFactory($this->converterProvider);

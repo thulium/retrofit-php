@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Retrofit\Tests\Internal;
 
 use GuzzleHttp\Psr7\Uri;
+use Ouzo\Tests\Assert;
 use Ouzo\Tests\CatchException;
 use Ouzo\Tests\Mock\Mock;
 use Ouzo\Tests\Mock\MockInterface;
@@ -21,7 +22,6 @@ use Retrofit\Retrofit;
 use Retrofit\Tests\Fixtures\Api\AllHttpRequestMethods;
 use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 use Retrofit\Tests\Fixtures\Api\InvalidMethods;
-use Retrofit\Tests\Fixtures\Api\UrlAttributeVarious;
 use RuntimeException;
 
 class ServiceMethodFactoryTest extends TestCase
@@ -101,7 +101,7 @@ class ServiceMethodFactoryTest extends TestCase
     public function shouldProcessUrlBeforePath(): void
     {
         //when
-        $serviceMethod = $this->serviceMethodFactory->create(UrlAttributeVarious::class, 'methodWhenPathIsBeforeUrl');
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'pathIsBeforeUrl');
 
         //then
         $request = $serviceMethod->invoke(['jon', 'https://example.com/users/{login}'])->request();
@@ -112,7 +112,7 @@ class ServiceMethodFactoryTest extends TestCase
     public function shouldAddQueryStringToUrlAttribute(): void
     {
         //when
-        $serviceMethod = $this->serviceMethodFactory->create(UrlAttributeVarious::class, 'methodWithQuery');
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'urlWithQuery');
 
         //then
         $request = $serviceMethod->invoke(['new', 'https://example.com/users'])->request();
@@ -150,5 +150,16 @@ class ServiceMethodFactoryTest extends TestCase
         //then
         $request = $serviceMethod->invoke([['name' => 'jon+doe', 'age' => 34, 'registered' => false]])->request();
         $this->assertSame('https://example.com/users?name=jon%2Bdoe&age=34&registered=false', $request->getUri()->__toString());
+    }
+
+    #[Test]
+    public function shouldAddHeader(): void
+    {
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addHeader');
+
+        //then
+        $request = $serviceMethod->invoke(['some-custom-value'])->request();
+        Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['some-custom-value']]);
     }
 }

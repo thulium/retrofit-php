@@ -11,7 +11,7 @@ use ReflectionMethod;
 use Retrofit\Attribute\GET;
 use Retrofit\Internal\ParameterHandler\UrlParameterHandler;
 use Retrofit\Internal\RequestBuilder;
-use Retrofit\Tests\Fixtures\Api\FullyValidApi;
+use Retrofit\Tests\Fixtures\Api\MockMethod;
 use RuntimeException;
 
 class UrlParameterHandlerTest extends TestCase
@@ -23,7 +23,7 @@ class UrlParameterHandlerTest extends TestCase
     {
         parent::setUp();
         $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users/{name}'));
-        $reflectionMethod = new ReflectionMethod(FullyValidApi::class, 'onlyUrl');
+        $reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
         $this->urlParameterHandler = new UrlParameterHandler($reflectionMethod, 0);
     }
 
@@ -36,7 +36,7 @@ class UrlParameterHandlerTest extends TestCase
         //then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
-            ->hasMessage('Method FullyValidApi::onlyUrl() parameter #1. #[Url] parameter value must not be null.');
+            ->hasMessage('Method MockMethod::mockMethod() parameter #1. #[Url] parameter value must not be null.');
     }
 
     #[Test]

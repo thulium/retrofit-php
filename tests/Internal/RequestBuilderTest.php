@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Retrofit\Tests\Internal;
 
 use GuzzleHttp\Psr7\Uri;
+use Ouzo\Tests\Assert;
 use Ouzo\Tests\CatchException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -173,5 +174,33 @@ class RequestBuilderTest extends TestCase
         //then
         $request = $requestBuilder->build();
         $this->assertSame('https://example.com?groups=new+users&groups=old', $request->getUri()->__toString());
+    }
+
+    #[Test]
+    public function shouldAddHeaderToRequest(): void
+    {
+        //given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+
+        //when
+        $requestBuilder->addHeader('x-custom', 'value');
+
+        //then
+        $request = $requestBuilder->build();
+        Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['value']]);
+    }
+
+    #[Test]
+    public function shouldSanitizeHeaderName(): void
+    {
+        //given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+
+        //when
+        $requestBuilder->addHeader('X-CusTom', 'value');
+
+        //then
+        $request = $requestBuilder->build();
+        Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['value']]);
     }
 }

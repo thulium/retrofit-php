@@ -12,7 +12,7 @@ use Retrofit\Attribute\POST;
 use Retrofit\Internal\BuiltInConverters;
 use Retrofit\Internal\ParameterHandler\PathParameterHandler;
 use Retrofit\Internal\RequestBuilder;
-use Retrofit\Tests\Fixtures\Api\FullyValidApi;
+use Retrofit\Tests\Fixtures\Api\MockMethod;
 use RuntimeException;
 
 class PathParameterHandlerTest extends TestCase
@@ -24,7 +24,7 @@ class PathParameterHandlerTest extends TestCase
     {
         parent::setUp();
         $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new POST('/users/{login}'));
-        $this->reflectionMethod = new ReflectionMethod(FullyValidApi::class, 'createUser');
+        $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
     }
 
     #[Test]
@@ -39,7 +39,7 @@ class PathParameterHandlerTest extends TestCase
         //then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
-            ->hasMessage("Method FullyValidApi::createUser() parameter #1. #[Path] parameter 'login' value must not be null.");
+            ->hasMessage("Method MockMethod::mockMethod() parameter #1. #[Path] parameter 'login' value must not be null.");
     }
 
     #[Test]

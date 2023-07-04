@@ -21,6 +21,7 @@ class RequestBuilder
     private UriInterface $uri;
     #[ArrayShape([0 => ['name' => 'string', 'value' => 'string']])]
     private array $pathParameters = [];
+    private array $headers = [];
 
     public function __construct(
         UriInterface $baseUrl,
@@ -72,12 +73,18 @@ class RequestBuilder
         }
     }
 
+    public function addHeader(string $name, string $value): void
+    {
+        $name = strtolower($name);
+        $this->headers[$name] = $value;
+    }
+
     public function build(): RequestInterface
     {
         $this->replacePathParameters();
         $this->initializeQueryString();
 
-        return new Request($this->httpRequest->httpMethod()->value, $this->uri);
+        return new Request($this->httpRequest->httpMethod()->value, $this->uri, $this->headers);
     }
 
     private function replacePathParameters(): void

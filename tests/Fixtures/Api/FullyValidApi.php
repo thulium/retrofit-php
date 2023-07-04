@@ -5,6 +5,7 @@ namespace Retrofit\Tests\Fixtures\Api;
 
 use Retrofit\Attribute\Body;
 use Retrofit\Attribute\GET;
+use Retrofit\Attribute\Header;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\POST;
 use Retrofit\Attribute\Query;
@@ -22,8 +23,11 @@ interface FullyValidApi
     #[POST('/users/{login}')]
     public function createUser(#[Path('login')] string $login, #[Body] UserRequest $userRequest): Call;
 
-    #[POST]
-    public function onlyUrl(#[Url] ?string $url): Call;
+    #[GET]
+    public function pathIsBeforeUrl(#[Path('login')] string $login, #[Url] string $url): Call;
+
+    #[GET]
+    public function urlWithQuery(#[Query('group')] string $group, #[Url] string $url): Call;
 
     #[GET('/users/{login}')]
     public function pathAndQuery(#[Path('login')] string $login, #[Query('group')] string $group): Call;
@@ -33,4 +37,7 @@ interface FullyValidApi
 
     #[GET('/users')]
     public function addQueryMap(#[QueryMap] array $queries): Call;
+
+    #[GET('/users')]
+    public function addHeader(#[Header('x-custom')] string $custom): Call;
 }

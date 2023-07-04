@@ -12,7 +12,7 @@ use Retrofit\Internal\BuiltInConverterFactory;
 use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\ParameterHandler\Factory\QueryMapParameterHandlerFactory;
 use Retrofit\Internal\ParameterHandler\QueryMapParameterHandler;
-use Retrofit\Tests\Fixtures\Api\FullyValidApi;
+use Retrofit\Tests\Fixtures\Api\MockMethod;
 
 class QueryMapParameterHandlerFactoryTest extends TestCase
 {
@@ -22,12 +22,12 @@ class QueryMapParameterHandlerFactoryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->reflectionMethod = new ReflectionMethod(FullyValidApi::class, 'createUser');
+        $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
         $this->converterProvider = new ConverterProvider([new BuiltInConverterFactory()]);
     }
 
     #[Test]
-    public function shouldCreateQueryParameterHandler(): void
+    public function shouldCreateQueryMapParameterHandler(): void
     {
         //given
         $queryMapParameterHandler = new QueryMapParameterHandlerFactory($this->converterProvider);

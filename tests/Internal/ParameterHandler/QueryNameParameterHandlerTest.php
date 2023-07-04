@@ -11,7 +11,7 @@ use Retrofit\Attribute\POST;
 use Retrofit\Internal\BuiltInConverters;
 use Retrofit\Internal\ParameterHandler\QueryNameParameterHandler;
 use Retrofit\Internal\RequestBuilder;
-use Retrofit\Tests\Fixtures\Api\FullyValidApi;
+use Retrofit\Tests\Fixtures\Api\MockMethod;
 
 class QueryNameParameterHandlerTest extends TestCase
 {
@@ -22,7 +22,7 @@ class QueryNameParameterHandlerTest extends TestCase
     {
         parent::setUp();
         $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new POST('/users'));
-        $this->reflectionMethod = new ReflectionMethod(FullyValidApi::class, 'addQueryName');
+        $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
     }
 
     #[Test]

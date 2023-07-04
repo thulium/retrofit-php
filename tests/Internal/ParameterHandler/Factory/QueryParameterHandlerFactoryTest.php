@@ -12,7 +12,7 @@ use Retrofit\Internal\BuiltInConverterFactory;
 use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\ParameterHandler\Factory\QueryParameterHandlerFactory;
 use Retrofit\Internal\ParameterHandler\QueryParameterHandler;
-use Retrofit\Tests\Fixtures\Api\FullyValidApi;
+use Retrofit\Tests\Fixtures\Api\MockMethod;
 
 class QueryParameterHandlerFactoryTest extends TestCase
 {
@@ -22,7 +22,7 @@ class QueryParameterHandlerFactoryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->reflectionMethod = new ReflectionMethod(FullyValidApi::class, 'createUser');
+        $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
         $this->converterProvider = new ConverterProvider([new BuiltInConverterFactory()]);
     }
 

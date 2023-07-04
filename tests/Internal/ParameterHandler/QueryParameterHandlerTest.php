@@ -12,7 +12,7 @@ use Retrofit\Attribute\POST;
 use Retrofit\Internal\BuiltInConverters;
 use Retrofit\Internal\ParameterHandler\QueryParameterHandler;
 use Retrofit\Internal\RequestBuilder;
-use Retrofit\Tests\Fixtures\Api\FullyValidApi;
+use Retrofit\Tests\Fixtures\Api\MockMethod;
 use RuntimeException;
 use stdClass;
 
@@ -25,7 +25,7 @@ class QueryParameterHandlerTest extends TestCase
     {
         parent::setUp();
         $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new POST('/users'));
-        $this->reflectionMethod = new ReflectionMethod(FullyValidApi::class, 'createUser');
+        $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
     }
 
     #[Test]
@@ -110,7 +110,7 @@ class QueryParameterHandlerTest extends TestCase
         //then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
-            ->hasMessage('Method FullyValidApi::createUser() parameter #1. Parameter must be a list.');
+            ->hasMessage('Method MockMethod::mockMethod() parameter #1. Parameter must be a list.');
     }
 
     #[Test]
@@ -127,6 +127,6 @@ class QueryParameterHandlerTest extends TestCase
         //then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
-            ->hasMessage('Method FullyValidApi::createUser() parameter #1. One of the list value is an object.');
+            ->hasMessage('Method MockMethod::mockMethod() parameter #1. One of the list value is an object.');
     }
 }
