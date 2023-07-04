@@ -29,24 +29,7 @@ readonly class ServiceMethodFactory
     public function create(string $service, string $method): ServiceMethod
     {
         $reflectionMethod = new ReflectionMethod($service, $method);
-        $httpRequestMethods = collect($reflectionMethod->getAttributes())
-            ->map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance())
-            ->filter(fn(object $instance): bool => $instance instanceof HttpRequest)
-            ->collect();
-
-        if ($httpRequestMethods->isEmpty()) {
-            throw Utils::methodException($reflectionMethod,
-                'HTTP method annotation is required (e.g., #[GET], #[POST], etc.).');
-        }
-
-        //todo check issue https://github.com/nikic/PHP-Parser/issues/930 is fixed
-        if ($httpRequestMethods->count() > 1) {
-            $httpMethodNames = $httpRequestMethods->implode(fn(HttpRequest $request): string => $request::class, ', ');
-            throw Utils::methodException($reflectionMethod, "Only one HTTP method is allowed. Found: [$httpMethodNames].");
-        }
-
-        $httpRequest = $httpRequestMethods->first();
-
+        $httpRequest = $this->getHttpRequest($reflectionMethod);
         $parameterHandlers = $this->getParameterHandlers($httpRequest, $reflectionMethod);
 
         $requestFactory = new RequestFactory($this->retrofit->baseUrl, $httpRequest, $parameterHandlers);
@@ -65,6 +48,27 @@ readonly class ServiceMethodFactory
                 return new HttpClientCall($this->httpClient, $request);
             }
         };
+    }
+
+    private function getHttpRequest(ReflectionMethod $reflectionMethod): HttpRequest
+    {
+        $httpRequestMethods = collect($reflectionMethod->getAttributes())
+            ->map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance())
+            ->filter(fn(object $instance): bool => $instance instanceof HttpRequest)
+            ->collect();
+
+        if ($httpRequestMethods->isEmpty()) {
+            throw Utils::methodException($reflectionMethod,
+                'HTTP method annotation is required (e.g., #[GET], #[POST], etc.).');
+        }
+
+        //todo check issue https://github.com/nikic/PHP-Parser/issues/930 is fixed
+        if ($httpRequestMethods->count() > 1) {
+            $httpMethodNames = $httpRequestMethods->implode(fn(HttpRequest $request): string => $request::class, ', ');
+            throw Utils::methodException($reflectionMethod, "Only one HTTP method is allowed. Found: [$httpMethodNames].");
+        }
+
+        return $httpRequestMethods->first();
     }
 
     private function getParameterHandlers(HttpRequest $httpRequest, ReflectionMethod $reflectionMethod): array

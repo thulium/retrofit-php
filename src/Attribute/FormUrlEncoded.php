@@ -5,7 +5,7 @@ namespace Retrofit\Attribute;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_PARAMETER)]
+#[Attribute(Attribute::TARGET_METHOD)]
 readonly class FormUrlEncoded
 {
 }
