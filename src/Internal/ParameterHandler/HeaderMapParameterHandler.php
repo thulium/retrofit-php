@@ -6,13 +6,13 @@ namespace Retrofit\Internal\ParameterHandler;
 use ReflectionMethod;
 use Retrofit\Converter;
 use Retrofit\Internal\RequestBuilder;
+use Retrofit\Internal\Utils\Utils;
 
-readonly class QueryMapParameterHandler implements ParameterHandler
+readonly class HeaderMapParameterHandler implements ParameterHandler
 {
     use WithMapParameter;
 
     public function __construct(
-        private bool $encoded,
         private Converter $converter,
         private ReflectionMethod $reflectionMethod,
         private int $position
@@ -23,11 +23,11 @@ readonly class QueryMapParameterHandler implements ParameterHandler
     public function apply(RequestBuilder $requestBuilder, mixed $value): void
     {
         if (is_null($value)) {
-            return;
+            throw Utils::parameterException($this->reflectionMethod, $this->position, 'Header map was null.');
         }
 
-        $this->validateAndApply($value, 'Query', function (string|array $entryKey, string|array|null $entryValue) use ($requestBuilder): void {
-            $requestBuilder->addQueryParam($entryKey, $entryValue, $this->encoded);
+        $this->validateAndApply($value, 'Header', function (string|array $entryKey, string|array|null $entryValue) use ($requestBuilder): void {
+            $requestBuilder->addHeader($entryKey, $entryValue);
         });
     }
 }

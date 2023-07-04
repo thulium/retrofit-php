@@ -6,6 +6,7 @@ namespace Retrofit\Tests\Fixtures\Api;
 use Retrofit\Attribute\Body;
 use Retrofit\Attribute\GET;
 use Retrofit\Attribute\Header;
+use Retrofit\Attribute\HeaderMap;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\POST;
 use Retrofit\Attribute\Query;
@@ -40,4 +41,7 @@ interface FullyValidApi
 
     #[GET('/users')]
     public function addHeader(#[Header('x-custom')] string $custom): Call;
+
+    #[GET('/users')]
+    public function addHeaderMap(#[HeaderMap] array $headerMap): Call;
 }

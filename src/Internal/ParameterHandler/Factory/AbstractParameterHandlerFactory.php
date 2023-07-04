@@ -5,6 +5,7 @@ namespace Retrofit\Internal\ParameterHandler\Factory;
 
 use ReflectionMethod;
 use Retrofit\Attribute\Header;
+use Retrofit\Attribute\HeaderMap;
 use Retrofit\Attribute\HttpRequest;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\Query;
@@ -21,7 +22,7 @@ readonly abstract class AbstractParameterHandlerFactory
     }
 
     abstract public function create(
-        Header & Path & Query & QueryMap & QueryName & Url $param,
+        Header & HeaderMap & Path & Query & QueryMap & QueryName & Url $param,
         HttpRequest $httpRequest,
         ReflectionMethod $reflectionMethod,
         int $position

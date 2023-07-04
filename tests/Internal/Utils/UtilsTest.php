@@ -12,7 +12,6 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
 use Retrofit\Internal\Utils\Utils;
-use Retrofit\Tests\Fixtures\Api\AllAttributeParametersInOneMethod;
 use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 
 class UtilsTest extends TestCase
@@ -144,7 +143,7 @@ class UtilsTest extends TestCase
     public function shouldSortParameterAttributesUsingPriorities(): void
     {
         //given
-        $reflectionMethod = new ReflectionMethod(AllAttributeParametersInOneMethod::class, 'allInOne');
+        $reflectionMethod = new ReflectionMethod(FullyValidApi::class, 'pathIsBeforeUrl');
         $reflectionParameters = $reflectionMethod->getParameters();
 
         shuffle($reflectionParameters);
@@ -157,6 +156,6 @@ class UtilsTest extends TestCase
         //then
         Assert::thatArray(array_values($sortedReflectionParameters))
             ->extracting(fn(ReflectionParameter $p): string => $p->getName())
-            ->containsExactly('url', 'path');
+            ->containsExactly('url', 'login');
     }
 }

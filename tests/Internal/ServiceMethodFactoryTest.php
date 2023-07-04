@@ -162,4 +162,16 @@ class ServiceMethodFactoryTest extends TestCase
         $request = $serviceMethod->invoke(['some-custom-value'])->request();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['some-custom-value']]);
     }
+
+    #[Test]
+    public function shouldAddHeaderMap(): void
+    {
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addHeaderMap');
+
+        //then
+        $request = $serviceMethod->invoke([['x-custom' => 'jon+doe', 'x-age' => 34, 'Content-Type' => 'application/json']])->request();
+        Assert::thatArray($request->getHeaders())
+            ->containsKeyAndValue(['x-custom' => ['jon+doe'], 'x-age' => ['34'], 'content-type' => ['application/json']]);
+    }
 }
