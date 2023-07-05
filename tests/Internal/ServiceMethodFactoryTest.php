@@ -344,4 +344,28 @@ class ServiceMethodFactoryTest extends TestCase
         $request = $serviceMethod->invoke([['x-login' => 'jon+doe', 'filters' => 'users+admin']])->request();
         $this->assertSame('x-login=jon+doe&filters=users+admin', $request->getBody()->getContents());
     }
+
+    #[Test]
+    public function shouldThrowExceptionWhenFormUrlEncodedDoesNotHaveAtLeastOneFieldAttribute(): void
+    {
+        //when
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'formUrlEncodedDoesNotHaveAtLeastOneFieldAttribute');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::formUrlEncodedDoesNotHaveAtLeastOneFieldAttribute(). #[FormUrlEncoded] method must contain at least one #[Field] or #[FieldMap].');
+    }
+
+    #[Test]
+    public function shouldThrowExceptionWhenMultipartDoesNotHaveAtLeastOnePartAttribute(): void
+    {
+        //when
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'multipartDoesNotHaveAtLeastOnePartAttribute');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::multipartDoesNotHaveAtLeastOnePartAttribute(). #[Multipart] method must contain at least one #[Part] or #[PartMap].');
+    }
 }

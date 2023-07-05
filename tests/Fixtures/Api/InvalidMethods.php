@@ -48,4 +48,12 @@ interface InvalidMethods
     #[GET('/users')]
     #[FormUrlEncoded]
     public function formUrlEncodedForHttpMethodWithoutBody(): Call;
+
+    #[POST('/users')]
+    #[FormUrlEncoded]
+    public function formUrlEncodedDoesNotHaveAtLeastOneFieldAttribute(): Call;
+
+    #[POST('/users')]
+    #[Multipart]
+    public function multipartDoesNotHaveAtLeastOnePartAttribute(): Call;
 }

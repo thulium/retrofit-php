@@ -12,6 +12,7 @@ use Retrofit\Attribute\Header;
 use Retrofit\Attribute\HeaderMap;
 use Retrofit\Attribute\Headers;
 use Retrofit\Attribute\Multipart;
+use Retrofit\Attribute\Part;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\POST;
 use Retrofit\Attribute\Query;
@@ -68,11 +69,11 @@ interface FullyValidApi
 
     #[POST('/users/login')]
     #[FormUrlEncoded]
-    public function formUrlEncoded(#[Path('login')] string $login): Call;
+    public function formUrlEncoded(#[Path('login')] string $login, #[Field('filters', true)] string $filters): Call;
 
     #[POST('/users/login')]
     #[Multipart]
-    public function multipart(#[Path('login')] string $login): Call;
+    public function multipart(#[Path('login')] string $login, #[Part] string $filters): Call;
 
     #[POST('/users')]
     #[FormUrlEncoded]

@@ -7,10 +7,14 @@ use Ouzo\Utilities\Strings;
 use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
+use Retrofit\Attribute\Field;
+use Retrofit\Attribute\FieldMap;
 use Retrofit\Attribute\FormUrlEncoded;
 use Retrofit\Attribute\Headers;
 use Retrofit\Attribute\HttpRequest;
 use Retrofit\Attribute\Multipart;
+use Retrofit\Attribute\Part;
+use Retrofit\Attribute\PartMap;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
 use Retrofit\HttpClient;
@@ -138,6 +142,8 @@ readonly class ServiceMethodFactory
     private function getParameterHandlers(HttpRequest $httpRequest, ?Encoding $encoding, ReflectionMethod $reflectionMethod): array
     {
         $gotUrl = false;
+        $gotField = false;
+        $gotPart = false;
 
         $parameterHandlers = [];
         $reflectionParameters = Utils::sortParameterAttributesByPriorities($reflectionMethod->getParameters());
@@ -155,12 +161,26 @@ readonly class ServiceMethodFactory
                 }
 
                 $gotUrl = true;
+            } elseif ($newInstance instanceof Field || $newInstance instanceof FieldMap) {
+                $gotField = true;
+            } elseif ($newInstance instanceof Part || $newInstance instanceof PartMap) {
+                $gotPart = true;
             }
 
             $parameterHandlerFactory = $this->parameterHandlerFactoryProvider->get($reflectionAttribute->getName());
             $parameterHandler = $parameterHandlerFactory->create($newInstance, $httpRequest, $encoding, $reflectionMethod, $position);
 
             $parameterHandlers[$position] = $parameterHandler;
+        }
+
+        if ($encoding === Encoding::FORM_URL_ENCODED && !$gotField) {
+            throw Utils::methodException($reflectionMethod,
+                '#[FormUrlEncoded] method must contain at least one #[Field] or #[FieldMap].');
+        }
+
+        if ($encoding === Encoding::MULTIPART && !$gotPart) {
+            throw Utils::methodException($reflectionMethod,
+                '#[Multipart] method must contain at least one #[Part] or #[PartMap].');
         }
 
         ksort($parameterHandlers);
