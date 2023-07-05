@@ -9,6 +9,7 @@ use Retrofit\Attribute\Headers;
 use Retrofit\Attribute\HTTP;
 use Retrofit\Attribute\Multipart;
 use Retrofit\Attribute\Path;
+use Retrofit\Attribute\POST;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
 use Retrofit\HttpMethod;
@@ -35,8 +36,16 @@ interface InvalidMethods
     #[Headers(['key' => null])]
     public function headersValueIsNull(): Call;
 
-    #[GET('/users')]
+    #[POST('/users')]
     #[FormUrlEncoded]
     #[Multipart]
     public function multipleEncodings(): Call;
+
+    #[GET('/users')]
+    #[Multipart]
+    public function multipartForHttpMethodWithoutBody(): Call;
+
+    #[GET('/users')]
+    #[FormUrlEncoded]
+    public function formUrlEncodedForHttpMethodWithoutBody(): Call;
 }

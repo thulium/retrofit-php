@@ -35,7 +35,7 @@ readonly class ServiceMethodFactory
         $reflectionMethod = new ReflectionMethod($service, $method);
 
         $httpRequest = $this->getHttpRequest($reflectionMethod);
-        $encoding = $this->getEncoding($reflectionMethod);
+        $encoding = $this->getEncoding($httpRequest, $reflectionMethod);
         $defaultHeaders = $this->getDefaultHeaders($reflectionMethod);
         $parameterHandlers = $this->getParameterHandlers($httpRequest, $encoding, $reflectionMethod);
 
@@ -77,7 +77,7 @@ readonly class ServiceMethodFactory
         return $httpRequestMethods->first();
     }
 
-    private function getEncoding(ReflectionMethod $reflectionMethod): ?Encoding
+    private function getEncoding(HttpRequest $httpRequest, ReflectionMethod $reflectionMethod): ?Encoding
     {
         $encodingAttributes = collect($reflectionMethod->getAttributes())
             ->map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance())
@@ -93,7 +93,19 @@ readonly class ServiceMethodFactory
 
         /** @var FormUrlEncoded|Multipart $encoding */
         $encoding = $encodingAttributes->first();
-        return $encoding instanceof FormUrlEncoded ? Encoding::FORM_URL_ENCODED : Encoding::MULTIPART;
+        if ($encoding instanceof FormUrlEncoded) {
+            if (!$httpRequest->hasBody()) {
+                throw Utils::methodException($reflectionMethod,
+                    '#[FormUrlEncoded] can only be specified on HTTP methods with request body (e.g., #[POST]).');
+            }
+            return Encoding::FORM_URL_ENCODED;
+        } else {
+            if (!$httpRequest->hasBody()) {
+                throw Utils::methodException($reflectionMethod,
+                    '#[Multipart] can only be specified on HTTP methods with request body (e.g., #[POST]).');
+            }
+            return Encoding::MULTIPART;
+        }
     }
 
     private function getDefaultHeaders(ReflectionMethod $reflectionMethod): array

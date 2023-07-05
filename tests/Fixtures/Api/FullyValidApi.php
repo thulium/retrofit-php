@@ -64,11 +64,11 @@ interface FullyValidApi
     ])]
     public function addHeadersWithParameterHeader(#[Header('x-age')] int $age): Call;
 
-    #[GET('/users/login')]
+    #[POST('/users/login')]
     #[FormUrlEncoded]
     public function formUrlEncoded(#[Path('login')] string $login): Call;
 
-    #[GET('/users/login')]
+    #[POST('/users/login')]
     #[Multipart]
     public function multipart(#[Path('login')] string $login): Call;
 }

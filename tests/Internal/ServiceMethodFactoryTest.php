@@ -298,4 +298,28 @@ class ServiceMethodFactoryTest extends TestCase
         //then
         Mock::verify($factory)->create(Mock::any(), Mock::any(), Encoding::MULTIPART, Mock::any(), Mock::any());
     }
+
+    #[Test]
+    public function shouldThrowExceptionWhenMultipartIsNotForHttpMethodWithBody(): void
+    {
+        //when
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'multipartForHttpMethodWithoutBody');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::multipartForHttpMethodWithoutBody(). #[Multipart] can only be specified on HTTP methods with request body (e.g., #[POST]).');
+    }
+
+    #[Test]
+    public function shouldThrowExceptionWhenFormUrlEncodedIsNotForHttpMethodWithBody(): void
+    {
+        //when
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'formUrlEncodedForHttpMethodWithoutBody');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::formUrlEncodedForHttpMethodWithoutBody(). #[FormUrlEncoded] can only be specified on HTTP methods with request body (e.g., #[POST]).');
+    }
 }
