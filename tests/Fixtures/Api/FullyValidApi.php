@@ -5,6 +5,7 @@ namespace Retrofit\Tests\Fixtures\Api;
 
 use Retrofit\Attribute\Body;
 use Retrofit\Attribute\Field;
+use Retrofit\Attribute\FieldMap;
 use Retrofit\Attribute\FormUrlEncoded;
 use Retrofit\Attribute\GET;
 use Retrofit\Attribute\Header;
@@ -76,4 +77,8 @@ interface FullyValidApi
     #[POST('/users')]
     #[FormUrlEncoded]
     public function addField(#[Field('x-login')] string $login, #[Field('filters', true)] string $filters): Call;
+
+    #[POST('/users')]
+    #[FormUrlEncoded]
+    public function addFieldMap(#[FieldMap(true)] array $fields): Call;
 }

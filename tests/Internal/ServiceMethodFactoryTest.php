@@ -333,4 +333,15 @@ class ServiceMethodFactoryTest extends TestCase
         $request = $serviceMethod->invoke(['jon+doe', 'users+admin'])->request();
         $this->assertSame('x-login=jon%2Bdoe&filters=users+admin', $request->getBody()->getContents());
     }
+
+    #[Test]
+    public function shouldAddFieldMap(): void
+    {
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addFieldMap');
+
+        //then
+        $request = $serviceMethod->invoke([['x-login' => 'jon+doe', 'filters' => 'users+admin']])->request();
+        $this->assertSame('x-login=jon+doe&filters=users+admin', $request->getBody()->getContents());
+    }
 }

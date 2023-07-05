@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Retrofit\Internal\ParameterHandler\Factory;
 
 use Retrofit\Attribute\Field;
+use Retrofit\Attribute\FieldMap;
 use Retrofit\Attribute\Header;
 use Retrofit\Attribute\HeaderMap;
 use Retrofit\Attribute\Path;
@@ -21,6 +22,7 @@ class ParameterHandlerFactoryProvider
     {
         $this->attributeNameToFactory = [
             Field::class => new FieldParameterHandlerFactory($converterProvider),
+            FieldMap::class => new FieldMapParameterHandlerFactory($converterProvider),
             Header::class => new HeaderParameterHandlerFactory($converterProvider),
             HeaderMap::class => new HeaderMapParameterHandlerFactory($converterProvider),
             Path::class => new PathParameterHandlerFactory($converterProvider),
