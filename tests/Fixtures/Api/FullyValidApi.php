@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace Retrofit\Tests\Fixtures\Api;
 
 use Retrofit\Attribute\Body;
+use Retrofit\Attribute\FormUrlEncoded;
 use Retrofit\Attribute\GET;
 use Retrofit\Attribute\Header;
 use Retrofit\Attribute\HeaderMap;
 use Retrofit\Attribute\Headers;
+use Retrofit\Attribute\Multipart;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\POST;
 use Retrofit\Attribute\Query;
@@ -61,4 +63,12 @@ interface FullyValidApi
         'Content-Type' => 'application/json',
     ])]
     public function addHeadersWithParameterHeader(#[Header('x-age')] int $age): Call;
+
+    #[GET('/users/login')]
+    #[FormUrlEncoded]
+    public function formUrlEncoded(#[Path('login')] string $login): Call;
+
+    #[GET('/users/login')]
+    #[Multipart]
+    public function multipart(#[Path('login')] string $login): Call;
 }

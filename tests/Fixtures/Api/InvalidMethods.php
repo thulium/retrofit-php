@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Fixtures\Api;
 
+use Retrofit\Attribute\FormUrlEncoded;
 use Retrofit\Attribute\GET;
 use Retrofit\Attribute\Headers;
 use Retrofit\Attribute\HTTP;
+use Retrofit\Attribute\Multipart;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
@@ -32,4 +34,9 @@ interface InvalidMethods
     #[GET('/users')]
     #[Headers(['key' => null])]
     public function headersValueIsNull(): Call;
+
+    #[GET('/users')]
+    #[FormUrlEncoded]
+    #[Multipart]
+    public function multipleEncodings(): Call;
 }

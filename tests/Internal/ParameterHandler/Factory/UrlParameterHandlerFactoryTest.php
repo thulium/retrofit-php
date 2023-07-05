@@ -33,7 +33,7 @@ class UrlParameterHandlerFactoryTest extends TestCase
         $urlParameterHandlerFactory = new UrlParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $urlParameterHandlerFactory->create(new Url(), new POST(), $this->reflectionMethod, 0);
+        $parameterHandler = $urlParameterHandlerFactory->create(new Url(), new POST(), null, $this->reflectionMethod, 0);
 
         //then
         $this->assertInstanceOf(UrlParameterHandler::class, $parameterHandler);

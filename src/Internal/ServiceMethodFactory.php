@@ -7,8 +7,10 @@ use Ouzo\Utilities\Strings;
 use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
+use Retrofit\Attribute\FormUrlEncoded;
 use Retrofit\Attribute\Headers;
 use Retrofit\Attribute\HttpRequest;
+use Retrofit\Attribute\Multipart;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
 use Retrofit\HttpClient;
@@ -18,11 +20,11 @@ use Retrofit\Retrofit;
 
 readonly class ServiceMethodFactory
 {
-    private ParameterHandlerFactoryProvider $parameterHandlerFactoryProvider;
-
-    public function __construct(private Retrofit $retrofit)
+    public function __construct(
+        private Retrofit $retrofit,
+        private ParameterHandlerFactoryProvider $parameterHandlerFactoryProvider
+    )
     {
-        $this->parameterHandlerFactoryProvider = new ParameterHandlerFactoryProvider($this->retrofit->converterProvider);
     }
 
     /**
@@ -33,8 +35,9 @@ readonly class ServiceMethodFactory
         $reflectionMethod = new ReflectionMethod($service, $method);
 
         $httpRequest = $this->getHttpRequest($reflectionMethod);
+        $encoding = $this->getEncoding($reflectionMethod);
         $defaultHeaders = $this->getDefaultHeaders($reflectionMethod);
-        $parameterHandlers = $this->getParameterHandlers($httpRequest, $reflectionMethod);
+        $parameterHandlers = $this->getParameterHandlers($httpRequest, $encoding, $reflectionMethod);
 
         $requestFactory = new RequestFactory($this->retrofit->baseUrl, $httpRequest, $defaultHeaders, $parameterHandlers);
 
@@ -58,8 +61,7 @@ readonly class ServiceMethodFactory
     {
         $httpRequestMethods = collect($reflectionMethod->getAttributes())
             ->map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance())
-            ->filter(fn(object $instance): bool => $instance instanceof HttpRequest)
-            ->collect();
+            ->filter(fn(object $instance): bool => $instance instanceof HttpRequest);
 
         if ($httpRequestMethods->isEmpty()) {
             throw Utils::methodException($reflectionMethod,
@@ -73,6 +75,25 @@ readonly class ServiceMethodFactory
         }
 
         return $httpRequestMethods->first();
+    }
+
+    private function getEncoding(ReflectionMethod $reflectionMethod): ?Encoding
+    {
+        $encodingAttributes = collect($reflectionMethod->getAttributes())
+            ->map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance())
+            ->filter(fn(object $instance): bool => $instance instanceof FormUrlEncoded || $instance instanceof Multipart);
+
+        if ($encodingAttributes->isEmpty()) {
+            return null;
+        }
+
+        if ($encodingAttributes->count() > 1) {
+            throw Utils::methodException($reflectionMethod, 'Only one encoding annotation is allowed.');
+        }
+
+        /** @var FormUrlEncoded|Multipart $encoding */
+        $encoding = $encodingAttributes->first();
+        return $encoding instanceof FormUrlEncoded ? Encoding::FORM_URL_ENCODED : Encoding::MULTIPART;
     }
 
     private function getDefaultHeaders(ReflectionMethod $reflectionMethod): array
@@ -91,7 +112,8 @@ readonly class ServiceMethodFactory
                     throw Utils::methodException($reflectionMethod, 'Headers map contained empty key.');
                 }
                 if (is_null($entryValue)) {
-                    throw Utils::methodException($reflectionMethod, "Headers map contained null value for key '{$entryKey}'.");
+                    throw Utils::methodException($reflectionMethod,
+                        "Headers map contained null value for key '{$entryKey}'.");
                 }
 
                 $entryValue = $converter->convert($entryValue);
@@ -101,7 +123,7 @@ readonly class ServiceMethodFactory
         return $defaultHeaders;
     }
 
-    private function getParameterHandlers(HttpRequest $httpRequest, ReflectionMethod $reflectionMethod): array
+    private function getParameterHandlers(HttpRequest $httpRequest, ?Encoding $encoding, ReflectionMethod $reflectionMethod): array
     {
         $gotUrl = false;
 
@@ -124,7 +146,7 @@ readonly class ServiceMethodFactory
             }
 
             $parameterHandlerFactory = $this->parameterHandlerFactoryProvider->get($reflectionAttribute->getName());
-            $parameterHandler = $parameterHandlerFactory->create($newInstance, $httpRequest, $reflectionMethod, $position);
+            $parameterHandler = $parameterHandlerFactory->create($newInstance, $httpRequest, $encoding, $reflectionMethod, $position);
 
             $parameterHandlers[$position] = $parameterHandler;
         }

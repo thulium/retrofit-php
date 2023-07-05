@@ -16,6 +16,10 @@ use PHPUnit\Framework\TestCase;
 use Retrofit\HttpClient;
 use Retrofit\Internal\BuiltInConverterFactory;
 use Retrofit\Internal\ConverterProvider;
+use Retrofit\Internal\Encoding;
+use Retrofit\Internal\ParameterHandler\Factory\AbstractParameterHandlerFactory;
+use Retrofit\Internal\ParameterHandler\Factory\ParameterHandlerFactoryProvider;
+use Retrofit\Internal\ParameterHandler\ParameterHandler;
 use Retrofit\Internal\Proxy\DefaultProxyFactory;
 use Retrofit\Internal\ServiceMethodFactory;
 use Retrofit\Retrofit;
@@ -26,6 +30,8 @@ use RuntimeException;
 
 class ServiceMethodFactoryTest extends TestCase
 {
+    private Retrofit $retrofit;
+    private ParameterHandlerFactoryProvider|MockInterface $parameterHandlerFactoryProvider;
     private ServiceMethodFactory $serviceMethodFactory;
 
     public function setUp(): void
@@ -37,9 +43,10 @@ class ServiceMethodFactoryTest extends TestCase
         $converterProvider = new ConverterProvider([new BuiltInConverterFactory()]);
         $proxyFactory = new DefaultProxyFactory(new BuilderFactory(), new Standard());
 
-        $retrofit = new Retrofit($httpClient, $baseUrl, $converterProvider, $proxyFactory);
+        $this->retrofit = new Retrofit($httpClient, $baseUrl, $converterProvider, $proxyFactory);
 
-        $this->serviceMethodFactory = new ServiceMethodFactory($retrofit);
+        $this->parameterHandlerFactoryProvider = new ParameterHandlerFactoryProvider($this->retrofit->converterProvider);
+        $this->serviceMethodFactory = new ServiceMethodFactory($this->retrofit, $this->parameterHandlerFactoryProvider);
     }
 
     #[Test]
@@ -221,5 +228,74 @@ class ServiceMethodFactoryTest extends TestCase
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage("Method InvalidMethods::headersValueIsNull(). Headers map contained null value for key 'key'.");
+    }
+
+    #[Test]
+    public function shouldThrowExceptionWhenMultipleEncodingDefined(): void
+    {
+        //when
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'multipleEncodings');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::multipleEncodings(). Only one encoding annotation is allowed.');
+    }
+
+    #[Test]
+    public function shouldPassNullEncodingWhenMethodIsNotImplementingAny(): void
+    {
+        //given
+        $factory = Mock::create(AbstractParameterHandlerFactory::class);
+        Mock::when($factory)->create(Mock::anyArgList())->thenReturn(Mock::create(ParameterHandler::class));
+
+        $this->parameterHandlerFactoryProvider = Mock::create(ParameterHandlerFactoryProvider::class);
+        Mock::when($this->parameterHandlerFactoryProvider)->get(Mock::anyArgList())->thenReturn($factory);
+
+        $serviceMethodFactory = new ServiceMethodFactory($this->retrofit, $this->parameterHandlerFactoryProvider);
+
+        //when
+        $serviceMethodFactory->create(FullyValidApi::class, 'addHeader');
+
+        //then
+        Mock::verify($factory)->create(Mock::any(), Mock::any(), null, Mock::any(), Mock::any());
+    }
+
+    #[Test]
+    public function shouldPassFormUrlEncodedEncodingWhenMethodIsNotImplementingFormUrlEncodedAttribute(): void
+    {
+        //given
+        $factory = Mock::create(AbstractParameterHandlerFactory::class);
+        Mock::when($factory)->create(Mock::anyArgList())->thenReturn(Mock::create(ParameterHandler::class));
+
+        $this->parameterHandlerFactoryProvider = Mock::create(ParameterHandlerFactoryProvider::class);
+        Mock::when($this->parameterHandlerFactoryProvider)->get(Mock::anyArgList())->thenReturn($factory);
+
+        $serviceMethodFactory = new ServiceMethodFactory($this->retrofit, $this->parameterHandlerFactoryProvider);
+
+        //when
+        $serviceMethodFactory->create(FullyValidApi::class, 'formUrlEncoded');
+
+        //then
+        Mock::verify($factory)->create(Mock::any(), Mock::any(), Encoding::FORM_URL_ENCODED, Mock::any(), Mock::any());
+    }
+
+    #[Test]
+    public function shouldPassMultipartEncodingWhenMethodIsNotImplementingFormUrlEncodedAttribute(): void
+    {
+        //given
+        $factory = Mock::create(AbstractParameterHandlerFactory::class);
+        Mock::when($factory)->create(Mock::anyArgList())->thenReturn(Mock::create(ParameterHandler::class));
+
+        $this->parameterHandlerFactoryProvider = Mock::create(ParameterHandlerFactoryProvider::class);
+        Mock::when($this->parameterHandlerFactoryProvider)->get(Mock::anyArgList())->thenReturn($factory);
+
+        $serviceMethodFactory = new ServiceMethodFactory($this->retrofit, $this->parameterHandlerFactoryProvider);
+
+        //when
+        $serviceMethodFactory->create(FullyValidApi::class, 'multipart');
+
+        //then
+        Mock::verify($factory)->create(Mock::any(), Mock::any(), Encoding::MULTIPART, Mock::any(), Mock::any());
     }
 }

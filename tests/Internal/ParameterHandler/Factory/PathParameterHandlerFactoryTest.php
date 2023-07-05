@@ -33,7 +33,7 @@ class PathParameterHandlerFactoryTest extends TestCase
         $pathParameterHandlerFactory = new PathParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $pathParameterHandlerFactory->create(new Path('login'), new POST('/users/{login}'), $this->reflectionMethod, 0);
+        $parameterHandler = $pathParameterHandlerFactory->create(new Path('login'), new POST('/users/{login}'), null, $this->reflectionMethod, 0);
 
         //then
         $this->assertInstanceOf(PathParameterHandler::class, $parameterHandler);

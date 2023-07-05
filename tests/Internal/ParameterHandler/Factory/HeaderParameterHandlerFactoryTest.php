@@ -33,7 +33,7 @@ class HeaderParameterHandlerFactoryTest extends TestCase
         $headerParameterHandlerFactory = new HeaderParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $headerParameterHandlerFactory->create(new Header('x-custom'), new GET('/users/{login}'), $this->reflectionMethod, 1);
+        $parameterHandler = $headerParameterHandlerFactory->create(new Header('x-custom'), new GET('/users/{login}'), null, $this->reflectionMethod, 1);
 
         //then
         $this->assertInstanceOf(HeaderParameterHandler::class, $parameterHandler);

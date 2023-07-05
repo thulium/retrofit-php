@@ -33,7 +33,7 @@ class QueryMapParameterHandlerFactoryTest extends TestCase
         $queryMapParameterHandler = new QueryMapParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $queryMapParameterHandler->create(new QueryMap(), new GET('/users'), $this->reflectionMethod, 1);
+        $parameterHandler = $queryMapParameterHandler->create(new QueryMap(), new GET('/users'), null, $this->reflectionMethod, 1);
 
         //then
         $this->assertInstanceOf(QueryMapParameterHandler::class, $parameterHandler);

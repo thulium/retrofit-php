@@ -33,7 +33,7 @@ class QueryParameterHandlerFactoryTest extends TestCase
         $queryParameterHandlerFactory = new QueryParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $queryParameterHandlerFactory->create(new Query('group'), new GET('/users/{login}'), $this->reflectionMethod, 1);
+        $parameterHandler = $queryParameterHandlerFactory->create(new Query('group'), new GET('/users/{login}'), null, $this->reflectionMethod, 1);
 
         //then
         $this->assertInstanceOf(QueryParameterHandler::class, $parameterHandler);

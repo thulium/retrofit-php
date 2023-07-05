@@ -33,7 +33,7 @@ class HeaderMapParameterHandlerFactoryTest extends TestCase
         $headerMapParameterHandlerFactory = new HeaderMapParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $headerMapParameterHandlerFactory->create(new HeaderMap(), new GET('/users/{login}'), $this->reflectionMethod, 1);
+        $parameterHandler = $headerMapParameterHandlerFactory->create(new HeaderMap(), new GET('/users/{login}'), null, $this->reflectionMethod, 1);
 
         //then
         $this->assertInstanceOf(HeaderMapParameterHandler::class, $parameterHandler);

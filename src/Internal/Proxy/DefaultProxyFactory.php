@@ -25,6 +25,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
 use Retrofit\Call;
+use Retrofit\Internal\ParameterHandler\Factory\ParameterHandlerFactoryProvider;
 use Retrofit\Internal\ServiceMethod;
 use Retrofit\Internal\ServiceMethodFactory;
 use Retrofit\Internal\Utils\Utils;
@@ -117,6 +118,12 @@ readonly class DefaultProxyFactory implements ProxyFactory
             new Name(Utils::toFQCN(ServiceMethodFactory::class)),
             [
                 new Variable('retrofit'),
+                new New_(
+                    new Name(Utils::toFQCN(ParameterHandlerFactoryProvider::class)),
+                    [
+                        new PropertyFetch(new Variable('retrofit'), 'converterProvider'),
+                    ]
+                ),
             ]
         );
         $assign = new Assign($serviceMethodFactoryProperty, $serviceMethodFactoryInstance);
