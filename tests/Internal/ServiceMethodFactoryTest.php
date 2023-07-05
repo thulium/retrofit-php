@@ -322,4 +322,15 @@ class ServiceMethodFactoryTest extends TestCase
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::formUrlEncodedForHttpMethodWithoutBody(). #[FormUrlEncoded] can only be specified on HTTP methods with request body (e.g., #[POST]).');
     }
+
+    #[Test]
+    public function shouldAddField(): void
+    {
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addField');
+
+        //then
+        $request = $serviceMethod->invoke(['jon+doe', 'users+admin'])->request();
+        $this->assertSame('x-login=jon%2Bdoe&filters=users+admin', $request->getBody()->getContents());
+    }
 }

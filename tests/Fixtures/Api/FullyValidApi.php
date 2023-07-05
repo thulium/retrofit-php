@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Retrofit\Tests\Fixtures\Api;
 
 use Retrofit\Attribute\Body;
+use Retrofit\Attribute\Field;
 use Retrofit\Attribute\FormUrlEncoded;
 use Retrofit\Attribute\GET;
 use Retrofit\Attribute\Header;
@@ -71,4 +72,8 @@ interface FullyValidApi
     #[POST('/users/login')]
     #[Multipart]
     public function multipart(#[Path('login')] string $login): Call;
+
+    #[POST('/users')]
+    #[FormUrlEncoded]
+    public function addField(#[Field('x-login')] string $login, #[Field('filters', true)] string $filters): Call;
 }

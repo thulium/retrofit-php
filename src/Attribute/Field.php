@@ -8,8 +8,16 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PARAMETER)]
 readonly class Field
 {
-    public function __construct(private bool $encoded = false)
+    public function __construct(
+        private string $name,
+        private bool $encoded = false
+    )
     {
+    }
+
+    public function name(): string
+    {
+        return $this->name;
     }
 
     public function encoded(): bool

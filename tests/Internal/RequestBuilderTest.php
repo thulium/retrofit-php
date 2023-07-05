@@ -214,6 +214,7 @@ class RequestBuilderTest extends TestCase
         $request = $requestBuilder->build();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['value']]);
     }
+
     #[Test]
     public function shouldAddOverrideDefaultHeaders(): void
     {
@@ -225,5 +226,20 @@ class RequestBuilderTest extends TestCase
         //then
         $request = $requestBuilder->build();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-age' => ['20']]);
+    }
+
+    #[Test]
+    public function shouldAddFormFields(): void
+    {
+        //given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['x-age' => '10']);
+
+        //when
+        $requestBuilder->addFormField('x-name', 'Jon+Doe', false);
+        $requestBuilder->addFormField('filter', 'user+admin', true);
+
+        //then
+        $request = $requestBuilder->build();
+        $this->assertSame('x-name=Jon%2BDoe&filter=user+admin', $request->getBody()->getContents());
     }
 }

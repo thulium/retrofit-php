@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal;
 
+use GuzzleHttp\Psr7\Query;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use JetBrains\PhpStorm\ArrayShape;
@@ -22,6 +23,7 @@ class RequestBuilder
     #[ArrayShape([0 => ['name' => 'string', 'value' => 'string']])]
     private array $pathParameters = [];
     private array $headers = [];
+    private array $fields = [];
 
     /**
      * @param array<string, string> $defaultHeaders
@@ -87,12 +89,21 @@ class RequestBuilder
         $this->headers[$name] = $value;
     }
 
+    public function addFormField(string $name, string $value, bool $encoded): void
+    {
+        if (!$encoded) {
+            $value = rawurlencode($value);
+        }
+        $this->fields[$name] = $value;
+    }
+
     public function build(): RequestInterface
     {
         $this->replacePathParameters();
         $this->initializeQueryString();
+        $body = $this->initializeBody();
 
-        return new Request($this->httpRequest->httpMethod()->value, $this->uri, $this->headers);
+        return new Request($this->httpRequest->httpMethod()->value, $this->uri, $this->headers, $body);
     }
 
     private function replacePathParameters(): void
@@ -118,5 +129,10 @@ class RequestBuilder
             $query = implode('&', $this->queries);
             $this->uri = Strings::isBlank($this->uri->getQuery()) ? $this->uri->withQuery($query) : $this->uri->withQuery("{$query}&{$this->uri->getQuery()}");
         }
+    }
+
+    private function initializeBody(): ?string
+    {
+        return Query::build($this->fields, false);
     }
 }

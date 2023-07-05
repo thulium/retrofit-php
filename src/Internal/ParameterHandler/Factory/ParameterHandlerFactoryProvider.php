@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal\ParameterHandler\Factory;
 
+use Retrofit\Attribute\Field;
 use Retrofit\Attribute\Header;
 use Retrofit\Attribute\HeaderMap;
 use Retrofit\Attribute\Path;
@@ -19,6 +20,7 @@ class ParameterHandlerFactoryProvider
     public function __construct(ConverterProvider $converterProvider)
     {
         $this->attributeNameToFactory = [
+            Field::class => new FieldParameterHandlerFactory($converterProvider),
             Header::class => new HeaderParameterHandlerFactory($converterProvider),
             HeaderMap::class => new HeaderMapParameterHandlerFactory($converterProvider),
             Path::class => new PathParameterHandlerFactory($converterProvider),
