@@ -13,14 +13,14 @@ readonly class Part
     private MimeEncoding $encoding;
 
     public function __construct(
-        private string $name,
+        private ?string $name = null,
         MimeEncoding|string $encoding = MimeEncoding::BINARY
     )
     {
         $this->encoding = is_string($encoding) ? HttpMethod::from($encoding) : $encoding;
     }
 
-    public function name(): string
+    public function name(): ?string
     {
         return $this->name;
     }
