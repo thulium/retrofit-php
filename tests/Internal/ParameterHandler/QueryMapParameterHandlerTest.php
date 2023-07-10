@@ -31,7 +31,7 @@ class QueryMapParameterHandlerTest extends TestCase
     public function shouldSkipWhenValueIsNull(): void
     {
         //given
-        $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryMapParameterHandler->apply($this->requestBuilder, null);
@@ -45,7 +45,7 @@ class QueryMapParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenValueIsNotArray(): void
     {
         //given
-        $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($queryMapParameterHandler)->apply($this->requestBuilder, 'some-string-value');
@@ -60,7 +60,7 @@ class QueryMapParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenKeyInArrayIsNull(): void
     {
         //given
-        $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($queryMapParameterHandler)->apply($this->requestBuilder, [null => 'value']);
@@ -75,7 +75,7 @@ class QueryMapParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenValueInArrayIsNull(): void
     {
         //given
-        $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($queryMapParameterHandler)->apply($this->requestBuilder, ['key' => null]);
@@ -90,7 +90,7 @@ class QueryMapParameterHandlerTest extends TestCase
     public function shouldAddEncodedQueries(): void
     {
         //given
-        $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryMapParameterHandler->apply($this->requestBuilder, ['name' => 'jon+doe', 'age' => 34, 'registered' => false]);
@@ -104,7 +104,7 @@ class QueryMapParameterHandlerTest extends TestCase
     public function shouldAddNotEncodedQueries(): void
     {
         //given
-        $queryMapParameterHandler = new QueryMapParameterHandler(true, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryMapParameterHandler = new QueryMapParameterHandler(true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryMapParameterHandler->apply($this->requestBuilder, ['name' => 'jon+doe', 'age' => 34, 'registered' => false]);

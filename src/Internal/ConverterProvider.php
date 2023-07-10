@@ -8,15 +8,26 @@ use Retrofit\ConverterFactory;
 
 readonly class ConverterProvider
 {
-    /**
-     * @param ConverterFactory[] $converterFactories
-     */
+    /** @param ConverterFactory[] $converterFactories */
     public function __construct(private array $converterFactories)
     {
     }
 
+    public function getRequestBodyConverter(): Converter
+    {
+        foreach ($this->converterFactories as $converterFactory) {
+            $converter = $converterFactory->requestBodyConverter();
+            if (is_null($converter)) {
+                continue;
+            }
+            return $converter;
+        }
+
+        return BuiltInConverters::JsonEncodeRequestBodyConverter();
+    }
+
     public function getStringConverter(): Converter
     {
-        return BuiltInConverters::toStringConverter();
+        return BuiltInConverters::ToStringConverter();
     }
 }

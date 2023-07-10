@@ -26,8 +26,5 @@
         "psr-4": {
             "Retrofit\\Tests\\": "tests/"
         }
-    },
-    "suggest": {
-        "guzzlehttp/guzzle": "Required to make requests"
     }
 }

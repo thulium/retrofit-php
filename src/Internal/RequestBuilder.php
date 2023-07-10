@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal;
 
+use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Query;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
@@ -10,6 +11,7 @@ use JetBrains\PhpStorm\ArrayShape;
 use Ouzo\Utilities\Arrays;
 use Ouzo\Utilities\Strings;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use Retrofit\Attribute\HttpRequest;
 use Retrofit\Internal\Utils\Utils;
@@ -24,6 +26,7 @@ class RequestBuilder
     private array $pathParameters = [];
     private array $headers = [];
     private array $fields = [];
+    private array $parts = [];
 
     /**
      * @param array<string, string> $defaultHeaders
@@ -97,6 +100,16 @@ class RequestBuilder
         $this->fields[$name] = $value;
     }
 
+    public function addPart(string $name, StreamInterface|string $body, array $headers = [], ?string $filename = null): void
+    {
+        $this->parts[] = [
+            'name' => $name,
+            'contents' => $body,
+            'headers' => $headers,
+            'filename' => $filename,
+        ];
+    }
+
     public function build(): RequestInterface
     {
         $this->replacePathParameters();
@@ -131,8 +144,16 @@ class RequestBuilder
         }
     }
 
-    private function initializeBody(): ?string
+    private function initializeBody(): MultipartStream|string|null
     {
-        return Query::build($this->fields, false);
+        if (!empty($this->fields)) {
+            return Query::build($this->fields, false);
+        }
+
+        if (!empty($this->parts)) {
+            return new MultipartStream($this->parts);
+        }
+
+        return null;
     }
 }

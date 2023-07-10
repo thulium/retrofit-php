@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Retrofit\Tests\Internal;
 
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\Utils;
 use Ouzo\Tests\Assert;
 use Ouzo\Tests\CatchException;
 use Ouzo\Tests\Mock\Mock;
@@ -22,10 +23,12 @@ use Retrofit\Internal\ParameterHandler\Factory\ParameterHandlerFactoryProvider;
 use Retrofit\Internal\ParameterHandler\ParameterHandler;
 use Retrofit\Internal\Proxy\DefaultProxyFactory;
 use Retrofit\Internal\ServiceMethodFactory;
+use Retrofit\Multipart\MultipartBody;
 use Retrofit\Retrofit;
 use Retrofit\Tests\Fixtures\Api\AllHttpRequestMethods;
 use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 use Retrofit\Tests\Fixtures\Api\InvalidMethods;
+use Retrofit\Tests\Fixtures\Model\UserRequest;
 use RuntimeException;
 
 class ServiceMethodFactoryTest extends TestCase
@@ -367,5 +370,36 @@ class ServiceMethodFactoryTest extends TestCase
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::multipartDoesNotHaveAtLeastOnePartAttribute(). #[Multipart] method must contain at least one #[Part] or #[PartMap].');
+    }
+
+    #[Test]
+    public function shouldAddPart(): void
+    {
+        //given
+        $string = 'some-string';
+        $userRequest = (new UserRequest())
+            ->setLogin('jon-doe');
+        $partInterface = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor(fopen('/tmp/image.png', 'r')), [], 'image.png');
+        $streamInterface = Utils::streamFor(fopen('/tmp/image.png', 'r'));
+
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addPart');
+
+        //then
+        $request = $serviceMethod->invoke([$string, $userRequest, $partInterface, $streamInterface])->request();
+
+        $contents = $request->getBody()->getContents();
+
+        $part1 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"string\"\r\nContent-Length: 13\r\n\r\n\"some-string\"";
+        $this->assertStringContainsString($part1, $contents);
+
+        $part2 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"userRequest\"\r\nContent-Length: 19\r\n\r\n{\"login\":\"jon-doe\"}\r\n";
+        $this->assertStringContainsString($part2, $contents);
+
+        $part3 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Type: image/png\r\n\r\n\r\n";
+        $this->assertStringContainsString($part3, $contents);
+
+        $part4 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"stream\"\r\nContent-Length: 2\r\n\r\n{}\r\n";
+        $this->assertStringContainsString($part4, $contents);
     }
 }

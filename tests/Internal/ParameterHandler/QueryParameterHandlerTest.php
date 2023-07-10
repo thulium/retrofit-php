@@ -32,7 +32,7 @@ class QueryParameterHandlerTest extends TestCase
     public function shouldSkipNullValues(): void
     {
         //given
-        $queryParameterHandler = new QueryParameterHandler('group', false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryParameterHandler = new QueryParameterHandler('group', false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryParameterHandler->apply($this->requestBuilder, null);
@@ -46,7 +46,7 @@ class QueryParameterHandlerTest extends TestCase
     public function shouldAddQueryParam(): void
     {
         //given
-        $queryParameterHandler = new QueryParameterHandler('group', false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryParameterHandler = new QueryParameterHandler('group', false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryParameterHandler->apply($this->requestBuilder, 'new+users');
@@ -60,7 +60,7 @@ class QueryParameterHandlerTest extends TestCase
     public function shouldAddEncodedQueryParam(): void
     {
         //given
-        $queryParameterHandler = new QueryParameterHandler('group', true, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryParameterHandler = new QueryParameterHandler('group', true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryParameterHandler->apply($this->requestBuilder, 'new+users');
@@ -74,7 +74,7 @@ class QueryParameterHandlerTest extends TestCase
     public function shouldAddArrayOfQueryParams(): void
     {
         //given
-        $queryParameterHandler = new QueryParameterHandler('groups', false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryParameterHandler = new QueryParameterHandler('groups', false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryParameterHandler->apply($this->requestBuilder, ['new+users', 'old']);
@@ -88,7 +88,7 @@ class QueryParameterHandlerTest extends TestCase
     public function shouldAddEncodedArrayOfQueryParams(): void
     {
         //given
-        $queryParameterHandler = new QueryParameterHandler('groups', true, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryParameterHandler = new QueryParameterHandler('groups', true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryParameterHandler->apply($this->requestBuilder, ['new+users', 'old']);
@@ -102,7 +102,7 @@ class QueryParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenPassedArrayIsNotAList(): void
     {
         //given
-        $queryParameterHandler = new QueryParameterHandler('groups', true, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryParameterHandler = new QueryParameterHandler('groups', true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($queryParameterHandler)->apply($this->requestBuilder, ['key1' => 'new+users', 'old']);
@@ -117,7 +117,7 @@ class QueryParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenPassedArrayHasObject(): void
     {
         //given
-        $queryParameterHandler = new QueryParameterHandler('groups', true, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryParameterHandler = new QueryParameterHandler('groups', true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         $stdClass = new stdClass();
 

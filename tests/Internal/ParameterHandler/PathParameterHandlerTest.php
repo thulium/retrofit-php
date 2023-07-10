@@ -31,7 +31,7 @@ class PathParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenValueIsNull(): void
     {
         //given
-        $pathParameterHandler = new PathParameterHandler('login', false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $pathParameterHandler = new PathParameterHandler('login', false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($pathParameterHandler)->apply($this->requestBuilder, null);
@@ -46,7 +46,7 @@ class PathParameterHandlerTest extends TestCase
     public function shouldReplaceNotEncodedValue(): void
     {
         //given
-        $pathParameterHandler = new PathParameterHandler('login', false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $pathParameterHandler = new PathParameterHandler('login', false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $pathParameterHandler->apply($this->requestBuilder, 'Jon+Doe');
@@ -60,7 +60,7 @@ class PathParameterHandlerTest extends TestCase
     public function shouldReplaceEncodedValue(): void
     {
         //given
-        $pathParameterHandler = new PathParameterHandler('login', true, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $pathParameterHandler = new PathParameterHandler('login', true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $pathParameterHandler->apply($this->requestBuilder, 'Jon+Doe');

@@ -29,7 +29,7 @@ class FieldParameterHandlerTest extends TestCase
     public function shouldSkipNullValues(): void
     {
         //given
-        $fieldParameterHandler = new FieldParameterHandler('name', false, BuiltInConverters::toStringConverter());
+        $fieldParameterHandler = new FieldParameterHandler('name', false, BuiltInConverters::ToStringConverter());
 
         //when
         $fieldParameterHandler->apply($this->requestBuilder, null);
@@ -43,7 +43,7 @@ class FieldParameterHandlerTest extends TestCase
     public function shouldAddNotEncodedFormField(): void
     {
         //given
-        $fieldParameterHandler = new FieldParameterHandler('name', false, BuiltInConverters::toStringConverter());
+        $fieldParameterHandler = new FieldParameterHandler('name', false, BuiltInConverters::ToStringConverter());
 
         //when
         $fieldParameterHandler->apply($this->requestBuilder, 'jon+doe');
@@ -58,7 +58,7 @@ class FieldParameterHandlerTest extends TestCase
     public function shouldAddEncodedFormField(): void
     {
         //given
-        $fieldParameterHandler = new FieldParameterHandler('name', true, BuiltInConverters::toStringConverter());
+        $fieldParameterHandler = new FieldParameterHandler('name', true, BuiltInConverters::ToStringConverter());
 
         //when
         $fieldParameterHandler->apply($this->requestBuilder, 'jon+doe');

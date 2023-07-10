@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Fixtures\Model;
 
-class UserRequest
+use JsonSerializable;
+
+class UserRequest implements JsonSerializable
 {
     private string $login;
 
@@ -16,5 +18,12 @@ class UserRequest
     {
         $this->login = $login;
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'login' => $this->login,
+        ];
     }
 }

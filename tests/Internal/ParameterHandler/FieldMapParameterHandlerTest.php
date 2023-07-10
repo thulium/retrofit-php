@@ -31,7 +31,7 @@ class FieldMapParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenValueIsNull(): void
     {
         //given
-        $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($fieldMapParameterHandler)->apply($this->requestBuilder, null);
@@ -46,7 +46,7 @@ class FieldMapParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenValueIsNotArray(): void
     {
         //given
-        $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($fieldMapParameterHandler)->apply($this->requestBuilder, 'some-string-value');
@@ -61,7 +61,7 @@ class FieldMapParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenKeyInArrayIsNull(): void
     {
         //given
-        $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($fieldMapParameterHandler)->apply($this->requestBuilder, [null => 'value']);
@@ -76,7 +76,7 @@ class FieldMapParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenValueInArrayIsNull(): void
     {
         //given
-        $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($fieldMapParameterHandler)->apply($this->requestBuilder, ['key' => null]);
@@ -91,7 +91,7 @@ class FieldMapParameterHandlerTest extends TestCase
     public function shouldAddFormFields(): void
     {
         //given
-        $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $fieldMapParameterHandler->apply($this->requestBuilder, ['x-custom' => 'jon+doe', 'x-age' => 34]);

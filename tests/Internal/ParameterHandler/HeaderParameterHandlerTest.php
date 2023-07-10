@@ -26,7 +26,7 @@ class HeaderParameterHandlerTest extends TestCase
     public function shouldSkipNullValues(): void
     {
         //given
-        $headerParameterHandler = new HeaderParameterHandler('x-custom', BuiltInConverters::toStringConverter());
+        $headerParameterHandler = new HeaderParameterHandler('x-custom', BuiltInConverters::ToStringConverter());
 
         //when
         $headerParameterHandler->apply($this->requestBuilder, null);
@@ -40,7 +40,7 @@ class HeaderParameterHandlerTest extends TestCase
     public function shouldAddHeader(): void
     {
         //given
-        $headerParameterHandler = new HeaderParameterHandler('x-custom', BuiltInConverters::toStringConverter());
+        $headerParameterHandler = new HeaderParameterHandler('x-custom', BuiltInConverters::ToStringConverter());
 
         //when
         $headerParameterHandler->apply($this->requestBuilder, 'value');

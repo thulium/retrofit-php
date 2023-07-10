@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Fixtures\Api;
 
+use Psr\Http\Message\StreamInterface;
 use Retrofit\Attribute\Body;
 use Retrofit\Attribute\Field;
 use Retrofit\Attribute\FieldMap;
@@ -20,6 +21,7 @@ use Retrofit\Attribute\QueryMap;
 use Retrofit\Attribute\QueryName;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
+use Retrofit\Multipart\PartInterface;
 use Retrofit\Tests\Fixtures\Model\UserRequest;
 
 interface FullyValidApi
@@ -82,4 +84,13 @@ interface FullyValidApi
     #[POST('/users')]
     #[FormUrlEncoded]
     public function addFieldMap(#[FieldMap(true)] array $fields): Call;
+
+    #[POST('/users')]
+    #[Multipart]
+    public function addPart(
+        #[Part('string')] string $p1,
+        #[Part('userRequest')] UserRequest $p2,
+        #[Part] PartInterface $p3,
+        #[Part('stream')] StreamInterface $p4
+    ): Call;
 }

@@ -32,7 +32,7 @@ class HeaderMapParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenValueIsNull(): void
     {
         //given
-        $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($headerMapParameterHandler)->apply($this->requestBuilder, null);
@@ -47,7 +47,7 @@ class HeaderMapParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenValueIsNotArray(): void
     {
         //given
-        $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($headerMapParameterHandler)->apply($this->requestBuilder, 'some-string-value');
@@ -62,7 +62,7 @@ class HeaderMapParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenKeyInArrayIsNull(): void
     {
         //given
-        $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($headerMapParameterHandler)->apply($this->requestBuilder, [null => 'value']);
@@ -77,7 +77,7 @@ class HeaderMapParameterHandlerTest extends TestCase
     public function shouldThrowExceptionWhenValueInArrayIsNull(): void
     {
         //given
-        $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         CatchException::when($headerMapParameterHandler)->apply($this->requestBuilder, ['key' => null]);
@@ -92,7 +92,7 @@ class HeaderMapParameterHandlerTest extends TestCase
     public function shouldAddHeaders(): void
     {
         //given
-        $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $headerMapParameterHandler->apply($this->requestBuilder, ['x-custom' => 'jon+doe', 'x-age' => 34, 'Content-Type' => 'application/json']);

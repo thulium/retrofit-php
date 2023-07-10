@@ -10,7 +10,7 @@ readonly class BuiltInConverterFactory implements ConverterFactory
 {
     public function requestBodyConverter(): ?Converter
     {
-        return null;
+        return BuiltInConverters::JsonEncodeRequestBodyConverter();
     }
 
     public function responseBodyConverter(): ?Converter
@@ -20,6 +20,6 @@ readonly class BuiltInConverterFactory implements ConverterFactory
 
     public function stringConverter(): ?Converter
     {
-        return BuiltInConverters::toStringConverter();
+        return BuiltInConverters::ToStringConverter();
     }
 }

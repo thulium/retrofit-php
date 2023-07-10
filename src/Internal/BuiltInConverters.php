@@ -7,7 +7,17 @@ use Retrofit\Converter;
 
 readonly class BuiltInConverters
 {
-    public static function toStringConverter(): Converter
+    public static function JsonEncodeRequestBodyConverter(): Converter
+    {
+        return new class implements Converter {
+            public function convert(mixed $value): string
+            {
+                return json_encode($value);
+            }
+        };
+    }
+
+    public static function ToStringConverter(): Converter
     {
         return new class implements Converter {
             public function convert(mixed $value): string

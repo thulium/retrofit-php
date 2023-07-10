@@ -29,7 +29,7 @@ class QueryNameParameterHandlerTest extends TestCase
     public function shouldSkipNullValues(): void
     {
         //given
-        $queryParameterHandler = new QueryNameParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryParameterHandler = new QueryNameParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryParameterHandler->apply($this->requestBuilder, null);
@@ -43,7 +43,7 @@ class QueryNameParameterHandlerTest extends TestCase
     public function shouldAddEncodedQueryName(): void
     {
         //given
-        $queryNameParameterHandler = new QueryNameParameterHandler(true, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryNameParameterHandler = new QueryNameParameterHandler(true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryNameParameterHandler->apply($this->requestBuilder, 'contains(Bob)');
@@ -57,7 +57,7 @@ class QueryNameParameterHandlerTest extends TestCase
     public function shouldAddArrayOfEncodedQueryName(): void
     {
         //given
-        $queryNameParameterHandler = new QueryNameParameterHandler(true, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryNameParameterHandler = new QueryNameParameterHandler(true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryNameParameterHandler->apply($this->requestBuilder, ['contains(Bob)', 'age(20)']);
@@ -71,7 +71,7 @@ class QueryNameParameterHandlerTest extends TestCase
     public function shouldAddQueryName(): void
     {
         //given
-        $queryNameParameterHandler = new QueryNameParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryNameParameterHandler = new QueryNameParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryNameParameterHandler->apply($this->requestBuilder, 'contains(Bob)');
@@ -85,7 +85,7 @@ class QueryNameParameterHandlerTest extends TestCase
     public function shouldAddArrayOfQueryName(): void
     {
         //given
-        $queryNameParameterHandler = new QueryNameParameterHandler(false, BuiltInConverters::toStringConverter(), $this->reflectionMethod, 0);
+        $queryNameParameterHandler = new QueryNameParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         //when
         $queryNameParameterHandler->apply($this->requestBuilder, ['contains(Bob)', 'age(20)']);

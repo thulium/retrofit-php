@@ -4,11 +4,14 @@ declare(strict_types=1);
 namespace Retrofit\Tests\Internal;
 
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\Utils;
 use Ouzo\Tests\Assert;
 use Ouzo\Tests\CatchException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\StreamInterface;
 use Retrofit\Attribute\GET;
 use Retrofit\Attribute\POST;
 use Retrofit\Internal\RequestBuilder;
@@ -241,5 +244,73 @@ class RequestBuilderTest extends TestCase
         //then
         $request = $requestBuilder->build();
         $this->assertSame('x-name=Jon%2BDoe&filter=user+admin', $request->getBody()->getContents());
+    }
+
+    #[Test]
+    #[DataProvider('multipartProvider')]
+    public function shouldAddPart(string $name, StreamInterface|string $body, array $headers, ?string $filename, array $expectedLines): void
+    {
+        //given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['x-age' => '10']);
+
+        //when
+        $requestBuilder->addPart($name, $body, $headers, $filename);
+
+        //then
+        $request = $requestBuilder->build();
+        $contents = $request->getBody()->getContents();
+        foreach ($expectedLines as $expectedLine) {
+            $this->assertStringContainsString($expectedLine, $contents);
+        }
+    }
+
+    public static function multipartProvider(): array
+    {
+        $dir = __DIR__;
+        $streamInterface = Utils::streamFor(fopen("{$dir}/../Fixtures/file/sample-image.jpg", 'r'));
+        return [
+            [
+                'part-string',
+                'some-string-value',
+                [
+                    'Content-Transfer-Encoding' => '8-bit',
+                ],
+                null,
+                [
+                    'Content-Transfer-Encoding: 8-bit',
+                    'Content-Disposition: form-data; name="part-string"',
+                    'Content-Length: 17',
+                    'some-string-value',
+                ],
+            ],
+            [
+                'part-stream-interface',
+                $streamInterface,
+                [
+                    'Content-Transfer-Encoding' => 'binary',
+                ],
+                null,
+                [
+                    'Content-Transfer-Encoding: binary',
+                    'Content-Disposition: form-data; name="part-stream-interface"; filename="sample-image.jpg"',
+                    'Content-Length: 9155',
+                    'Content-Type: image/jpeg',
+                ],
+            ],
+            [
+                'part-with-custom-filename',
+                $streamInterface,
+                [
+                    'Content-Transfer-Encoding' => 'binary',
+                ],
+                'custom-filename.jpg',
+                [
+                    'Content-Transfer-Encoding: binary',
+                    'Content-Disposition: form-data; name="part-with-custom-filename"; filename="custom-filename.jpg"',
+                    'Content-Length: 9155',
+                    'Content-Type: image/jpeg',
+                ],
+            ],
+        ];
     }
 }

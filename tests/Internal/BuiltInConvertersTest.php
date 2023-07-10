@@ -17,7 +17,7 @@ class BuiltInConvertersTest extends TestCase
     public function toStringConverterShouldConvertNullToEmptyString(): void
     {
         //given
-        $converter = BuiltInConverters::toStringConverter();
+        $converter = BuiltInConverters::ToStringConverter();
 
         //when
         $value = $converter->convert(null);
@@ -32,7 +32,7 @@ class BuiltInConvertersTest extends TestCase
     public function toStringConverterShouldConvertBoolToString(bool $bool, string $string): void
     {
         //given
-        $converter = BuiltInConverters::toStringConverter();
+        $converter = BuiltInConverters::ToStringConverter();
 
         //when
         $value = $converter->convert($bool);
@@ -45,7 +45,7 @@ class BuiltInConvertersTest extends TestCase
     public function toStringConverterShouldConvertArrayToSerializedValue(): void
     {
         //given
-        $converter = BuiltInConverters::toStringConverter();
+        $converter = BuiltInConverters::ToStringConverter();
 
         $array = ['one', 'two', 'three'];
 
@@ -61,7 +61,7 @@ class BuiltInConvertersTest extends TestCase
     public function toStringConverterShouldConvertStdObjectToSerializedValue(): void
     {
         //given
-        $converter = BuiltInConverters::toStringConverter();
+        $converter = BuiltInConverters::ToStringConverter();
 
         $obj = new stdClass();
         $obj->one = 'value for one';
@@ -79,7 +79,7 @@ class BuiltInConvertersTest extends TestCase
     public function toStringConverterShouldConvertCustomObjectToSerializedValue(): void
     {
         //given
-        $converter = BuiltInConverters::toStringConverter();
+        $converter = BuiltInConverters::ToStringConverter();
 
         $userRequest = (new UserRequest())
             ->setLogin('jon_doe');
