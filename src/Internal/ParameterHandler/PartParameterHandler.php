@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal\ParameterHandler;
 
-use Ouzo\Utilities\Arrays;
 use Ouzo\Utilities\Strings;
 use ReflectionMethod;
 use Retrofit\Converter;
@@ -14,7 +13,7 @@ use Retrofit\Multipart\PartInterface;
 
 readonly class PartParameterHandler implements ParameterHandler
 {
-    private const CONTENT_TRANSFER_ENCODING_HEADER = 'Content-Transfer-Encoding';
+    use WithPartInterfaceHandle;
 
     public function __construct(
         private ?string $name,
@@ -43,12 +42,7 @@ readonly class PartParameterHandler implements ParameterHandler
         }
 
         if ($value instanceof PartInterface) {
-            $headers = $value->getHeaders();
-            $headerNames = Arrays::mapKeys($headers, fn(string $key): string => strtolower($key));
-            if (!in_array(strtolower(self::CONTENT_TRANSFER_ENCODING_HEADER), $headerNames)) {
-                $headers[self::CONTENT_TRANSFER_ENCODING_HEADER] = $this->encoding->value;
-            }
-            $requestBuilder->addPart($value->getName(), $value->getBody(), $headers, $value->getFilename());
+            $this->handle($requestBuilder, $value);
             return;
         }
 

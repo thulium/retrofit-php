@@ -27,7 +27,7 @@ readonly class FieldMapParameterHandler implements ParameterHandler
             throw Utils::parameterException($this->reflectionMethod, $this->position, 'Field map was null.');
         }
 
-        $this->validateAndApply($value, 'Field', function (string|array $entryKey, string|array|null $entryValue) use ($requestBuilder): void {
+        $this->validateAndApply($value, 'Field', $this->converter, function (string $entryKey, string|array|null $entryValue) use ($requestBuilder): void {
             $requestBuilder->addFormField($entryKey, $entryValue, $this->encoded);
         });
     }

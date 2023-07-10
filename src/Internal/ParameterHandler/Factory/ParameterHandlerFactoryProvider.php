@@ -8,6 +8,7 @@ use Retrofit\Attribute\FieldMap;
 use Retrofit\Attribute\Header;
 use Retrofit\Attribute\HeaderMap;
 use Retrofit\Attribute\Part;
+use Retrofit\Attribute\PartMap;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\Query;
 use Retrofit\Attribute\QueryMap;
@@ -27,6 +28,7 @@ class ParameterHandlerFactoryProvider
             Header::class => new HeaderParameterHandlerFactory($converterProvider),
             HeaderMap::class => new HeaderMapParameterHandlerFactory($converterProvider),
             Part::class => new PartParameterHandlerFactory($converterProvider),
+            PartMap::class => new PartMapParameterHandlerFactory($converterProvider),
             Path::class => new PathParameterHandlerFactory($converterProvider),
             Query::class => new QueryParameterHandlerFactory($converterProvider),
             QueryMap::class => new QueryMapParameterHandlerFactory($converterProvider),

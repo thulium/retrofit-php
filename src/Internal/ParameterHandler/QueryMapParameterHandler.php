@@ -26,7 +26,7 @@ readonly class QueryMapParameterHandler implements ParameterHandler
             return;
         }
 
-        $this->validateAndApply($value, 'Query', function (string|array $entryKey, string|array|null $entryValue) use ($requestBuilder): void {
+        $this->validateAndApply($value, 'Query', $this->converter, function (string|array $entryKey, string|array|null $entryValue) use ($requestBuilder): void {
             $requestBuilder->addQueryParam($entryKey, $entryValue, $this->encoded);
         });
     }

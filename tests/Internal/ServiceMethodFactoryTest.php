@@ -402,4 +402,28 @@ class ServiceMethodFactoryTest extends TestCase
         $part4 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"stream\"\r\nContent-Length: 2\r\n\r\n{}\r\n";
         $this->assertStringContainsString($part4, $contents);
     }
+
+    #[Test]
+    public function shouldAddPartMap(): void
+    {
+        //given
+        $part1 = (new UserRequest())
+            ->setLogin('jon-doe');
+
+        $part2 = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor(fopen('/tmp/image.png', 'r')), [], 'image.png');
+
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addPartMap');
+
+        //then
+        $request = $serviceMethod->invoke([['part1' => $part1, 'part2' => $part2]])->request();
+
+        $contents = $request->getBody()->getContents();
+
+        $expectedPart1 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part1\"\r\nContent-Length: 19\r\n\r\n{\"login\":\"jon-doe\"}";
+        $this->assertStringContainsString($expectedPart1, $contents);
+
+        $expectedPart2 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Type: image/png\r\n\r\n";
+        $this->assertStringContainsString($expectedPart2, $contents);
+    }
 }

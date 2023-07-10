@@ -5,11 +5,12 @@ namespace Retrofit\Internal\ParameterHandler;
 
 use Closure;
 use Ouzo\Utilities\Strings;
+use Retrofit\Converter;
 use Retrofit\Internal\Utils\Utils;
 
 trait WithMapParameter
 {
-    protected function validateAndApply(mixed $value, string $context, Closure $apply): void
+    protected function validateAndApply(mixed $value, string $context, Converter $converter, Closure $apply): void
     {
         if (!is_array($value)) {
             throw Utils::parameterException($this->reflectionMethod, $this->position, 'Parameter should be an array.');
@@ -25,9 +26,10 @@ trait WithMapParameter
                     "{$context} map contained null value for key '{$entryKey}'.");
             }
 
-            $entryValue = $this->converter->convert($entryValue);
+            $originalValue = $entryValue;
+            $entryValue = $converter->convert($entryValue);
 
-            $apply($entryKey, $entryValue);
+            $apply($entryKey, $entryValue, $originalValue);
         }
     }
 }

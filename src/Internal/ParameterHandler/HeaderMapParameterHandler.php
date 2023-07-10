@@ -26,7 +26,7 @@ readonly class HeaderMapParameterHandler implements ParameterHandler
             throw Utils::parameterException($this->reflectionMethod, $this->position, 'Header map was null.');
         }
 
-        $this->validateAndApply($value, 'Header', function (string|array $entryKey, string|array|null $entryValue) use ($requestBuilder): void {
+        $this->validateAndApply($value, 'Header', $this->converter, function (string $entryKey, string|array|null $entryValue) use ($requestBuilder): void {
             $requestBuilder->addHeader($entryKey, $entryValue);
         });
     }

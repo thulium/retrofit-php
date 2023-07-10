@@ -10,6 +10,7 @@ use Retrofit\Attribute\Header;
 use Retrofit\Attribute\HeaderMap;
 use Retrofit\Attribute\HttpRequest;
 use Retrofit\Attribute\Part;
+use Retrofit\Attribute\PartMap;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\Query;
 use Retrofit\Attribute\QueryMap;
@@ -26,7 +27,7 @@ readonly abstract class AbstractParameterHandlerFactory
     }
 
     abstract public function create(
-        Field & FieldMap & Header & HeaderMap & Part & Path & Query & QueryMap & QueryName & Url $param,
+        Field & FieldMap & Header & HeaderMap & Part & PartMap & Path & Query & QueryMap & QueryName & Url $param,
         HttpRequest $httpRequest,
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,

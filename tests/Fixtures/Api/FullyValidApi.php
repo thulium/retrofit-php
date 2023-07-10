@@ -14,6 +14,7 @@ use Retrofit\Attribute\HeaderMap;
 use Retrofit\Attribute\Headers;
 use Retrofit\Attribute\Multipart;
 use Retrofit\Attribute\Part;
+use Retrofit\Attribute\PartMap;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\POST;
 use Retrofit\Attribute\Query;
@@ -93,4 +94,8 @@ interface FullyValidApi
         #[Part] PartInterface $p3,
         #[Part('stream')] StreamInterface $p4
     ): Call;
+
+    #[POST('/users')]
+    #[Multipart]
+    public function addPartMap(#[PartMap] array $partMap): Call;
 }
