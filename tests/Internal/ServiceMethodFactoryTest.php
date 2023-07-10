@@ -29,10 +29,13 @@ use Retrofit\Tests\Fixtures\Api\AllHttpRequestMethods;
 use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 use Retrofit\Tests\Fixtures\Api\InvalidMethods;
 use Retrofit\Tests\Fixtures\Model\UserRequest;
+use Retrofit\Tests\WithFixtureFile;
 use RuntimeException;
 
 class ServiceMethodFactoryTest extends TestCase
 {
+    use WithFixtureFile;
+
     private Retrofit $retrofit;
     private ParameterHandlerFactoryProvider|MockInterface $parameterHandlerFactoryProvider;
     private ServiceMethodFactory $serviceMethodFactory;
@@ -376,11 +379,13 @@ class ServiceMethodFactoryTest extends TestCase
     public function shouldAddPart(): void
     {
         //given
+        $fileResource = $this->getFileResource('sample-image.jpg');
+
         $string = 'some-string';
         $userRequest = (new UserRequest())
             ->setLogin('jon-doe');
-        $partInterface = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor(fopen('/tmp/image.png', 'r')), [], 'image.png');
-        $streamInterface = Utils::streamFor(fopen('/tmp/image.png', 'r'));
+        $partInterface = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor($fileResource), [], 'image.png');
+        $streamInterface = Utils::streamFor($fileResource);
 
         //when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addPart');
@@ -396,9 +401,10 @@ class ServiceMethodFactoryTest extends TestCase
         $part2 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"userRequest\"\r\nContent-Length: 19\r\n\r\n{\"login\":\"jon-doe\"}\r\n";
         $this->assertStringContainsString($part2, $contents);
 
-        $part3 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Type: image/png\r\n\r\n\r\n";
+        $part3 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Length: 9155\r\nContent-Type: image/png\r\n\r\n";
         $this->assertStringContainsString($part3, $contents);
 
+        //todo this not working
         $part4 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"stream\"\r\nContent-Length: 2\r\n\r\n{}\r\n";
         $this->assertStringContainsString($part4, $contents);
     }

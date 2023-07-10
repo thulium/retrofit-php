@@ -17,10 +17,13 @@ use Retrofit\MimeEncoding;
 use Retrofit\Multipart\MultipartBody;
 use Retrofit\Tests\Fixtures\Api\MockMethod;
 use Retrofit\Tests\Fixtures\Model\UserRequest;
+use Retrofit\Tests\WithFixtureFile;
 use RuntimeException;
 
 class PartMapParameterHandlerTest extends TestCase
 {
+    use WithFixtureFile;
+
     private RequestBuilder $requestBuilder;
     private ReflectionMethod $reflectionMethod;
 
@@ -95,11 +98,13 @@ class PartMapParameterHandlerTest extends TestCase
     public function shouldAddPart(): void
     {
         //given
+        $fileResource = $this->getFileResource('sample-image.jpg');
+
         $partMapParameterHandler = new PartMapParameterHandler(MimeEncoding::BINARY, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
         $part1 = (new UserRequest())
             ->setLogin('jon-doe');
 
-        $part2 = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor(fopen('/tmp/image.png', 'r')), [], 'image.png');
+        $part2 = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor($fileResource), [], 'image.png');
 
         //when
         $partMapParameterHandler->apply($this->requestBuilder, ['part1' => $part1, 'part2' => $part2]);
@@ -111,7 +116,7 @@ class PartMapParameterHandlerTest extends TestCase
         $expectedPart1 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part1\"\r\nContent-Length: 19\r\n\r\n{\"login\":\"jon-doe\"}";
         $this->assertStringContainsString($expectedPart1, $contents);
 
-        $expectedPart2 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Type: image/png\r\n\r\n";
+        $expectedPart2 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Length: 9155\r\nContent-Type: image/png\r\n\r\n";
         $this->assertStringContainsString($expectedPart2, $contents);
     }
 }
