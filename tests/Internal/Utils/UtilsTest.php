@@ -6,6 +6,7 @@ namespace Retrofit\Tests\Internal\Utils;
 use Ouzo\Tests\Assert;
 use Ouzo\Utilities\Strings;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\IgnoreMethodForCodeCoverage;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -14,6 +15,7 @@ use ReflectionParameter;
 use Retrofit\Internal\Utils\Utils;
 use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 
+#[IgnoreMethodForCodeCoverage(Utils::class, '__construct')]
 class UtilsTest extends TestCase
 {
     #[Test]
