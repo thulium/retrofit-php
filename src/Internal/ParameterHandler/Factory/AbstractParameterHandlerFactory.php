@@ -19,6 +19,7 @@ use Retrofit\Attribute\Url;
 use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\Encoding;
 use Retrofit\Internal\ParameterHandler\ParameterHandler;
+use Retrofit\Type;
 
 readonly abstract class AbstractParameterHandlerFactory
 {
@@ -31,6 +32,7 @@ readonly abstract class AbstractParameterHandlerFactory
         HttpRequest $httpRequest,
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,
-        int $position
+        int $position,
+        Type $type
     ): ParameterHandler;
 }

@@ -28,8 +28,10 @@ use Retrofit\Retrofit;
 use Retrofit\Tests\Fixtures\Api\AllHttpRequestMethods;
 use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 use Retrofit\Tests\Fixtures\Api\InvalidMethods;
+use Retrofit\Tests\Fixtures\Api\TypeResolverApi;
 use Retrofit\Tests\Fixtures\Model\UserRequest;
 use Retrofit\Tests\WithFixtureFile;
+use Retrofit\Type;
 use RuntimeException;
 
 class ServiceMethodFactoryTest extends TestCase
@@ -264,7 +266,7 @@ class ServiceMethodFactoryTest extends TestCase
         $serviceMethodFactory->create(FullyValidApi::class, 'addHeader');
 
         //then
-        Mock::verify($factory)->create(Mock::any(), Mock::any(), null, Mock::any(), Mock::any());
+        Mock::verify($factory)->create(Mock::any(), Mock::any(), null, Mock::any(), Mock::any(), Mock::any());
     }
 
     #[Test]
@@ -283,7 +285,7 @@ class ServiceMethodFactoryTest extends TestCase
         $serviceMethodFactory->create(FullyValidApi::class, 'formUrlEncoded');
 
         //then
-        Mock::verify($factory)->create(Mock::any(), Mock::any(), Encoding::FORM_URL_ENCODED, Mock::any(), Mock::any());
+        Mock::verify($factory)->create(Mock::any(), Mock::any(), Encoding::FORM_URL_ENCODED, Mock::any(), Mock::any(), Mock::any());
     }
 
     #[Test]
@@ -302,7 +304,7 @@ class ServiceMethodFactoryTest extends TestCase
         $serviceMethodFactory->create(FullyValidApi::class, 'multipart');
 
         //then
-        Mock::verify($factory)->create(Mock::any(), Mock::any(), Encoding::MULTIPART, Mock::any(), Mock::any());
+        Mock::verify($factory)->create(Mock::any(), Mock::any(), Encoding::MULTIPART, Mock::any(), Mock::any(), Mock::any());
     }
 
     #[Test]
@@ -431,5 +433,72 @@ class ServiceMethodFactoryTest extends TestCase
 
         $expectedPart2 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Type: image/png\r\n\r\n";
         $this->assertStringContainsString($expectedPart2, $contents);
+    }
+
+    #[Test]
+    public function shouldThrowExceptionWhenParameterDoesNotHaveType(): void
+    {
+        //when
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'parameterWithoutType');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::parameterWithoutType() parameter #1. Type is required.');
+    }
+
+    #[Test]
+    public function shouldThrowExceptionWhenNotFoundRetrofitAttributesForParameter(): void
+    {
+        //when
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'parameterWithoutAttribute');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::parameterWithoutAttribute() parameter #1. No Retrofit attribute found.');
+    }
+
+    #[Test]
+    public function shouldHandleScalarTypes(): void
+    {
+        //given
+        $factory = Mock::create(AbstractParameterHandlerFactory::class);
+        Mock::when($factory)->create(Mock::anyArgList())->thenReturn(Mock::create(ParameterHandler::class));
+
+        $this->parameterHandlerFactoryProvider = Mock::create(ParameterHandlerFactoryProvider::class);
+        Mock::when($this->parameterHandlerFactoryProvider)->get(Mock::anyArgList())->thenReturn($factory);
+
+        $serviceMethodFactory = new ServiceMethodFactory($this->retrofit, $this->parameterHandlerFactoryProvider);
+
+        //when
+        $serviceMethodFactory->create(TypeResolverApi::class, 'scalarTypes');
+
+        //then
+        Mock::verify($factory)->create(Mock::any(), Mock::any(), Mock::any(), Mock::any(), Mock::any(), new Type('bool'));
+        Mock::verify($factory)->create(Mock::any(), Mock::any(), Mock::any(), Mock::any(), Mock::any(), new Type('float'));
+        Mock::verify($factory)->create(Mock::any(), Mock::any(), Mock::any(), Mock::any(), Mock::any(), new Type('int'));
+        Mock::verify($factory)->create(Mock::any(), Mock::any(), Mock::any(), Mock::any(), Mock::any(), new Type('mixed'));
+        Mock::verify($factory)->create(Mock::any(), Mock::any(), Mock::any(), Mock::any(), Mock::any(), new Type('string'));
+    }
+
+    #[Test]
+    public function shouldHandleArrayOfCustomClass(): void
+    {
+        //given
+        $factory = Mock::create(AbstractParameterHandlerFactory::class);
+        Mock::when($factory)->create(Mock::anyArgList())->thenReturn(Mock::create(ParameterHandler::class));
+
+        $this->parameterHandlerFactoryProvider = Mock::create(ParameterHandlerFactoryProvider::class);
+        Mock::when($this->parameterHandlerFactoryProvider)->get(Mock::anyArgList())->thenReturn($factory);
+
+        $serviceMethodFactory = new ServiceMethodFactory($this->retrofit, $this->parameterHandlerFactoryProvider);
+
+        //when
+        $serviceMethodFactory->create(TypeResolverApi::class, 'arrayOfCustomClass');
+
+        //then
+        $type = new Type('array', \Retrofit\Internal\Utils\Utils::toFQCN(UserRequest::class));
+        Mock::verify($factory)->create(Mock::any(), Mock::any(), Mock::any(), Mock::any(), Mock::any(), $type);
     }
 }

@@ -16,6 +16,7 @@ use Retrofit\Internal\Encoding;
 use Retrofit\Internal\ParameterHandler\Factory\PartMapParameterHandlerFactory;
 use Retrofit\Internal\ParameterHandler\PartMapParameterHandler;
 use Retrofit\Tests\Fixtures\Api\MockMethod;
+use Retrofit\Type;
 use RuntimeException;
 
 class PartMapParameterHandlerFactoryTest extends TestCase
@@ -39,7 +40,8 @@ class PartMapParameterHandlerFactoryTest extends TestCase
         $partMapParameterHandlerFactory = new PartMapParameterHandlerFactory($this->converterProvider);
 
         //when
-        CatchException::when($partMapParameterHandlerFactory)->create(new PartMap(), new GET('/users/{login}'), $encoding, $this->reflectionMethod, 1);
+        CatchException::when($partMapParameterHandlerFactory)
+            ->create(new PartMap(), new GET('/users/{login}'), $encoding, $this->reflectionMethod, 1, new Type('string'));
 
         //then
         CatchException::assertThat()
@@ -54,7 +56,9 @@ class PartMapParameterHandlerFactoryTest extends TestCase
         $partMapParameterHandlerFactory = new PartMapParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $partMapParameterHandlerFactory->create(new PartMap(), new GET('/users/{login}'), Encoding::MULTIPART, $this->reflectionMethod, 1);
+        $parameterHandler = $partMapParameterHandlerFactory->create(
+            new PartMap(), new GET('/users/{login}'), Encoding::MULTIPART, $this->reflectionMethod, 1, new Type('string')
+        );
 
         //then
         $this->assertInstanceOf(PartMapParameterHandler::class, $parameterHandler);

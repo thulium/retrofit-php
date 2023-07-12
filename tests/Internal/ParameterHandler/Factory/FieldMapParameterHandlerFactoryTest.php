@@ -16,6 +16,7 @@ use Retrofit\Internal\Encoding;
 use Retrofit\Internal\ParameterHandler\Factory\FieldMapParameterHandlerFactory;
 use Retrofit\Internal\ParameterHandler\FieldMapParameterHandler;
 use Retrofit\Tests\Fixtures\Api\MockMethod;
+use Retrofit\Type;
 use RuntimeException;
 
 class FieldMapParameterHandlerFactoryTest extends TestCase
@@ -39,7 +40,9 @@ class FieldMapParameterHandlerFactoryTest extends TestCase
         $fieldMapParameterHandlerFactory = new FieldMapParameterHandlerFactory($this->converterProvider);
 
         //when
-        CatchException::when($fieldMapParameterHandlerFactory)->create(new FieldMap(false), new GET('/users/{login}'), $encoding, $this->reflectionMethod, 1);
+        CatchException::when($fieldMapParameterHandlerFactory)->create(
+            new FieldMap(false), new GET('/users/{login}'), $encoding, $this->reflectionMethod, 1, new Type('string')
+        );
 
         //then
         CatchException::assertThat()
@@ -54,7 +57,9 @@ class FieldMapParameterHandlerFactoryTest extends TestCase
         $fieldMapParameterHandlerFactory = new FieldMapParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $fieldMapParameterHandlerFactory->create(new FieldMap(false), new GET('/users/{login}'), Encoding::FORM_URL_ENCODED, $this->reflectionMethod, 1);
+        $parameterHandler = $fieldMapParameterHandlerFactory->create(
+            new FieldMap(false), new GET('/users/{login}'), Encoding::FORM_URL_ENCODED, $this->reflectionMethod, 1, new Type('string')
+        );
 
         //then
         $this->assertInstanceOf(FieldMapParameterHandler::class, $parameterHandler);

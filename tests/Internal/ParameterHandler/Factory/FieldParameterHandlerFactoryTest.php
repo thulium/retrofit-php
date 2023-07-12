@@ -16,6 +16,7 @@ use Retrofit\Internal\Encoding;
 use Retrofit\Internal\ParameterHandler\Factory\FieldParameterHandlerFactory;
 use Retrofit\Internal\ParameterHandler\FieldParameterHandler;
 use Retrofit\Tests\Fixtures\Api\MockMethod;
+use Retrofit\Type;
 use RuntimeException;
 
 class FieldParameterHandlerFactoryTest extends TestCase
@@ -39,7 +40,8 @@ class FieldParameterHandlerFactoryTest extends TestCase
         $fieldParameterHandlerFactory = new FieldParameterHandlerFactory($this->converterProvider);
 
         //when
-        CatchException::when($fieldParameterHandlerFactory)->create(new Field('name'), new GET('/users/{login}'), $encoding, $this->reflectionMethod, 1);
+        CatchException::when($fieldParameterHandlerFactory)
+            ->create(new Field('name'), new GET('/users/{login}'), $encoding, $this->reflectionMethod, 1, new Type('string'));
 
         //then
         CatchException::assertThat()
@@ -54,7 +56,9 @@ class FieldParameterHandlerFactoryTest extends TestCase
         $fieldParameterHandlerFactory = new FieldParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $fieldParameterHandlerFactory->create(new Field('name'), new GET('/users/{login}'), Encoding::FORM_URL_ENCODED, $this->reflectionMethod, 1);
+        $parameterHandler = $fieldParameterHandlerFactory->create(
+            new Field('name'), new GET('/users/{login}'), Encoding::FORM_URL_ENCODED, $this->reflectionMethod, 1, new Type('string')
+        );
 
         //then
         $this->assertInstanceOf(FieldParameterHandler::class, $parameterHandler);

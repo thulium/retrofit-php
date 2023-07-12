@@ -56,4 +56,10 @@ interface InvalidMethods
     #[POST('/users')]
     #[Multipart]
     public function multipartDoesNotHaveAtLeastOnePartAttribute(): Call;
+
+    #[POST('/users')]
+    public function parameterWithoutType($parameter): Call;
+
+    #[POST('/users')]
+    public function parameterWithoutAttribute(string $parameter): Call;
 }

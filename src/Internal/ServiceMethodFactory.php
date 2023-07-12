@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Retrofit\Internal;
 
 use Ouzo\Utilities\Strings;
+use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
@@ -21,6 +22,7 @@ use Retrofit\HttpClient;
 use Retrofit\Internal\ParameterHandler\Factory\ParameterHandlerFactoryProvider;
 use Retrofit\Internal\Utils\Utils;
 use Retrofit\Retrofit;
+use Retrofit\Type;
 
 readonly class ServiceMethodFactory
 {
@@ -141,6 +143,14 @@ readonly class ServiceMethodFactory
 
     private function getParameterHandlers(HttpRequest $httpRequest, ?Encoding $encoding, ReflectionMethod $reflectionMethod): array
     {
+        $docCommentParams = [];
+        $docComment = $reflectionMethod->getDocComment();
+        if ($docComment !== false) {
+            $docBlockFactory = DocBlockFactory::createInstance();
+            $docBlock = $docBlockFactory->create($docComment);
+            $docCommentParams = $docBlock->getTagsByName('param');
+        }
+
         $gotUrl = false;
         $gotField = false;
         $gotPart = false;
@@ -150,6 +160,14 @@ readonly class ServiceMethodFactory
         foreach ($reflectionParameters as $reflectionParameter) {
             $position = $reflectionParameter->getPosition();
             $reflectionAttributes = $reflectionParameter->getAttributes();
+
+            if (!$reflectionParameter->hasType()) {
+                throw Utils::parameterException($reflectionMethod, $position, 'Type is required.');
+            }
+
+            if (empty($reflectionAttributes)) {
+                throw Utils::parameterException($reflectionMethod, $position, 'No Retrofit attribute found.');
+            }
 
             $reflectionAttribute = $reflectionAttributes[0];
             $newInstance = $reflectionAttribute->newInstance();
@@ -167,8 +185,10 @@ readonly class ServiceMethodFactory
                 $gotPart = true;
             }
 
+            $type = Type::create($reflectionMethod, $reflectionParameter, $docCommentParams);
+
             $parameterHandlerFactory = $this->parameterHandlerFactoryProvider->get($reflectionAttribute->getName());
-            $parameterHandler = $parameterHandlerFactory->create($newInstance, $httpRequest, $encoding, $reflectionMethod, $position);
+            $parameterHandler = $parameterHandlerFactory->create($newInstance, $httpRequest, $encoding, $reflectionMethod, $position, $type);
 
             $parameterHandlers[$position] = $parameterHandler;
         }

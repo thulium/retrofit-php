@@ -13,6 +13,7 @@ use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\ParameterHandler\Factory\QueryMapParameterHandlerFactory;
 use Retrofit\Internal\ParameterHandler\QueryMapParameterHandler;
 use Retrofit\Tests\Fixtures\Api\MockMethod;
+use Retrofit\Type;
 
 class QueryMapParameterHandlerFactoryTest extends TestCase
 {
@@ -33,7 +34,9 @@ class QueryMapParameterHandlerFactoryTest extends TestCase
         $queryMapParameterHandler = new QueryMapParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $queryMapParameterHandler->create(new QueryMap(), new GET('/users'), null, $this->reflectionMethod, 1);
+        $parameterHandler = $queryMapParameterHandler->create(
+            new QueryMap(), new GET('/users'), null, $this->reflectionMethod, 1, new Type('string')
+        );
 
         //then
         $this->assertInstanceOf(QueryMapParameterHandler::class, $parameterHandler);

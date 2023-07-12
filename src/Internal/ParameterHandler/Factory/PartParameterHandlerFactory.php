@@ -10,10 +10,18 @@ use Retrofit\Internal\Encoding;
 use Retrofit\Internal\ParameterHandler\ParameterHandler;
 use Retrofit\Internal\ParameterHandler\PartParameterHandler;
 use Retrofit\Internal\Utils\Utils;
+use Retrofit\Type;
 
 readonly class PartParameterHandlerFactory extends AbstractParameterHandlerFactory
 {
-    public function create(Part $param, HttpRequest $httpRequest, ?Encoding $encoding, ReflectionMethod $reflectionMethod, int $position): ParameterHandler
+    public function create(
+        Part $param,
+        HttpRequest $httpRequest,
+        ?Encoding $encoding,
+        ReflectionMethod $reflectionMethod,
+        int $position,
+        Type $type
+    ): ParameterHandler
     {
         if ($encoding !== Encoding::MULTIPART) {
             throw Utils::parameterException($reflectionMethod, $position, '#[Part] parameters can only be used with multipart.');

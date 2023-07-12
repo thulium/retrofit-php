@@ -13,6 +13,7 @@ use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\ParameterHandler\Factory\PathParameterHandlerFactory;
 use Retrofit\Internal\ParameterHandler\PathParameterHandler;
 use Retrofit\Tests\Fixtures\Api\MockMethod;
+use Retrofit\Type;
 
 class PathParameterHandlerFactoryTest extends TestCase
 {
@@ -33,7 +34,9 @@ class PathParameterHandlerFactoryTest extends TestCase
         $pathParameterHandlerFactory = new PathParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $pathParameterHandlerFactory->create(new Path('login'), new POST('/users/{login}'), null, $this->reflectionMethod, 0);
+        $parameterHandler = $pathParameterHandlerFactory->create(
+            new Path('login'), new POST('/users/{login}'), null, $this->reflectionMethod, 0, new Type('string')
+        );
 
         //then
         $this->assertInstanceOf(PathParameterHandler::class, $parameterHandler);

@@ -13,6 +13,7 @@ use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\ParameterHandler\Factory\UrlParameterHandlerFactory;
 use Retrofit\Internal\ParameterHandler\UrlParameterHandler;
 use Retrofit\Tests\Fixtures\Api\MockMethod;
+use Retrofit\Type;
 
 class UrlParameterHandlerFactoryTest extends TestCase
 {
@@ -33,7 +34,9 @@ class UrlParameterHandlerFactoryTest extends TestCase
         $urlParameterHandlerFactory = new UrlParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $urlParameterHandlerFactory->create(new Url(), new POST(), null, $this->reflectionMethod, 0);
+        $parameterHandler = $urlParameterHandlerFactory->create(
+            new Url(), new POST(), null, $this->reflectionMethod, 0, new Type('string')
+        );
 
         //then
         $this->assertInstanceOf(UrlParameterHandler::class, $parameterHandler);

@@ -13,6 +13,7 @@ use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\ParameterHandler\Factory\HeaderMapParameterHandlerFactory;
 use Retrofit\Internal\ParameterHandler\HeaderMapParameterHandler;
 use Retrofit\Tests\Fixtures\Api\MockMethod;
+use Retrofit\Type;
 
 class HeaderMapParameterHandlerFactoryTest extends TestCase
 {
@@ -33,7 +34,9 @@ class HeaderMapParameterHandlerFactoryTest extends TestCase
         $headerMapParameterHandlerFactory = new HeaderMapParameterHandlerFactory($this->converterProvider);
 
         //when
-        $parameterHandler = $headerMapParameterHandlerFactory->create(new HeaderMap(), new GET('/users/{login}'), null, $this->reflectionMethod, 1);
+        $parameterHandler = $headerMapParameterHandlerFactory->create(
+            new HeaderMap(), new GET('/users/{login}'), null, $this->reflectionMethod, 1, new Type('string')
+        );
 
         //then
         $this->assertInstanceOf(HeaderMapParameterHandler::class, $parameterHandler);
