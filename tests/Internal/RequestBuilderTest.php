@@ -313,4 +313,49 @@ class RequestBuilderTest extends TestCase
             ],
         ];
     }
+
+    #[Test]
+    public function shouldSetBody(): void
+    {
+        //given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['x-age' => '10']);
+
+        //when
+        $requestBuilder->setBody(Utils::streamFor('some-body'));
+
+        //then
+        $request = $requestBuilder->build();
+        $this->assertSame('some-body', $request->getBody()->getContents());
+    }
+
+    #[Test]
+    public function bodyShouldHasHighestPrecedenceThanForm(): void
+    {
+        //given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['x-age' => '10']);
+        $requestBuilder->addFormField('field-name', 'field-value', true);
+
+        //when
+        $requestBuilder->setBody(Utils::streamFor('some-body'));
+
+        //then
+        $request = $requestBuilder->build();
+        $this->assertSame('some-body', $request->getBody()->getContents());
+    }
+
+    #[Test]
+    public function bodyShouldHasHighestPrecedenceThanMultipart(): void
+    {
+        //given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['x-age' => '10']);
+        $requestBuilder->addPart('multipart', Utils::streamFor('body-from-multipart'));
+
+        //when
+        $requestBuilder->setBody(Utils::streamFor('some-body'));
+
+        //then
+        $request = $requestBuilder->build();
+        $this->assertSame('some-body', $request->getBody()->getContents());
+    }
+
 }

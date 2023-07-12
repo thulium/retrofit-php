@@ -98,4 +98,7 @@ interface FullyValidApi
     #[POST('/users')]
     #[Multipart]
     public function addPartMap(#[PartMap] array $partMap): Call;
+
+    #[POST('/users')]
+    public function setBody(#[Body] UserRequest $userRequest): Call;
 }

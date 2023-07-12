@@ -27,6 +27,7 @@ class RequestBuilder
     private array $headers = [];
     private array $fields = [];
     private array $parts = [];
+    private ?StreamInterface $body = null;
 
     /**
      * @param array<string, string> $defaultHeaders
@@ -110,6 +111,11 @@ class RequestBuilder
         ];
     }
 
+    public function setBody(StreamInterface $body): void
+    {
+        $this->body = $body;
+    }
+
     public function build(): RequestInterface
     {
         $this->replacePathParameters();
@@ -144,16 +150,18 @@ class RequestBuilder
         }
     }
 
-    private function initializeBody(): MultipartStream|string|null
+    private function initializeBody(): StreamInterface|string|null
     {
-        if (!empty($this->fields)) {
-            return Query::build($this->fields, false);
+        if (is_null($this->body)) {
+            if (!empty($this->fields)) {
+                return Query::build($this->fields, false);
+            }
+
+            if (!empty($this->parts)) {
+                return new MultipartStream($this->parts);
+            }
         }
 
-        if (!empty($this->parts)) {
-            return new MultipartStream($this->parts);
-        }
-
-        return null;
+        return $this->body;
     }
 }

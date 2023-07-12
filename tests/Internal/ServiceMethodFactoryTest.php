@@ -500,4 +500,20 @@ class ServiceMethodFactoryTest extends TestCase
         $type = new Type('array', UserRequest::class);
         Mock::verify($factory)->create(Mock::any(), Mock::any(), Mock::any(), Mock::any(), Mock::any(), $type);
     }
+
+    #[Test]
+    public function shouldSetBody(): void
+    {
+        //given
+        $userRequest = (new UserRequest())
+            ->setLogin('jon-doe');
+
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'setBody');
+
+        //then
+        $request = $serviceMethod->invoke([$userRequest])->request();
+
+        $this->assertStringContainsString('{"login":"jon-doe"}', $request->getBody()->getContents());
+    }
 }
