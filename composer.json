@@ -7,7 +7,6 @@
     "require": {
         "php": ">=8.2",
         "guzzlehttp/psr7": "^2.5.0",
-        "illuminate/collections": "^10.14.0",
         "letsdrink/ouzo-goodies": "dev-master",
         "nikic/php-parser": "^4.15.5",
         "phpdocumentor/reflection-docblock": "^5.3.0",

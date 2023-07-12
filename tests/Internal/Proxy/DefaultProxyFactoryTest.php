@@ -8,6 +8,7 @@ use Ouzo\Tests\Assert;
 use Ouzo\Tests\CatchException;
 use Ouzo\Tests\Mock\Mock;
 use Ouzo\Tests\Mock\MockInterface;
+use Ouzo\Utilities\Arrays;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
@@ -167,7 +168,7 @@ class DefaultProxyFactoryTest extends TestCase
         Assert::thatArray($reflectionParameters)
             ->extracting(
                 fn(ReflectionParameter $p): string => $p->getName(),
-                fn(ReflectionParameter $p): array => collect($p->getAttributes())->map(fn(ReflectionAttribute $a) => $a->getName())->all(),
+                fn(ReflectionParameter $p): array => Arrays::map($p->getAttributes(), fn(ReflectionAttribute $a) => $a->getName()),
                 fn(ReflectionParameter $p): string => $p->getType()->getName()
             )
             ->containsOnly(

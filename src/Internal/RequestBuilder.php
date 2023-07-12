@@ -42,9 +42,9 @@ class RequestBuilder
             $this->uri = $this->uri->withPath($this->httpRequest->path());
         }
 
-        collect($defaultHeaders)->each(function (string $value, string $name): void {
+        foreach ($defaultHeaders as $name => $value) {
             $this->addHeader($name, $value);
-        });
+        }
     }
 
     public function setBaseUrl(UriInterface|string $value): void

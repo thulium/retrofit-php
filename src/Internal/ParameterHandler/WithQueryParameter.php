@@ -21,9 +21,7 @@ trait WithQueryParameter
                     'One of the list value is an object.');
             }
 
-            return collect($value)
-                ->map(fn(mixed $v): string => $this->converter->convert($v))
-                ->all();
+            return Arrays::map($value, fn(mixed $v): string => $this->converter->convert($v));
         }
 
         return $this->converter->convert($value);

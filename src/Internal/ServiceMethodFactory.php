@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal;
 
+use Ouzo\Utilities\Arrays;
+use Ouzo\Utilities\FluentArray;
+use Ouzo\Utilities\Joiner;
 use Ouzo\Utilities\Strings;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionAttribute;
@@ -65,40 +68,44 @@ readonly class ServiceMethodFactory
 
     private function getHttpRequest(ReflectionMethod $reflectionMethod): HttpRequest
     {
-        $httpRequestMethods = collect($reflectionMethod->getAttributes())
+        $httpRequestMethods = FluentArray::from($reflectionMethod->getAttributes())
             ->map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance())
-            ->filter(fn(object $instance): bool => $instance instanceof HttpRequest);
+            ->filter(fn(object $instance): bool => $instance instanceof HttpRequest)
+            ->toArray();
 
-        if ($httpRequestMethods->isEmpty()) {
+        if (empty($httpRequestMethods)) {
             throw Utils::methodException($reflectionMethod,
                 'HTTP method annotation is required (e.g., #[GET], #[POST], etc.).');
         }
 
         //todo check issue https://github.com/nikic/PHP-Parser/issues/930 is fixed
-        if ($httpRequestMethods->count() > 1) {
-            $httpMethodNames = $httpRequestMethods->implode(fn(HttpRequest $request): string => $request::class, ', ');
+        if (count($httpRequestMethods) > 1) {
+            $httpMethodNames = Joiner::on(', ')
+                ->mapValues(fn(HttpRequest $request): string => $request::class)
+                ->join($httpRequestMethods);
             throw Utils::methodException($reflectionMethod, "Only one HTTP method is allowed. Found: [$httpMethodNames].");
         }
 
-        return $httpRequestMethods->first();
+        return Arrays::first($httpRequestMethods);
     }
 
     private function getEncoding(HttpRequest $httpRequest, ReflectionMethod $reflectionMethod): ?Encoding
     {
-        $encodingAttributes = collect($reflectionMethod->getAttributes())
+        $encodingAttributes = FluentArray::from($reflectionMethod->getAttributes())
             ->map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance())
-            ->filter(fn(object $instance): bool => $instance instanceof FormUrlEncoded || $instance instanceof Multipart);
+            ->filter(fn(object $instance): bool => $instance instanceof FormUrlEncoded || $instance instanceof Multipart)
+            ->toArray();
 
-        if ($encodingAttributes->isEmpty()) {
+        if (empty($encodingAttributes)) {
             return null;
         }
 
-        if ($encodingAttributes->count() > 1) {
+        if (count($encodingAttributes) > 1) {
             throw Utils::methodException($reflectionMethod, 'Only one encoding annotation is allowed.');
         }
 
         /** @var FormUrlEncoded|Multipart $encoding */
-        $encoding = $encodingAttributes->first();
+        $encoding = Arrays::first($encodingAttributes);
         if ($encoding instanceof FormUrlEncoded) {
             if (!$httpRequest->hasBody()) {
                 throw Utils::methodException($reflectionMethod,
@@ -118,10 +125,10 @@ readonly class ServiceMethodFactory
     {
         $defaultHeaders = [];
         /** @var Headers|null $headers */
-        $headers = collect($reflectionMethod->getAttributes())
+        $headers = FluentArray::from($reflectionMethod->getAttributes())
             ->map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance())
             ->filter(fn(object $instance): bool => $instance instanceof Headers)
-            ->first();
+            ->firstOr(null);
         if (!is_null($headers)) {
             $converter = $this->retrofit->converterProvider->getStringConverter();
             $value = $headers->value();

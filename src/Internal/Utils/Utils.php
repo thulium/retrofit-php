@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal\Utils;
 
+use Ouzo\Utilities\Arrays;
+use Ouzo\Utilities\Joiner;
 use Ouzo\Utilities\Strings;
 use ReflectionMethod;
 use ReflectionParameter;
@@ -29,9 +31,9 @@ readonly class Utils
      */
     public static function toFQCN(string...$names): string
     {
-        return collect($names)
-            ->map(fn(string $name): string => str_starts_with($name, self::NAMESPACE_DELIMITER) ? $name : (self::NAMESPACE_DELIMITER . $name))
-            ->join(Strings::EMPTY);
+        return Joiner::on(Strings::EMPTY)
+            ->mapValues(fn(string $name): string => str_starts_with($name, self::NAMESPACE_DELIMITER) ? $name : (self::NAMESPACE_DELIMITER . $name))
+            ->join($names);
     }
 
     /**
@@ -84,13 +86,11 @@ readonly class Utils
         ];
         static $defaultNoPriorityFactor = 1_000;
 
-        return collect($reflectionParameters)
-            ->sort(function (ReflectionParameter $a, ReflectionParameter $b) use ($attributeToPriority, $defaultNoPriorityFactor): int {
-                $aPriority = $attributeToPriority[$a->getAttributes()[0]->getName()] ?? $defaultNoPriorityFactor;
-                $bPriority = $attributeToPriority[$b->getAttributes()[0]->getName()] ?? $defaultNoPriorityFactor;
-                return $aPriority <=> $bPriority;
-            })
-            ->all();
+        return Arrays::sort($reflectionParameters, function (ReflectionParameter $a, ReflectionParameter $b) use ($attributeToPriority, $defaultNoPriorityFactor): int {
+            $aPriority = $attributeToPriority[$a->getAttributes()[0]->getName()] ?? $defaultNoPriorityFactor;
+            $bPriority = $attributeToPriority[$b->getAttributes()[0]->getName()] ?? $defaultNoPriorityFactor;
+            return $aPriority <=> $bPriority;
+        });
     }
 
     private static function methodExceptionMessage(ReflectionMethod $reflectionMethod): string
