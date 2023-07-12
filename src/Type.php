@@ -12,7 +12,6 @@ use PhpParser\NodeFinder;
 use PhpParser\ParserFactory;
 use ReflectionMethod;
 use ReflectionParameter;
-use Retrofit\Internal\Utils\Utils;
 
 readonly class Type
 {
@@ -33,6 +32,11 @@ readonly class Type
         return $this->parametrizedType;
     }
 
+    public function isA(string $type): bool
+    {
+        return $this->rawType === $type;
+    }
+
     /** @param Param[] $params */
     public static function create(
         ReflectionMethod $reflectionMethod,
@@ -40,7 +44,9 @@ readonly class Type
         array $params = []
     ): Type
     {
-        $rawType = $reflectionParameter->getType()->getName();
+        $reflectionType = $reflectionParameter->getType();
+
+        $rawType = $reflectionType->getName();
         $parametrizedType = self::handleParametrizedTypeForArray($rawType, $reflectionParameter, $reflectionMethod, $params);
 
         return new Type($rawType, $parametrizedType);
@@ -89,6 +95,6 @@ readonly class Type
         $nodeFinder = new NodeFinder();
         $useStmt = $nodeFinder->findFirst($stmts, fn(Node $n): bool => $n instanceof Use_ && $parametrizedType === $n->uses[0]->name->getLast());
 
-        return Utils::toFQCN($useStmt->uses[0]->name->toString());
+        return $useStmt->uses[0]->name->toString();
     }
 }

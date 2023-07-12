@@ -27,7 +27,7 @@ readonly class PartMapParameterHandlerFactory extends AbstractParameterHandlerFa
             throw Utils::parameterException($reflectionMethod, $position, '#[PartMap] parameters can only be used with multipart.');
         }
 
-        $converter = $this->converterProvider->getRequestBodyConverter();
+        $converter = $this->converterProvider->getRequestBodyConverter($type);
 
         return new PartMapParameterHandler($param->encoding(), $converter, $reflectionMethod, $position);
     }

@@ -406,8 +406,7 @@ class ServiceMethodFactoryTest extends TestCase
         $part3 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Length: 9155\r\nContent-Type: image/png\r\n\r\n";
         $this->assertStringContainsString($part3, $contents);
 
-        //todo this not working
-        $part4 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"stream\"\r\nContent-Length: 2\r\n\r\n{}\r\n";
+        $part4 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"stream\"; filename=\"sample-image.jpg\"\r\nContent-Length: 9155\r\nContent-Type: image/jpeg";
         $this->assertStringContainsString($part4, $contents);
     }
 
@@ -498,7 +497,7 @@ class ServiceMethodFactoryTest extends TestCase
         $serviceMethodFactory->create(TypeResolverApi::class, 'arrayOfCustomClass');
 
         //then
-        $type = new Type('array', \Retrofit\Internal\Utils\Utils::toFQCN(UserRequest::class));
+        $type = new Type('array', UserRequest::class);
         Mock::verify($factory)->create(Mock::any(), Mock::any(), Mock::any(), Mock::any(), Mock::any(), $type);
     }
 }

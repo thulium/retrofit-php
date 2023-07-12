@@ -3,16 +3,29 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal;
 
+use GuzzleHttp\Psr7\Utils;
+use Psr\Http\Message\StreamInterface;
+use Retrofit\BodyConverter;
 use Retrofit\Converter;
 
 readonly class BuiltInConverters
 {
-    public static function JsonEncodeRequestBodyConverter(): Converter
+    public static function JsonEncodeRequestBodyConverter(): BodyConverter
     {
-        return new class implements Converter {
-            public function convert(mixed $value): string
+        return new class implements BodyConverter {
+            public function convert(mixed $value): StreamInterface
             {
-                return json_encode($value);
+                return Utils::streamFor(json_encode($value));
+            }
+        };
+    }
+
+    public static function StreamInterfaceRequestBodyConverter(): BodyConverter
+    {
+        return new class implements BodyConverter {
+            public function convert(mixed $value): StreamInterface
+            {
+                return $value;
             }
         };
     }

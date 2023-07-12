@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use ReflectionParameter;
 use Retrofit\Tests\Fixtures\Api\TypeResolverApi;
+use Retrofit\Tests\Fixtures\Model\UserRequest;
 use Retrofit\Type;
 
 class TypeTest extends TestCase
@@ -151,6 +152,21 @@ class TypeTest extends TestCase
     {
         $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'arrayOfGenericClass');
         return self::getParameterTypes($reflectionMethod);
+    }
+
+    #[Test]
+    public function shouldCheckParameterIsATypeOf(): void
+    {
+        //given
+        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'customClass');
+
+        $type = Type::create($reflectionMethod, $reflectionMethod->getParameters()[0]);
+
+        //when
+        $isA = $type->isA(UserRequest::class);
+
+        //then
+        $this->assertTrue($isA);
     }
 
     private static function getParameterTypes(ReflectionMethod $reflectionMethod): array

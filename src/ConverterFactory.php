@@ -5,7 +5,7 @@ namespace Retrofit;
 
 interface ConverterFactory
 {
-    public function requestBodyConverter(): ?Converter;
+    public function requestBodyConverter(Type $type): ?Converter;
 
     public function responseBodyConverter(): ?Converter;
 

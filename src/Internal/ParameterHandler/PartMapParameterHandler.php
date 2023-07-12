@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal\ParameterHandler;
 
+use Psr\Http\Message\StreamInterface;
 use ReflectionMethod;
 use Retrofit\Converter;
 use Retrofit\Internal\RequestBuilder;
@@ -31,7 +32,7 @@ readonly class PartMapParameterHandler implements ParameterHandler
             throw Utils::parameterException($this->reflectionMethod, $this->position, 'Part map was null.');
         }
 
-        $this->validateAndApply($value, 'Part', $this->converter, function (string $entryKey, string $entryValue, mixed $originalValue) use ($requestBuilder): void {
+        $this->validateAndApply($value, 'Part', $this->converter, function (string $entryKey, StreamInterface $entryValue, mixed $originalValue) use ($requestBuilder): void {
             if ($originalValue instanceof PartInterface) {
                 $this->handle($requestBuilder, $originalValue);
                 return;

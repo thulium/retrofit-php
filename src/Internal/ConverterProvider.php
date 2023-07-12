@@ -5,6 +5,7 @@ namespace Retrofit\Internal;
 
 use Retrofit\Converter;
 use Retrofit\ConverterFactory;
+use Retrofit\Type;
 
 readonly class ConverterProvider
 {
@@ -13,10 +14,10 @@ readonly class ConverterProvider
     {
     }
 
-    public function getRequestBodyConverter(): Converter
+    public function getRequestBodyConverter(Type $type): Converter
     {
         foreach ($this->converterFactories as $converterFactory) {
-            $converter = $converterFactory->requestBodyConverter();
+            $converter = $converterFactory->requestBodyConverter($type);
             if (is_null($converter)) {
                 continue;
             }
