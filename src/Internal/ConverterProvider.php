@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal;
 
-use Retrofit\Converter;
-use Retrofit\ConverterFactory;
+use Retrofit\Converter\Converter;
+use Retrofit\Converter\ConverterFactory;
 use Retrofit\Type;
+use RuntimeException;
 
 readonly class ConverterProvider
 {
@@ -24,7 +25,22 @@ readonly class ConverterProvider
             return $converter;
         }
 
-        return BuiltInConverters::JsonEncodeRequestBodyConverter();
+        //todo
+        throw new RuntimeException('getRequestBodyConverter');
+    }
+
+    public function getResponseBodyConverter(Type $type): Converter
+    {
+        foreach ($this->converterFactories as $converterFactory) {
+            $converter = $converterFactory->responseBodyConverter($type);
+            if (is_null($converter)) {
+                continue;
+            }
+            return $converter;
+        }
+
+        //todo
+        throw new RuntimeException('getResponseBodyConverter');
     }
 
     public function getStringConverter(): Converter

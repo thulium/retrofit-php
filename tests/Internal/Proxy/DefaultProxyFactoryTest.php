@@ -22,6 +22,7 @@ use Retrofit\Attribute\Body;
 use Retrofit\Attribute\GET;
 use Retrofit\Attribute\Path;
 use Retrofit\Attribute\POST;
+use Retrofit\Attribute\Response\ResponseBody;
 use Retrofit\HttpClient;
 use Retrofit\Internal\BuiltInConverterFactory;
 use Retrofit\Internal\ConverterProvider;
@@ -110,7 +111,8 @@ class DefaultProxyFactoryTest extends TestCase
         Assert::thatArray($reflectionAttributes1)
             ->extracting(fn(ReflectionAttribute $a): string => $a->getName(), fn(ReflectionAttribute $a): array => $a->getArguments())
             ->containsExactly(
-                [GET::class, ['/info/{login}']]
+                [GET::class, ['/info/{login}']],
+                [ResponseBody::class, ['string']]
             );
 
         $reflectionMethod2 = $reflectionClass->getMethod('createUser');
@@ -118,7 +120,8 @@ class DefaultProxyFactoryTest extends TestCase
         Assert::thatArray($reflectionAttributes2)
             ->extracting(fn(ReflectionAttribute $a): string => $a->getName(), fn(ReflectionAttribute $a): array => $a->getArguments())
             ->containsExactly(
-                [POST::class, ['/users/{login}']]
+                [POST::class, ['/users/{login}']],
+                [ResponseBody::class, ['string']]
             );
     }
 

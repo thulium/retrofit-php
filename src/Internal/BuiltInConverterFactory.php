@@ -4,14 +4,14 @@ declare(strict_types=1);
 namespace Retrofit\Internal;
 
 use Psr\Http\Message\StreamInterface;
-use Retrofit\BodyConverter;
-use Retrofit\Converter;
-use Retrofit\ConverterFactory;
+use Retrofit\Converter\Converter;
+use Retrofit\Converter\ConverterFactory;
+use Retrofit\Converter\RequestBodyConverter;
 use Retrofit\Type;
 
 readonly class BuiltInConverterFactory implements ConverterFactory
 {
-    public function requestBodyConverter(Type $type): ?BodyConverter
+    public function requestBodyConverter(Type $type): ?RequestBodyConverter
     {
         if ($type->isA(StreamInterface::class)) {
             return BuiltInConverters::StreamInterfaceRequestBodyConverter();
@@ -19,9 +19,15 @@ readonly class BuiltInConverterFactory implements ConverterFactory
         return BuiltInConverters::JsonEncodeRequestBodyConverter();
     }
 
-    public function responseBodyConverter(): ?Converter
+    public function responseBodyConverter(Type $type): ?Converter
     {
-        return null;
+        if ($type->isA('void')) {
+            return BuiltInConverters::VoidResponseBodyConverter();
+        }
+        if ($type->isA(StreamInterface::class)) {
+            return BuiltInConverters::StreamInterfaceResponseBodyConverter();
+        }
+        return BuiltInConverters::ScalarTypeResponseBodyConverter($type);
     }
 
     public function stringConverter(): ?Converter

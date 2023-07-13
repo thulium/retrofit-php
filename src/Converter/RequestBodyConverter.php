@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Retrofit;
+namespace Retrofit\Converter;
 
 use Psr\Http\Message\StreamInterface;
 
-interface BodyConverter extends Converter
+interface RequestBodyConverter extends Converter
 {
     public function convert(mixed $value): StreamInterface;
 }

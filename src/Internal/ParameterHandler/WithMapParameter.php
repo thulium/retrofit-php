@@ -5,7 +5,7 @@ namespace Retrofit\Internal\ParameterHandler;
 
 use Closure;
 use Ouzo\Utilities\Strings;
-use Retrofit\Converter;
+use Retrofit\Converter\Converter;
 use Retrofit\Internal\Utils\Utils;
 
 trait WithMapParameter

@@ -5,7 +5,8 @@ namespace Retrofit\Tests\Internal;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Retrofit\Converter;
+use Retrofit\Converter\Converter;
+use Retrofit\Converter\StringConverter;
 use Retrofit\Internal\ConverterProvider;
 
 class ConverterProviderTest extends TestCase
@@ -21,7 +22,8 @@ class ConverterProviderTest extends TestCase
 
         //then
         $this->assertInstanceOf(Converter::class, $converter);
-        $this->assertStringStartsWith('Retrofit\Converter@anonymous', $converter::class);
+        $this->assertInstanceOf(StringConverter::class, $converter);
+        $this->assertStringStartsWith('Retrofit\Converter\StringConverter@anonymous', $converter::class);
         $this->assertStringContainsString('src/Internal/BuiltInConverters.php', $converter::class);
     }
 }

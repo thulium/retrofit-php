@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Internal;
 
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\Utils;
 use Ouzo\Tests\Assert;
@@ -38,6 +39,7 @@ class ServiceMethodFactoryTest extends TestCase
 {
     use WithFixtureFile;
 
+    private HttpClient|MockInterface $httpClient;
     private Retrofit $retrofit;
     private ParameterHandlerFactoryProvider|MockInterface $parameterHandlerFactoryProvider;
     private ServiceMethodFactory $serviceMethodFactory;
@@ -45,13 +47,12 @@ class ServiceMethodFactoryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        /** @var HttpClient|MockInterface $httpClient */
-        $httpClient = Mock::create(HttpClient::class);
+        $this->httpClient = Mock::create(HttpClient::class);
         $baseUrl = new Uri('https://example.com');
         $converterProvider = new ConverterProvider([new BuiltInConverterFactory()]);
         $proxyFactory = new DefaultProxyFactory(new BuilderFactory(), new Standard());
 
-        $this->retrofit = new Retrofit($httpClient, $baseUrl, $converterProvider, $proxyFactory);
+        $this->retrofit = new Retrofit($this->httpClient, $baseUrl, $converterProvider, $proxyFactory);
 
         $this->parameterHandlerFactoryProvider = new ParameterHandlerFactoryProvider($this->retrofit->converterProvider);
         $this->serviceMethodFactory = new ServiceMethodFactory($this->retrofit, $this->parameterHandlerFactoryProvider);
@@ -515,5 +516,26 @@ class ServiceMethodFactoryTest extends TestCase
         $request = $serviceMethod->invoke([$userRequest])->request();
 
         $this->assertStringContainsString('{"login":"jon-doe"}', $request->getBody()->getContents());
+    }
+
+    #[Test]
+    #[TestWith(['string'])]
+    #[TestWith([100])]
+    #[TestWith([123.123])]
+    #[TestWith([true])]
+    public function shouldHandleBodyAsScalar(mixed $body): void
+    {
+        //given
+        Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], Utils::streamFor($body)));
+
+        $userRequest = (new UserRequest())
+            ->setLogin('jon-doe');
+
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'returnScalar');
+
+        //then
+        $execute = $serviceMethod->invoke([$userRequest])->execute();
+        $this->assertSame((string)$body, $execute->body());
     }
 }

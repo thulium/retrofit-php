@@ -7,8 +7,10 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Retrofit\Call;
 use Retrofit\Callback;
+use Retrofit\Converter\ResponseBodyConverter;
 use Retrofit\HttpClient;
 use Retrofit\Response;
+use RuntimeException;
 use Throwable;
 
 class HttpClientCall implements Call
@@ -17,7 +19,9 @@ class HttpClientCall implements Call
 
     public function __construct(
         private readonly HttpClient $httpClient,
-        private readonly RequestInterface $request
+        private readonly RequestInterface $request,
+        private readonly ResponseBodyConverter $responseBodyConverter,
+        private readonly ?ResponseBodyConverter $errorBodyConverter
     )
     {
     }
@@ -25,13 +29,13 @@ class HttpClientCall implements Call
     public function execute(): Response
     {
         $response = $this->httpClient->send($this->request());
-
         return $this->createResponse($response);
     }
 
     public function enqueue(Callback $callback): Call
     {
-        return $this->httpClient->sendAsync($this->request(), $callback->onResponse(), $callback->onFailure());
+        $this->httpClient->sendAsync($this->request(), $callback->onResponse(), $callback->onFailure());
+        return $this;
     }
 
     public function wait(): void
@@ -44,35 +48,27 @@ class HttpClientCall implements Call
         return $this->request;
     }
 
-    private function createResponse(ResponseInterface $response): RetrofitResponse
+    private function createResponse(ResponseInterface $response): Response
     {
         $code = $response->getStatusCode();
         if ($code >= 200 && $code < 300) {
             try {
-                $responseBody = $this->serviceMethod->toResponseBody($response);
+                $responseBody = $this->responseBodyConverter->convert($response->getBody());
+                return new Response($response, $responseBody, null);
             } catch (Throwable $throwable) {
-                throw new ResponseHandlingFailedException(
-                    $this->request(),
-                    $response,
-                    'Retrofit: Could not convert response body',
-                    $throwable
-                );
+                throw new RuntimeException('Retrofit: Could not convert response body', 0, $throwable);
             }
+        }
 
-            return new RetrofitResponse($response, $responseBody, null);
+        if (is_null($this->errorBodyConverter)) {
+            return new Response($response, null, null);
         }
 
         try {
-            $errorBody = $this->serviceMethod->toErrorBody($response);
+            $errorBody = $this->errorBodyConverter->convert($response->getBody());
+            return new Response($response, null, $errorBody);
         } catch (Throwable $throwable) {
-            throw new ResponseHandlingFailedException(
-                $this->request(),
-                $response,
-                'Retrofit: Could not convert error body',
-                $throwable
-            );
+            throw new RuntimeException('Retrofit: Could not convert error body', 0, $throwable);
         }
-
-        return new RetrofitResponse($response, null, $errorBody);
     }
 }

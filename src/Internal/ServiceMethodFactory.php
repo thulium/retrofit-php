@@ -9,7 +9,6 @@ use Ouzo\Utilities\Joiner;
 use Ouzo\Utilities\Strings;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionAttribute;
-use ReflectionException;
 use ReflectionMethod;
 use Retrofit\Attribute\Field;
 use Retrofit\Attribute\FieldMap;
@@ -19,8 +18,11 @@ use Retrofit\Attribute\HttpRequest;
 use Retrofit\Attribute\Multipart;
 use Retrofit\Attribute\Part;
 use Retrofit\Attribute\PartMap;
+use Retrofit\Attribute\Response\ErrorBody;
+use Retrofit\Attribute\Response\ResponseBody;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
+use Retrofit\Converter\ResponseBodyConverter;
 use Retrofit\HttpClient;
 use Retrofit\Internal\ParameterHandler\Factory\ParameterHandlerFactoryProvider;
 use Retrofit\Internal\Utils\Utils;
@@ -36,9 +38,6 @@ readonly class ServiceMethodFactory
     {
     }
 
-    /**
-     * @throws ReflectionException
-     */
     public function create(string $service, string $method): ServiceMethod
     {
         $reflectionMethod = new ReflectionMethod($service, $method);
@@ -48,12 +47,34 @@ readonly class ServiceMethodFactory
         $defaultHeaders = $this->getDefaultHeaders($reflectionMethod);
         $parameterHandlers = $this->getParameterHandlers($httpRequest, $encoding, $reflectionMethod);
 
+        $reflectionAttributes = $reflectionMethod->getAttributes(ResponseBody::class);
+        if (empty($reflectionAttributes)) {
+            throw Utils::methodException($reflectionMethod, '#[ResponseBody] attribute is required.');
+        }
+        $reflectionAttribute = $reflectionAttributes[0];
+        /** @var ResponseBody $responseBody */
+        $responseBody = $reflectionAttribute->newInstance();
+        $responseType = new Type($responseBody->rawType(), $responseBody->parametrizedType());
+        $responseBodyConverter = $this->retrofit->converterProvider->getResponseBodyConverter($responseType);
+
+        $errorBodyConverter = null;
+        $reflectionAttributes = $reflectionMethod->getAttributes(ErrorBody::class);
+        if (!empty($reflectionAttributes)) {
+            $reflectionAttribute = $reflectionAttributes[0];
+            /** @var ErrorBody $responseBody */
+            $responseBody = $reflectionAttribute->newInstance();
+            $responseType = new Type($responseBody->rawType(), $responseBody->parametrizedType());
+            $errorBodyConverter = $this->retrofit->converterProvider->getResponseBodyConverter($responseType);
+        }
+
         $requestFactory = new RequestFactory($this->retrofit->baseUrl, $httpRequest, $defaultHeaders, $parameterHandlers);
 
-        return new class($this->retrofit->httpClient, $requestFactory) implements ServiceMethod {
+        return new class($this->retrofit->httpClient, $requestFactory, $responseBodyConverter, $errorBodyConverter) implements ServiceMethod {
             public function __construct(
                 private readonly HttpClient $httpClient,
-                private readonly RequestFactory $requestFactory
+                private readonly RequestFactory $requestFactory,
+                private readonly ResponseBodyConverter $responseBodyConverter,
+                private readonly ?ResponseBodyConverter $errorBodyConverter
             )
             {
             }
@@ -61,7 +82,7 @@ readonly class ServiceMethodFactory
             public function invoke(array $args): Call
             {
                 $request = $this->requestFactory->create($args);
-                return new HttpClientCall($this->httpClient, $request);
+                return new HttpClientCall($this->httpClient, $request, $this->responseBodyConverter, $this->errorBodyConverter);
             }
         };
     }

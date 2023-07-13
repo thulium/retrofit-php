@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Retrofit\Internal\ParameterHandler;
 
 use ReflectionMethod;
-use Retrofit\Converter;
+use Retrofit\Converter\Converter;
 use Retrofit\Internal\RequestBuilder;
 use Retrofit\Internal\Utils\Utils;
 

@@ -5,7 +5,7 @@ namespace Retrofit\Internal\ParameterHandler;
 
 use Psr\Http\Message\StreamInterface;
 use ReflectionMethod;
-use Retrofit\Converter;
+use Retrofit\Converter\Converter;
 use Retrofit\Internal\RequestBuilder;
 use Retrofit\Internal\Utils\Utils;
 use Retrofit\MimeEncoding;

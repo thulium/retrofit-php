@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Internal\ParameterHandler;
 
-use Retrofit\Converter;
+use Retrofit\Converter\Converter;
 use Retrofit\Internal\RequestBuilder;
 
 readonly class HeaderParameterHandler implements ParameterHandler

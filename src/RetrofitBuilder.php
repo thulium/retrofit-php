@@ -8,6 +8,7 @@ use LogicException;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Psr\Http\Message\UriInterface;
+use Retrofit\Converter\ConverterFactory;
 use Retrofit\Internal\BuiltInConverterFactory;
 use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\Proxy\DefaultProxyFactory;
