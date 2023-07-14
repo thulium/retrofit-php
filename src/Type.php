@@ -15,6 +15,8 @@ use ReflectionParameter;
 
 readonly class Type
 {
+    private const SCALARS = ['bool', 'int', 'float', 'string'];
+
     public function __construct(
         private string $rawType,
         private ?string $parametrizedType = null
@@ -32,9 +34,19 @@ readonly class Type
         return $this->parametrizedType;
     }
 
+    public function isScalar(): bool
+    {
+        return in_array($this->rawType, self::SCALARS);
+    }
+
     public function isA(string $type): bool
     {
         return $this->rawType === $type;
+    }
+
+    public function parametrizedTypeIsScalar(): bool
+    {
+        return !is_null($this->parametrizedType) && in_array($this->parametrizedType, self::SCALARS);
     }
 
     /** @param Param[] $params */

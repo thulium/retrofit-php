@@ -30,10 +30,12 @@ use Retrofit\Tests\Fixtures\Api\AllHttpRequestMethods;
 use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 use Retrofit\Tests\Fixtures\Api\InvalidMethods;
 use Retrofit\Tests\Fixtures\Api\TypeResolverApi;
+use Retrofit\Tests\Fixtures\Converter\TestConverterFactory;
 use Retrofit\Tests\Fixtures\Model\UserRequest;
 use Retrofit\Tests\WithFixtureFile;
 use Retrofit\Type;
 use RuntimeException;
+use stdClass;
 
 class ServiceMethodFactoryTest extends TestCase
 {
@@ -49,7 +51,7 @@ class ServiceMethodFactoryTest extends TestCase
         parent::setUp();
         $this->httpClient = Mock::create(HttpClient::class);
         $baseUrl = new Uri('https://example.com');
-        $converterProvider = new ConverterProvider([new BuiltInConverterFactory()]);
+        $converterProvider = new ConverterProvider([new BuiltInConverterFactory(), new TestConverterFactory()]);
         $proxyFactory = new DefaultProxyFactory(new BuilderFactory(), new Standard());
 
         $this->retrofit = new Retrofit($this->httpClient, $baseUrl, $converterProvider, $proxyFactory);
@@ -537,5 +539,76 @@ class ServiceMethodFactoryTest extends TestCase
         //then
         $execute = $serviceMethod->invoke([$userRequest])->execute();
         $this->assertSame((string)$body, $execute->body());
+    }
+
+    #[Test]
+    public function shouldHandleVoidResponseBody(): void
+    {
+        //given
+        Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], Utils::streamFor('sample body')));
+
+        $userRequest = (new UserRequest())
+            ->setLogin('jon-doe');
+
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'returnVoid');
+
+        //then
+        $execute = $serviceMethod->invoke([$userRequest])->execute();
+        $this->assertNull($execute->body());
+    }
+
+    #[Test]
+    public function shouldHandleStdClassResponseBody(): void
+    {
+        //given
+        $stream = Utils::streamFor('{"login":"jon-doe"}');
+        Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], $stream));
+
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'returnStdClass');
+
+        //then
+        $execute = $serviceMethod->invoke([])->execute();
+        $body = $execute->body();
+        $this->assertInstanceOf(stdClass::class, $body);
+        $this->assertSame('jon-doe', $body->login);
+    }
+
+    #[Test]
+    #[TestWith(['["first string", "second string"]', ['first string', 'second string']])]
+    #[TestWith(['{"key1":"value1"}', ['key1' => 'value1']])]
+    #[TestWith(['[]', []])]
+    public function shouldHandleBodyAsArrayOfScalar(string $body, array $expectedBody): void
+    {
+        //given
+        Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], Utils::streamFor($body)));
+
+        $userRequest = (new UserRequest())
+            ->setLogin('jon-doe');
+
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'returnArrayOfScalar');
+
+        //then
+        $execute = $serviceMethod->invoke([$userRequest])->execute();
+        $this->assertSame($expectedBody, $execute->body());
+    }
+
+    #[Test]
+    public function shouldHandleBodyAsArrayOfStdClass(): void
+    {
+        //given
+        $stream = Utils::streamFor('[{"key":"value1"},{"key":"value2"}]');
+        Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], $stream));
+
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'returnArrayOfStdClass');
+
+        //then
+        $execute = $serviceMethod->invoke([])->execute();
+        Assert::thatArray($execute->body())
+            ->extracting(fn(stdClass $c): string => $c->key)
+            ->containsOnly('value1', 'value2');
     }
 }

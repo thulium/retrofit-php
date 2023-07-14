@@ -25,6 +25,7 @@ use Retrofit\Attribute\Url;
 use Retrofit\Call;
 use Retrofit\Multipart\PartInterface;
 use Retrofit\Tests\Fixtures\Model\UserRequest;
+use stdClass;
 
 interface FullyValidApi
 {
@@ -124,4 +125,20 @@ interface FullyValidApi
     #[POST('/users')]
     #[ResponseBody('string')]
     public function returnScalar(#[Body] UserRequest $userRequest): Call;
+
+    #[POST('/users')]
+    #[ResponseBody('void')]
+    public function returnVoid(#[Body] UserRequest $userRequest): Call;
+
+    #[GET('/users')]
+    #[ResponseBody(stdClass::class)]
+    public function returnStdClass(): Call;
+
+    #[GET('/users')]
+    #[ResponseBody('array', 'string')]
+    public function returnArrayOfScalar(): Call;
+
+    #[GET('/users')]
+    #[ResponseBody('array', stdClass::class)]
+    public function returnArrayOfStdClass(): Call;
 }

@@ -9,6 +9,7 @@ use Retrofit\Converter\RequestBodyConverter;
 use Retrofit\Converter\ResponseBodyConverter;
 use Retrofit\Converter\StringConverter;
 use Retrofit\Type;
+use stdClass;
 
 readonly class BuiltInConverters
 {
@@ -38,6 +39,30 @@ readonly class BuiltInConverters
             public function convert(StreamInterface $value): StreamInterface
             {
                 return $value;
+            }
+        };
+    }
+
+    public static function StdClassResponseBodyConverter(): ResponseBodyConverter
+    {
+        return new class implements ResponseBodyConverter {
+            public function convert(StreamInterface $value): stdClass
+            {
+                return json_decode($value->getContents());
+            }
+        };
+    }
+
+    public static function ArrayResponseBodyConverter(Type $type): ResponseBodyConverter
+    {
+        return new class($type) implements ResponseBodyConverter {
+            public function __construct(private readonly Type $type)
+            {
+            }
+
+            public function convert(StreamInterface $value): array
+            {
+                return json_decode($value->getContents(), $this->type->parametrizedTypeIsScalar());
             }
         };
     }

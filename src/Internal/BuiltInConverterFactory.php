@@ -27,7 +27,7 @@ readonly class BuiltInConverterFactory implements ConverterFactory
         if ($type->isA(StreamInterface::class)) {
             return BuiltInConverters::StreamInterfaceResponseBodyConverter();
         }
-        return BuiltInConverters::ScalarTypeResponseBodyConverter($type);
+        return null;
     }
 
     public function stringConverter(): ?Converter
