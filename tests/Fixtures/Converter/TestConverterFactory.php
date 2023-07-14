@@ -12,7 +12,7 @@ use stdClass;
 class TestConverterFactory implements ConverterFactory
 {
     public function requestBodyConverter(Type $type): ?Converter
-    {isParametrizedTypeIsScalar
+    {
         return null;
     }
 
