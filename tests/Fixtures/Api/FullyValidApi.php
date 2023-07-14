@@ -20,6 +20,7 @@ use Retrofit\Attribute\POST;
 use Retrofit\Attribute\Query;
 use Retrofit\Attribute\QueryMap;
 use Retrofit\Attribute\QueryName;
+use Retrofit\Attribute\Response\ErrorBody;
 use Retrofit\Attribute\Response\ResponseBody;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
@@ -141,4 +142,13 @@ interface FullyValidApi
     #[GET('/users')]
     #[ResponseBody('array', stdClass::class)]
     public function returnArrayOfStdClass(): Call;
+
+    #[GET('/users')]
+    #[ResponseBody('array', stdClass::class)]
+    #[ErrorBody(stdClass::class)]
+    public function testErrorBody(): Call;
+
+    #[GET('/users')]
+    #[ResponseBody('array', stdClass::class)]
+    public function testErrorBodyWithoutMapping(): Call;
 }

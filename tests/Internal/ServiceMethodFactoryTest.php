@@ -611,4 +611,40 @@ class ServiceMethodFactoryTest extends TestCase
             ->extracting(fn(stdClass $c): string => $c->key)
             ->containsOnly('value1', 'value2');
     }
+
+    #[Test]
+    public function shouldHandleErrorBody(): void
+    {
+        //given
+        $stream = Utils::streamFor('{"result":false, "message":"invalid-request"}');
+        Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(400, [], $stream));
+
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'testErrorBody');
+
+        //then
+        $execute = $serviceMethod->invoke([])->execute();
+
+        $this->assertNull($execute->body());
+
+        $errorBody = $execute->errorBody();
+        $this->assertFalse($errorBody->result);
+        $this->assertSame('invalid-request', $errorBody->message);
+    }
+
+    #[Test]
+    public function shouldHandleErrorBodyWhenErrorBodyConverterIsNotSet(): void
+    {
+        //given
+        $stream = Utils::streamFor('{"result":false, "message"":"invalid-request"}');
+        Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(400, [], $stream));
+
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'testErrorBodyWithoutMapping');
+
+        //then
+        $execute = $serviceMethod->invoke([])->execute();
+        $this->assertNull($execute->body());
+        $this->assertNull($execute->errorBody());
+    }
 }

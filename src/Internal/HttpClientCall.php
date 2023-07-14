@@ -51,9 +51,11 @@ class HttpClientCall implements Call
     private function createResponse(ResponseInterface $response): Response
     {
         $code = $response->getStatusCode();
+        $body = $response->getBody();
+
         if ($code >= 200 && $code < 300) {
             try {
-                $responseBody = $this->responseBodyConverter->convert($response->getBody());
+                $responseBody = $this->responseBodyConverter->convert($body);
                 return new Response($response, $responseBody, null);
             } catch (Throwable $throwable) {
                 throw new RuntimeException('Retrofit: Could not convert response body', 0, $throwable);
@@ -65,7 +67,7 @@ class HttpClientCall implements Call
         }
 
         try {
-            $errorBody = $this->errorBodyConverter->convert($response->getBody());
+            $errorBody = $this->errorBodyConverter->convert($body);
             return new Response($response, null, $errorBody);
         } catch (Throwable $throwable) {
             throw new RuntimeException('Retrofit: Could not convert error body', 0, $throwable);
