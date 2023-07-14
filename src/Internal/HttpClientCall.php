@@ -13,15 +13,13 @@ use Retrofit\Response;
 use RuntimeException;
 use Throwable;
 
-class HttpClientCall implements Call
+readonly class HttpClientCall implements Call
 {
-    private $requests;
-
     public function __construct(
-        private readonly HttpClient $httpClient,
-        private readonly RequestInterface $request,
-        private readonly ResponseBodyConverter $responseBodyConverter,
-        private readonly ?ResponseBodyConverter $errorBodyConverter
+        private HttpClient $httpClient,
+        private RequestInterface $request,
+        private ResponseBodyConverter $responseBodyConverter,
+        private ?ResponseBodyConverter $errorBodyConverter
     )
     {
     }
@@ -34,7 +32,11 @@ class HttpClientCall implements Call
 
     public function enqueue(Callback $callback): Call
     {
-        $this->httpClient->sendAsync($this->request(), $callback->onResponse(), $callback->onFailure());
+        $this->httpClient->sendAsync(
+            $this->request(),
+            fn(ResponseInterface $response) => $callback->onResponse($this, $this->createResponse($response)),
+            fn(Throwable $throwable) => $callback->onFailure($this, $throwable)
+        );
         return $this;
     }
 
