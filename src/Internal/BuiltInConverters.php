@@ -48,8 +48,7 @@ readonly class BuiltInConverters
         return new class implements ResponseBodyConverter {
             public function convert(StreamInterface $value): stdClass
             {
-                $contents = $value->getContents();
-                return json_decode($contents);
+                return json_decode($value->getContents());
             }
         };
     }

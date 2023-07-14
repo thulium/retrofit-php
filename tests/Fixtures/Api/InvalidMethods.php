@@ -62,4 +62,7 @@ interface InvalidMethods
 
     #[POST('/users')]
     public function parameterWithoutAttribute(string $parameter): Call;
+
+    #[POST('/users')]
+    public function missingResponseBody(): Call;
 }

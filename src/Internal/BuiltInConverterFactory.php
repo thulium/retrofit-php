@@ -16,7 +16,10 @@ readonly class BuiltInConverterFactory implements ConverterFactory
         if ($type->isA(StreamInterface::class)) {
             return BuiltInConverters::StreamInterfaceRequestBodyConverter();
         }
-        return BuiltInConverters::JsonEncodeRequestBodyConverter();
+        if (!$type->isScalar()) {
+            return BuiltInConverters::JsonEncodeRequestBodyConverter();
+        }
+        return null;
     }
 
     public function responseBodyConverter(Type $type): ?Converter
@@ -30,8 +33,11 @@ readonly class BuiltInConverterFactory implements ConverterFactory
         return null;
     }
 
-    public function stringConverter(): ?Converter
+    public function stringConverter(Type $type): ?Converter
     {
-        return BuiltInConverters::ToStringConverter();
+        if ($type->isScalar()) {
+            return BuiltInConverters::ToStringConverter();
+        }
+        return null;
     }
 }

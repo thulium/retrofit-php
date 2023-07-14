@@ -151,4 +151,8 @@ interface FullyValidApi
     #[GET('/users')]
     #[ResponseBody('array', stdClass::class)]
     public function testErrorBodyWithoutMapping(): Call;
+
+    #[GET('/users')]
+    #[ResponseBody(StreamInterface::class)]
+    public function streamInterfaceAsResponseBody(): Call;
 }

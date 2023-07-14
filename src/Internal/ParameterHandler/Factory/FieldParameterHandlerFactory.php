@@ -27,6 +27,6 @@ readonly class FieldParameterHandlerFactory extends AbstractParameterHandlerFact
             throw Utils::parameterException($reflectionMethod, $position, '#[Field] parameters can only be used with form encoding.');
         }
 
-        return new FieldParameterHandler($param->name(), $param->encoded(), $this->converterProvider->getStringConverter());
+        return new FieldParameterHandler($param->name(), $param->encoded(), $this->converterProvider->getStringConverter($type));
     }
 }

@@ -37,9 +37,9 @@ readonly class Response
     /**
      * HTTP status message or null if unknown.
      */
-    public function message(): ?string
+    public function message(): string
     {
-        return null;
+        return $this->rawResponse->getReasonPhrase();
     }
 
     /**

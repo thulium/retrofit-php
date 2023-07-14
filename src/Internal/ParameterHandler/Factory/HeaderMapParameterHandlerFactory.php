@@ -22,6 +22,6 @@ readonly class HeaderMapParameterHandlerFactory extends AbstractParameterHandler
         Type $type
     ): ParameterHandler
     {
-        return new HeaderMapParameterHandler($this->converterProvider->getStringConverter(), $reflectionMethod, $position);
+        return new HeaderMapParameterHandler($this->converterProvider->getStringConverter($type), $reflectionMethod, $position);
     }
 }

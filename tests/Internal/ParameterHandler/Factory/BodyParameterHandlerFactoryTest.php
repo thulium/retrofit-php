@@ -13,6 +13,7 @@ use Retrofit\Internal\ConverterProvider;
 use Retrofit\Internal\ParameterHandler\BodyParameterHandler;
 use Retrofit\Internal\ParameterHandler\Factory\BodyParameterHandlerFactory;
 use Retrofit\Tests\Fixtures\Api\MockMethod;
+use Retrofit\Tests\Fixtures\Converter\TestConverterFactory;
 use Retrofit\Type;
 
 class BodyParameterHandlerFactoryTest extends TestCase
@@ -24,7 +25,7 @@ class BodyParameterHandlerFactoryTest extends TestCase
     {
         parent::setUp();
         $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
-        $this->converterProvider = new ConverterProvider([new BuiltInConverterFactory()]);
+        $this->converterProvider = new ConverterProvider([new BuiltInConverterFactory(), new TestConverterFactory()]);
     }
 
     #[Test]

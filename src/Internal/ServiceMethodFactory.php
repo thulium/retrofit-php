@@ -134,7 +134,7 @@ readonly class ServiceMethodFactory
             ->filter(fn(object $instance): bool => $instance instanceof Headers)
             ->firstOr(null);
         if (!is_null($headers)) {
-            $converter = $this->retrofit->converterProvider->getStringConverter();
+            $converter = $this->retrofit->converterProvider->getStringConverter(new Type('string'));
             $value = $headers->value();
             foreach ($value as $entryKey => $entryValue) {
                 if (Strings::isBlank($entryKey)) {

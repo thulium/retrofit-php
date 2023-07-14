@@ -60,7 +60,7 @@ readonly class HttpClientCall implements Call
                 $responseBody = $this->responseBodyConverter->convert($body);
                 return new Response($response, $responseBody, null);
             } catch (Throwable $throwable) {
-                throw new RuntimeException('Retrofit: Could not convert response body', 0, $throwable);
+                throw new RuntimeException('Retrofit: Could not convert response body.', 0, $throwable);
             }
         }
 
@@ -72,7 +72,7 @@ readonly class HttpClientCall implements Call
             $errorBody = $this->errorBodyConverter->convert($body);
             return new Response($response, null, $errorBody);
         } catch (Throwable $throwable) {
-            throw new RuntimeException('Retrofit: Could not convert error body', 0, $throwable);
+            throw new RuntimeException('Retrofit: Could not convert error body.', 0, $throwable);
         }
     }
 }

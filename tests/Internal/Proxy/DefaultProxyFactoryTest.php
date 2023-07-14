@@ -34,6 +34,7 @@ use Retrofit\Tests\Fixtures\Api\MethodWithoutReturnType;
 use Retrofit\Tests\Fixtures\Api\MethodWithWrongReturnType;
 use Retrofit\Tests\Fixtures\Api\NullableParameter;
 use Retrofit\Tests\Fixtures\Api\ParameterWithoutType;
+use Retrofit\Tests\Fixtures\Api\VariousParameters;
 use Retrofit\Tests\Fixtures\Model\UserRequest;
 use RuntimeException;
 
@@ -210,6 +211,57 @@ class DefaultProxyFactoryTest extends TestCase
 
         Assert::thatArray($reflectionParameters)
             ->extracting(fn(ReflectionParameter $p): bool => $p->getType()->allowsNull())
+            ->containsOnly(true);
+    }
+
+    #[Test]
+    public function shouldHandleParameterWithDefaultValue(): void
+    {
+        //given
+        $service = new ReflectionClass(VariousParameters::class);
+
+        //when
+        $impl = $this->defaultProxyFactory->create($this->retrofit, $service);
+        //then
+        $reflectionMethod = new ReflectionMethod($impl, 'defaultValue');
+        $reflectionParameters = $reflectionMethod->getParameters();
+
+        Assert::thatArray($reflectionParameters)
+            ->extracting(fn(ReflectionParameter $p): mixed => $p->getDefaultValue())
+            ->containsOnly(100);
+    }
+
+    #[Test]
+    public function shouldHandleParameterPassedByReference(): void
+    {
+        //given
+        $service = new ReflectionClass(VariousParameters::class);
+
+        //when
+        $impl = $this->defaultProxyFactory->create($this->retrofit, $service);
+        //then
+        $reflectionMethod = new ReflectionMethod($impl, 'passedByReference');
+        $reflectionParameters = $reflectionMethod->getParameters();
+
+        Assert::thatArray($reflectionParameters)
+            ->extracting(fn(ReflectionParameter $p): bool => $p->isPassedByReference())
+            ->containsOnly(true);
+    }
+
+    #[Test]
+    public function shouldHandleVariadicParameter(): void
+    {
+        //given
+        $service = new ReflectionClass(VariousParameters::class);
+
+        //when
+        $impl = $this->defaultProxyFactory->create($this->retrofit, $service);
+        //then
+        $reflectionMethod = new ReflectionMethod($impl, 'variadic');
+        $reflectionParameters = $reflectionMethod->getParameters();
+
+        Assert::thatArray($reflectionParameters)
+            ->extracting(fn(ReflectionParameter $p): bool => $p->isVariadic())
             ->containsOnly(true);
     }
 }

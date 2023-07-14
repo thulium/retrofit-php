@@ -25,8 +25,7 @@ readonly class ConverterProvider
             return $converter;
         }
 
-        //todo
-        throw new RuntimeException('getRequestBodyConverter');
+        throw new RuntimeException("Cannot find request body converter for type '{$type}'.");
     }
 
     public function getResponseBodyConverter(Type $type): Converter
@@ -39,12 +38,19 @@ readonly class ConverterProvider
             return $converter;
         }
 
-        //todo
-        throw new RuntimeException('getResponseBodyConverter');
+        throw new RuntimeException("Cannot find response body converter for type '{$type}'.");
     }
 
-    public function getStringConverter(): Converter
+    public function getStringConverter(Type $type): Converter
     {
-        return BuiltInConverters::ToStringConverter();
+        foreach ($this->converterFactories as $converterFactory) {
+            $converter = $converterFactory->stringConverter($type);
+            if (is_null($converter)) {
+                continue;
+            }
+            return $converter;
+        }
+
+        throw new RuntimeException('Cannot find string converter.');
     }
 }

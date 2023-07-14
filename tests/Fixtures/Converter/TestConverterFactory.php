@@ -13,7 +13,7 @@ class TestConverterFactory implements ConverterFactory
 {
     public function requestBodyConverter(Type $type): ?Converter
     {
-        return null;
+        return BuiltInConverters::JsonEncodeRequestBodyConverter();
     }
 
     public function responseBodyConverter(Type $type): ?Converter
@@ -30,8 +30,11 @@ class TestConverterFactory implements ConverterFactory
         return null;
     }
 
-    public function stringConverter(): ?Converter
+    public function stringConverter(Type $type): ?Converter
     {
+        if (!$type->isScalar()) {
+            return BuiltInConverters::ToStringConverter();
+        }
         return null;
     }
 }

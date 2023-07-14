@@ -11,5 +11,5 @@ interface ConverterFactory
 
     public function responseBodyConverter(Type $type): ?Converter;
 
-    public function stringConverter(): ?Converter;
+    public function stringConverter(Type $type): ?Converter;
 }

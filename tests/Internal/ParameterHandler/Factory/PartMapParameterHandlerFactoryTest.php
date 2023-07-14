@@ -16,6 +16,7 @@ use Retrofit\Internal\Encoding;
 use Retrofit\Internal\ParameterHandler\Factory\PartMapParameterHandlerFactory;
 use Retrofit\Internal\ParameterHandler\PartMapParameterHandler;
 use Retrofit\Tests\Fixtures\Api\MockMethod;
+use Retrofit\Tests\Fixtures\Converter\TestConverterFactory;
 use Retrofit\Type;
 use RuntimeException;
 
@@ -28,7 +29,7 @@ class PartMapParameterHandlerFactoryTest extends TestCase
     {
         parent::setUp();
         $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
-        $this->converterProvider = new ConverterProvider([new BuiltInConverterFactory()]);
+        $this->converterProvider = new ConverterProvider([new BuiltInConverterFactory(), new TestConverterFactory()]);
     }
 
     #[Test]

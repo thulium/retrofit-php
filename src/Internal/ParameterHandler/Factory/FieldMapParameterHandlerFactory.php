@@ -27,6 +27,6 @@ readonly class FieldMapParameterHandlerFactory extends AbstractParameterHandlerF
             throw Utils::parameterException($reflectionMethod, $position, '#[FieldMap] parameters can only be used with form encoding.');
         }
 
-        return new FieldMapParameterHandler($param->encoded(), $this->converterProvider->getStringConverter(), $reflectionMethod, $position);
+        return new FieldMapParameterHandler($param->encoded(), $this->converterProvider->getStringConverter($type), $reflectionMethod, $position);
     }
 }

@@ -6,6 +6,7 @@ namespace Retrofit\Tests\Internal;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\Utils;
+use InvalidArgumentException;
 use Ouzo\Tests\Assert;
 use Ouzo\Tests\CatchException;
 use Ouzo\Tests\Mock\Mock;
@@ -15,6 +16,7 @@ use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\StreamInterface;
 use Retrofit\HttpClient;
 use Retrofit\Internal\BuiltInConverterFactory;
 use Retrofit\Internal\ConverterProvider;
@@ -29,6 +31,7 @@ use Retrofit\Retrofit;
 use Retrofit\Tests\Fixtures\Api\AllHttpRequestMethods;
 use Retrofit\Tests\Fixtures\Api\FullyValidApi;
 use Retrofit\Tests\Fixtures\Api\InvalidMethods;
+use Retrofit\Tests\Fixtures\Api\InvalidRequestBody;
 use Retrofit\Tests\Fixtures\Api\TypeResolverApi;
 use Retrofit\Tests\Fixtures\Converter\TestConverterFactory;
 use Retrofit\Tests\Fixtures\Model\UserRequest;
@@ -420,7 +423,9 @@ class ServiceMethodFactoryTest extends TestCase
         $part1 = (new UserRequest())
             ->setLogin('jon-doe');
 
-        $part2 = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor(fopen('/tmp/image.png', 'r')), [], 'image.png');
+        $fileResource = $this->getFileResource('sample-image.jpg');
+
+        $part2 = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor($fileResource), [], 'image.png');
 
         //when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addPartMap');
@@ -433,7 +438,7 @@ class ServiceMethodFactoryTest extends TestCase
         $expectedPart1 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part1\"\r\nContent-Length: 19\r\n\r\n{\"login\":\"jon-doe\"}";
         $this->assertStringContainsString($expectedPart1, $contents);
 
-        $expectedPart2 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Type: image/png\r\n\r\n";
+        $expectedPart2 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Length: 9155\r\nContent-Type: image/png\r\n\r\n";
         $this->assertStringContainsString($expectedPart2, $contents);
     }
 
@@ -646,5 +651,46 @@ class ServiceMethodFactoryTest extends TestCase
         $execute = $serviceMethod->invoke([])->execute();
         $this->assertNull($execute->body());
         $this->assertNull($execute->errorBody());
+    }
+
+    #[Test]
+    public function shouldThrowExceptionWhenNotArrayTypeHasParametrizedType(): void
+    {
+        //when
+        CatchException::when($this->serviceMethodFactory)->create(InvalidRequestBody::class, 'notArrayTypeHasParametrizedType');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(InvalidArgumentException::class)
+            ->hasMessage('Parametrized type can be set only for array raw type.');
+    }
+
+    #[Test]
+    public function shouldThrowExceptionWhenResponseBodyAttributeIsMissing(): void
+    {
+        //when
+        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'missingResponseBody');
+
+        //then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method InvalidMethods::missingResponseBody(). #[ResponseBody] attribute is required.');
+    }
+
+    #[Test]
+    public function shouldHandleStreamInterfaceAsResponseBody(): void
+    {
+        //given
+        $stream = Utils::streamFor('[{"key":"value1"},{"key":"value2"}]');
+        Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], $stream));
+
+        //when
+        $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'streamInterfaceAsResponseBody');
+
+        //then
+        $execute = $serviceMethod->invoke([])->execute();
+        $body = $execute->body();
+        $this->assertInstanceOf(StreamInterface::class, $body);
+        $this->assertSame($stream, $body);
     }
 }
