@@ -22,6 +22,7 @@ use Retrofit\Attribute\Response\ErrorBody;
 use Retrofit\Attribute\Response\ResponseBody;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
+use Retrofit\Converter\Converter;
 use Retrofit\Converter\ResponseBodyConverter;
 use Retrofit\HttpClient;
 use Retrofit\Internal\ParameterHandler\Factory\ParameterHandlerFactoryProvider;
@@ -46,26 +47,8 @@ readonly class ServiceMethodFactory
         $encoding = $this->getEncoding($httpRequest, $reflectionMethod);
         $defaultHeaders = $this->getDefaultHeaders($reflectionMethod);
         $parameterHandlers = $this->getParameterHandlers($httpRequest, $encoding, $reflectionMethod);
-
-        $reflectionAttributes = $reflectionMethod->getAttributes(ResponseBody::class);
-        if (empty($reflectionAttributes)) {
-            throw Utils::methodException($reflectionMethod, '#[ResponseBody] attribute is required.');
-        }
-        $reflectionAttribute = $reflectionAttributes[0];
-        /** @var ResponseBody $responseBody */
-        $responseBody = $reflectionAttribute->newInstance();
-        $responseType = new Type($responseBody->rawType(), $responseBody->parametrizedType());
-        $responseBodyConverter = $this->retrofit->converterProvider->getResponseBodyConverter($responseType);
-
-        $errorBodyConverter = null;
-        $reflectionAttributes = $reflectionMethod->getAttributes(ErrorBody::class);
-        if (!empty($reflectionAttributes)) {
-            $reflectionAttribute = $reflectionAttributes[0];
-            /** @var ErrorBody $responseBody */
-            $responseBody = $reflectionAttribute->newInstance();
-            $responseType = new Type($responseBody->rawType(), $responseBody->parametrizedType());
-            $errorBodyConverter = $this->retrofit->converterProvider->getResponseBodyConverter($responseType);
-        }
+        $responseBodyConverter = $this->getResponseBodyConverter($reflectionMethod);
+        $errorBodyConverter = $this->getErrorBodyConverter($reflectionMethod);
 
         $requestFactory = new RequestFactory($this->retrofit->baseUrl, $httpRequest, $defaultHeaders, $parameterHandlers);
 
@@ -234,5 +217,31 @@ readonly class ServiceMethodFactory
         ksort($parameterHandlers);
 
         return $parameterHandlers;
+    }
+
+    private function getResponseBodyConverter(ReflectionMethod $reflectionMethod): Converter
+    {
+        $reflectionAttributes = $reflectionMethod->getAttributes(ResponseBody::class);
+        if (empty($reflectionAttributes)) {
+            throw Utils::methodException($reflectionMethod, '#[ResponseBody] attribute is required.');
+        }
+        return $this->getBodyConverter($reflectionAttributes[0]);
+    }
+
+    private function getErrorBodyConverter(ReflectionMethod $reflectionMethod): ?Converter
+    {
+        $reflectionAttributes = $reflectionMethod->getAttributes(ErrorBody::class);
+        if (empty($reflectionAttributes)) {
+            return null;
+        }
+        return $this->getBodyConverter($reflectionAttributes[0]);
+    }
+
+    private function getBodyConverter(ReflectionAttribute $reflectionAttribute): Converter
+    {
+        /** @var ResponseBody|ErrorBody $body */
+        $body = $reflectionAttribute->newInstance();
+        $responseType = new Type($body->rawType(), $body->parametrizedType());
+        return $this->retrofit->converterProvider->getResponseBodyConverter($responseType);
     }
 }
