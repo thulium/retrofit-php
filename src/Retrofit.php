@@ -52,7 +52,7 @@ readonly class Retrofit
         return $this->proxyFactory->create($this, $reflectionClass);
     }
 
-    public static function builder(): RetrofitBuilder
+    public static function Builder(): RetrofitBuilder
     {
         return new RetrofitBuilder();
     }
@@ -60,8 +60,7 @@ readonly class Retrofit
     private function validateServiceInterface(ReflectionClass $service): void
     {
         if (!$service->isInterface()) {
-            $serviceName = $service::class;
-            throw new InvalidArgumentException("Service {$serviceName} API declarations must be interface.");
+            throw new InvalidArgumentException("Service '{$service->getShortName()}' API declarations must be interface.");
         }
     }
 }
