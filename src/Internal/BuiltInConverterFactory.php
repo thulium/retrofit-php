@@ -24,11 +24,11 @@ readonly class BuiltInConverterFactory implements ConverterFactory
 
     public function responseBodyConverter(Type $type): ?Converter
     {
-        if ($type->isA('void')) {
-            return BuiltInConverters::VoidResponseBodyConverter();
-        }
         if ($type->isA(StreamInterface::class)) {
             return BuiltInConverters::StreamInterfaceResponseBodyConverter();
+        }
+        if ($type->isA('void')) {
+            return BuiltInConverters::VoidResponseBodyConverter();
         }
         return null;
     }

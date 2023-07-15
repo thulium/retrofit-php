@@ -666,19 +666,7 @@ class ServiceMethodFactoryTest extends TestCase
     }
 
     #[Test]
-    public function shouldThrowExceptionWhenResponseBodyAttributeIsMissing(): void
-    {
-        //when
-        CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'missingResponseBody');
-
-        //then
-        CatchException::assertThat()
-            ->isInstanceOf(RuntimeException::class)
-            ->hasMessage('Method InvalidMethods::missingResponseBody(). #[ResponseBody] attribute is required.');
-    }
-
-    #[Test]
-    public function shouldHandleStreamInterfaceAsResponseBody(): void
+    public function shouldHandleStreamInterfaceAsResponseBodyUsingStreamingAttribute(): void
     {
         //given
         $stream = Utils::streamFor('[{"key":"value1"},{"key":"value2"}]');

@@ -108,6 +108,24 @@ class HttpClientCallTest extends TestCase
         $this->assertTrue($callback::$onFailureCalled);
     }
 
+    #[Test]
+    public function shouldHandleNullableResponseBodyConverter(): void
+    {
+        //given
+        $response = new Response(200);
+        $httpClient = self::MockHttpClient($response);
+
+        $httpClientCall = new HttpClientCall($httpClient, $this->request, null, $this->responseErrorBodyConverter);
+
+        //when
+        $retrofitResponse = $httpClientCall->execute();
+
+        //then
+        $this->assertSame($response, $retrofitResponse->raw());
+        $this->assertNull($retrofitResponse->body());
+        $this->assertNull($retrofitResponse->errorBody());
+    }
+
     private static function MockHttpClient(ResponseInterface|Throwable $result): HttpClient
     {
         return new class($result) implements HttpClient {

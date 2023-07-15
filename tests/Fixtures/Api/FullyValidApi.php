@@ -22,6 +22,7 @@ use Retrofit\Attribute\QueryMap;
 use Retrofit\Attribute\QueryName;
 use Retrofit\Attribute\Response\ErrorBody;
 use Retrofit\Attribute\Response\ResponseBody;
+use Retrofit\Attribute\Streaming;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
 use Retrofit\Multipart\PartInterface;
@@ -153,6 +154,6 @@ interface FullyValidApi
     public function testErrorBodyWithoutMapping(): Call;
 
     #[GET('/users')]
-    #[ResponseBody(StreamInterface::class)]
+    #[Streaming]
     public function streamInterfaceAsResponseBody(): Call;
 }

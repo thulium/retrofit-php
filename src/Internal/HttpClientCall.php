@@ -18,7 +18,7 @@ readonly class HttpClientCall implements Call
     public function __construct(
         private HttpClient $httpClient,
         private RequestInterface $request,
-        private ResponseBodyConverter $responseBodyConverter,
+        private ?ResponseBodyConverter $responseBodyConverter,
         private ?ResponseBodyConverter $errorBodyConverter
     )
     {
@@ -57,6 +57,10 @@ readonly class HttpClientCall implements Call
 
         if ($code >= 200 && $code < 300) {
             try {
+                if (is_null($this->responseBodyConverter)) {
+                    return new Response($response, null, null);
+                }
+
                 $responseBody = $this->responseBodyConverter->convert($body);
                 return new Response($response, $responseBody, null);
             } catch (Throwable $throwable) {

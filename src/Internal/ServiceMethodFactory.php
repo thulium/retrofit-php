@@ -8,6 +8,7 @@ use Ouzo\Utilities\FluentArray;
 use Ouzo\Utilities\Joiner;
 use Ouzo\Utilities\Strings;
 use phpDocumentor\Reflection\DocBlockFactory;
+use Psr\Http\Message\StreamInterface;
 use ReflectionAttribute;
 use ReflectionMethod;
 use Retrofit\Attribute\Field;
@@ -20,6 +21,7 @@ use Retrofit\Attribute\Part;
 use Retrofit\Attribute\PartMap;
 use Retrofit\Attribute\Response\ErrorBody;
 use Retrofit\Attribute\Response\ResponseBody;
+use Retrofit\Attribute\Streaming;
 use Retrofit\Attribute\Url;
 use Retrofit\Call;
 use Retrofit\Converter\Converter;
@@ -56,7 +58,7 @@ readonly class ServiceMethodFactory
             public function __construct(
                 private readonly HttpClient $httpClient,
                 private readonly RequestFactory $requestFactory,
-                private readonly ResponseBodyConverter $responseBodyConverter,
+                private readonly ?ResponseBodyConverter $responseBodyConverter,
                 private readonly ?ResponseBodyConverter $errorBodyConverter
             )
             {
@@ -219,12 +221,14 @@ readonly class ServiceMethodFactory
         return $parameterHandlers;
     }
 
-    private function getResponseBodyConverter(ReflectionMethod $reflectionMethod): Converter
+    private function getResponseBodyConverter(ReflectionMethod $reflectionMethod): ?Converter
     {
-        $reflectionAttributes = $reflectionMethod->getAttributes(ResponseBody::class);
-        if (empty($reflectionAttributes)) {
-            throw Utils::methodException($reflectionMethod, '#[ResponseBody] attribute is required.');
+        $streamingReflectionAttributes = $reflectionMethod->getAttributes(Streaming::class);
+        if (!empty($streamingReflectionAttributes)) {
+            $responseType = new Type(StreamInterface::class);
+            return $this->retrofit->converterProvider->getResponseBodyConverter($responseType);
         }
+        $reflectionAttributes = $reflectionMethod->getAttributes(ResponseBody::class);
         return $this->getBodyConverter($reflectionAttributes[0]);
     }
 
