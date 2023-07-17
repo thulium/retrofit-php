@@ -14,7 +14,7 @@ readonly class POST implements HttpRequest
 
     public function __construct(private ?string $path = null)
     {
-        $this->pathParameters = is_null($this->path) ? [] : Utils::parsePathParameters($this->path);
+        $this->pathParameters = Utils::parsePathParameters($this->path);
     }
 
     public function httpMethod(): HttpMethod

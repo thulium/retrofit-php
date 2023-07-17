@@ -76,7 +76,7 @@ readonly class ServiceMethodFactory
     {
         $httpRequestMethods = FluentArray::from($reflectionMethod->getAttributes())
             ->map(fn(ReflectionAttribute $attribute): object => $attribute->newInstance())
-            ->filter(fn(object $instance): bool => $instance instanceof HttpRequest)
+            ->filter(fn(object $instance) => $instance instanceof HttpRequest)
             ->toArray();
 
         if (empty($httpRequestMethods)) {

@@ -110,6 +110,19 @@ class UtilsTest extends TestCase
     }
 
     #[Test]
+    public function shouldReturnEmptyArrayWhenPathIsNull(): void
+    {
+        //given
+        $path = null;
+
+        //when
+        $pathParameters = Utils::parsePathParameters($path);
+
+        //then
+        $this->assertSame([], $pathParameters);
+    }
+
+    #[Test]
     #[DataProvider('pathParameters')]
     public function shouldParsePathParameters(string $path, $expectedPathParameters): void
     {

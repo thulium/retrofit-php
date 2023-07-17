@@ -24,6 +24,7 @@ class RequestBuilder
     private UriInterface $uri;
     #[ArrayShape([0 => ['name' => 'string', 'value' => 'string']])]
     private array $pathParameters = [];
+    private array $queries = [];
     private array $headers = [];
     private array $fields = [];
     private array $parts = [];
@@ -64,18 +65,11 @@ class RequestBuilder
         $this->pathParameters[] = ['name' => $name, 'value' => $value];
     }
 
-    private array $queries = [];
-
     public function addQueryParam(string|array $name, string|array|null $value, bool $encoded): void
     {
         if (is_null($value)) {
             $name = Arrays::toArray($name);
-            foreach ($name as $item) {
-                if (!$encoded) {
-                    $item = rawurlencode($item);
-                }
-                $this->queries[] = $item;
-            }
+            $this->queries = Arrays::map($name, fn(string $item) => $encoded ? $item : rawurlencode($item));
         } else {
             $value = Arrays::toArray($value);
             foreach ($value as $item) {

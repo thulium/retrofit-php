@@ -55,7 +55,7 @@ readonly class HttpClientCall implements Call
         $code = $response->getStatusCode();
         $body = $response->getBody();
 
-        if ($code >= 200 && $code < 300) {
+        if ($this->isSuccessfulResponse($code)) {
             try {
                 if (is_null($this->responseBodyConverter)) {
                     return new Response($response, null, null);
@@ -78,5 +78,10 @@ readonly class HttpClientCall implements Call
         } catch (Throwable $throwable) {
             throw new RuntimeException('Retrofit: Could not convert error body.', 0, $throwable);
         }
+    }
+
+    private function isSuccessfulResponse(int $code): bool
+    {
+        return $code >= 200 && $code < 300;
     }
 }

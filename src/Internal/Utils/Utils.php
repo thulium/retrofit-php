@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Retrofit\Internal\Utils;
 
 use Ouzo\Utilities\Arrays;
+use Ouzo\Utilities\FluentArray;
 use Ouzo\Utilities\Joiner;
 use Ouzo\Utilities\Strings;
 use ReflectionMethod;
@@ -61,16 +62,20 @@ readonly class Utils
      *
      * @return string[]
      */
-    public static function parsePathParameters(string $path): array
+    public static function parsePathParameters(?string $path): array
     {
+        if (is_null($path)) {
+            return [];
+        }
+
         /** @var Detail[] $matcher */
         $matcher = pattern(self::PARAM_URL_REGEX)
             ->match($path);
-        $patterns = [];
-        foreach ($matcher as $detail) {
-            $patterns[] = $detail->get(1);
-        }
-        return array_unique($patterns);
+
+        return FluentArray::from(iterator_to_array($matcher))
+            ->map(fn(Detail $detail) => $detail->get(1))
+            ->unique()
+            ->toArray();
     }
 
     /**
