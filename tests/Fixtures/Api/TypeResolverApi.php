@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Fixtures\Api;
 
-use Retrofit\Attribute\Body;
-use Retrofit\Attribute\GET;
-use Retrofit\Attribute\POST;
-use Retrofit\Attribute\Query;
-use Retrofit\Attribute\Response\ResponseBody;
-use Retrofit\Call;
+use Retrofit\Core\Attribute\Body;
+use Retrofit\Core\Attribute\GET;
+use Retrofit\Core\Attribute\POST;
+use Retrofit\Core\Attribute\Query;
+use Retrofit\Core\Attribute\Response\ResponseBody;
+use Retrofit\Core\Call;
 use Retrofit\Tests\Fixtures\Model\UserRequest;
 
 interface TypeResolverApi

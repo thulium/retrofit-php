@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Fixtures\Converter;
 
-use Retrofit\Converter\Converter;
-use Retrofit\Converter\ConverterFactory;
-use Retrofit\Internal\BuiltInConverters;
-use Retrofit\Type;
+use Retrofit\Core\Converter\Converter;
+use Retrofit\Core\Converter\ConverterFactory;
+use Retrofit\Core\Internal\BuiltInConverters;
+use Retrofit\Core\Type;
 use stdClass;
 
 class TestConverterFactory implements ConverterFactory

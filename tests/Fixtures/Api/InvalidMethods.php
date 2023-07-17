@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Fixtures\Api;
 
-use Retrofit\Attribute\FormUrlEncoded;
-use Retrofit\Attribute\GET;
-use Retrofit\Attribute\Headers;
-use Retrofit\Attribute\HTTP;
-use Retrofit\Attribute\Multipart;
-use Retrofit\Attribute\Path;
-use Retrofit\Attribute\POST;
-use Retrofit\Attribute\Url;
-use Retrofit\Call;
-use Retrofit\HttpMethod;
+use Retrofit\Core\Attribute\FormUrlEncoded;
+use Retrofit\Core\Attribute\GET;
+use Retrofit\Core\Attribute\Headers;
+use Retrofit\Core\Attribute\HTTP;
+use Retrofit\Core\Attribute\Multipart;
+use Retrofit\Core\Attribute\Path;
+use Retrofit\Core\Attribute\POST;
+use Retrofit\Core\Attribute\Url;
+use Retrofit\Core\Call;
+use Retrofit\Core\HttpMethod;
 
 interface InvalidMethods
 {

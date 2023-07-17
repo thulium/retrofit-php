@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Fixtures\Api;
 
-use Retrofit\Attribute\GET;
-use Retrofit\Attribute\Header;
-use Retrofit\Call;
+use Retrofit\Core\Attribute\GET;
+use Retrofit\Core\Attribute\Header;
+use Retrofit\Core\Call;
 
 interface NullableParameter
 {

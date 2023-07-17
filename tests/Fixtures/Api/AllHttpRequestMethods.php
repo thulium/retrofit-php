@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace Retrofit\Tests\Fixtures\Api;
 
-use Retrofit\Attribute\DELETE;
-use Retrofit\Attribute\GET;
-use Retrofit\Attribute\HEAD;
-use Retrofit\Attribute\OPTIONS;
-use Retrofit\Attribute\PATCH;
-use Retrofit\Attribute\POST;
-use Retrofit\Attribute\PUT;
-use Retrofit\Attribute\Response\ResponseBody;
-use Retrofit\Call;
+use Retrofit\Core\Attribute\DELETE;
+use Retrofit\Core\Attribute\GET;
+use Retrofit\Core\Attribute\HEAD;
+use Retrofit\Core\Attribute\OPTIONS;
+use Retrofit\Core\Attribute\PATCH;
+use Retrofit\Core\Attribute\POST;
+use Retrofit\Core\Attribute\PUT;
+use Retrofit\Core\Attribute\Response\ResponseBody;
+use Retrofit\Core\Call;
 
 interface AllHttpRequestMethods
 {
