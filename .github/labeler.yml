@@ -1,10 +1,10 @@
 type/epic:
-  - head-branch: ^type/epic
+  - head-branch: ^epic/
 type/feature:
-  - head-branch: ^type/feature
+  - head-branch: ^feature/
 type/bug:
-  - head-branch: ^type/bug
+  - head-branch: ^bug/
 type/housekeeping:
-  - head-branch: ^type/housekeeping
+  - head-branch: ^housekeeping/
 type/dependencies:
-  - head-branch: ^type/dependabot
+  - head-branch: ^dependabot/
