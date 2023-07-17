@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal;
@@ -128,7 +129,8 @@ class HttpClientCallTest extends TestCase
 
     private static function MockHttpClient(ResponseInterface|Throwable $result): HttpClient
     {
-        return new class($result) implements HttpClient {
+        return new class ($result) implements HttpClient
+        {
             private Closure $onResponse;
             private Closure $onFailure;
 
@@ -164,7 +166,8 @@ class HttpClientCallTest extends TestCase
 
     private static function MockCallback(): Callback
     {
-        return new class implements Callback {
+        return new class () implements Callback
+        {
             public static bool $onResponseCalled = false;
             public static bool $onFailureCalled = false;
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler\Factory;
@@ -35,7 +36,12 @@ class QueryMapParameterHandlerFactoryTest extends TestCase
 
         //when
         $parameterHandler = $queryMapParameterHandler->create(
-            new QueryMap(), new GET('/users'), null, $this->reflectionMethod, 1, new Type('string')
+            new QueryMap(),
+            new GET('/users'),
+            null,
+            $this->reflectionMethod,
+            1,
+            new Type('string'),
         );
 
         //then

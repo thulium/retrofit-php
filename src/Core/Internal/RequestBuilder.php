@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal;
@@ -36,9 +37,8 @@ class RequestBuilder
     public function __construct(
         UriInterface $baseUrl,
         private readonly HttpRequest $httpRequest,
-        array $defaultHeaders = []
-    )
-    {
+        array $defaultHeaders = [],
+    ) {
         $this->uri = new Uri($baseUrl->__toString());
         if (!is_null($this->httpRequest->path())) {
             $this->uri = $this->uri->withPath($this->httpRequest->path());

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core;
@@ -33,9 +34,8 @@ readonly class Retrofit
         public HttpClient $httpClient,
         public UriInterface $baseUrl,
         public ConverterProvider $converterProvider,
-        private ProxyFactory $proxyFactory
-    )
-    {
+        private ProxyFactory $proxyFactory,
+    ) {
     }
 
     /**

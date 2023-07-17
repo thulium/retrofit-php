@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler\Factory;
@@ -57,7 +58,12 @@ class FieldParameterHandlerFactoryTest extends TestCase
 
         //when
         $parameterHandler = $fieldParameterHandlerFactory->create(
-            new Field('name'), new GET('/users/{login}'), Encoding::FORM_URL_ENCODED, $this->reflectionMethod, 1, new Type('string')
+            new Field('name'),
+            new GET('/users/{login}'),
+            Encoding::FORM_URL_ENCODED,
+            $this->reflectionMethod,
+            1,
+            new Type('string'),
         );
 
         //then

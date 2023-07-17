@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal;
@@ -42,7 +43,7 @@ class RequestBuilderTest extends TestCase
     public function shouldSetNewBaseUrl(Uri|string $uri): void
     {
         //given
-        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
         //when
         $requestBuilder->setBaseUrl($uri);
@@ -115,7 +116,7 @@ class RequestBuilderTest extends TestCase
     public function shouldSetNewBaseUrlAndReplacePathParameters(): void
     {
         //given
-        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
         //when
         $requestBuilder->addPathParam('login', 'Jon+Doe', false);
@@ -130,7 +131,7 @@ class RequestBuilderTest extends TestCase
     public function shouldAddQueryParameter(): void
     {
         //given
-        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
         //when
         $requestBuilder->addQueryParam('groups', 'new,old', false);
@@ -144,7 +145,7 @@ class RequestBuilderTest extends TestCase
     public function shouldAddEncodedQueryParameter(): void
     {
         //given
-        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
         //when
         $requestBuilder->addQueryParam('groups', 'new,old', true);
@@ -158,7 +159,7 @@ class RequestBuilderTest extends TestCase
     public function shouldAddArrayOfQueryParameters(): void
     {
         //given
-        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
         //when
         $requestBuilder->addQueryParam('groups', ['new', 'old'], false);
@@ -172,7 +173,7 @@ class RequestBuilderTest extends TestCase
     public function shouldAddEncodedArrayOfQueryParameters(): void
     {
         //given
-        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
         //when
         $requestBuilder->addQueryParam('groups', ['new+users', 'old'], true);
@@ -186,7 +187,7 @@ class RequestBuilderTest extends TestCase
     public function shouldAddHeaderToRequest(): void
     {
         //given
-        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
         //when
         $requestBuilder->addHeader('x-custom', 'value');
@@ -200,7 +201,7 @@ class RequestBuilderTest extends TestCase
     public function shouldSanitizeHeaderName(): void
     {
         //given
-        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET);
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
         //when
         $requestBuilder->addHeader('X-CusTom', 'value');

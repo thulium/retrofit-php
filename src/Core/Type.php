@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core;
@@ -19,7 +20,7 @@ readonly class Type
 
     public function __construct(
         private string $rawType,
-        private ?string $parametrizedType = null
+        private ?string $parametrizedType = null,
     )
     {
     }
@@ -58,7 +59,7 @@ readonly class Type
     public static function create(
         ReflectionMethod $reflectionMethod,
         ReflectionParameter $reflectionParameter,
-        array $params = []
+        array $params = [],
     ): Type
     {
         $reflectionType = $reflectionParameter->getType();
@@ -73,7 +74,7 @@ readonly class Type
         string $rawType,
         ReflectionParameter $reflectionParameter,
         ReflectionMethod $reflectionMethod,
-        array $params
+        array $params,
     ): ?string
     {
         if ($rawType !== 'array') {

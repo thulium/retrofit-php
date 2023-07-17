@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal\ParameterHandler;
@@ -11,16 +12,18 @@ readonly class UrlParameterHandler implements ParameterHandler
 {
     public function __construct(
         private ReflectionMethod $reflectionMethod,
-        private int $position
-    )
-    {
+        private int $position,
+    ) {
     }
 
     public function apply(RequestBuilder $requestBuilder, mixed $value): void
     {
         if (is_null($value)) {
-            throw Utils::parameterException($this->reflectionMethod, $this->position,
-                "#[Url] parameter value must not be null.");
+            throw Utils::parameterException(
+                $this->reflectionMethod,
+                $this->position,
+                "#[Url] parameter value must not be null.",
+            );
         }
 
         $requestBuilder->setBaseUrl($value);

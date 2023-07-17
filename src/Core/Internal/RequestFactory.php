@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal;
@@ -18,9 +19,8 @@ readonly class RequestFactory
         private UriInterface $baseUrl,
         private HttpRequest $httpRequest,
         private array $defaultHeaders,
-        private array $parameterHandlers
-    )
-    {
+        private array $parameterHandlers,
+    ) {
     }
 
     public function create(array $args): RequestInterface

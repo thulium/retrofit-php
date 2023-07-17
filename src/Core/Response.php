@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core;
@@ -13,9 +14,8 @@ readonly class Response
     public function __construct(
         private ResponseInterface $rawResponse,
         private mixed $body,
-        private mixed $errorBody
-    )
-    {
+        private mixed $errorBody,
+    ) {
     }
 
     /**

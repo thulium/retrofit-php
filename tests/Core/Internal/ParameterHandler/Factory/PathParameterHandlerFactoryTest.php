@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler\Factory;
@@ -35,7 +36,12 @@ class PathParameterHandlerFactoryTest extends TestCase
 
         //when
         $parameterHandler = $pathParameterHandlerFactory->create(
-            new Path('login'), new POST('/users/{login}'), null, $this->reflectionMethod, 0, new Type('string')
+            new Path('login'),
+            new POST('/users/{login}'),
+            null,
+            $this->reflectionMethod,
+            0,
+            new Type('string'),
         );
 
         //then

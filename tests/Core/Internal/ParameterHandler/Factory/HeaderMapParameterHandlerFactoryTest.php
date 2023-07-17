@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler\Factory;
@@ -35,7 +36,12 @@ class HeaderMapParameterHandlerFactoryTest extends TestCase
 
         //when
         $parameterHandler = $headerMapParameterHandlerFactory->create(
-            new HeaderMap(), new GET('/users/{login}'), null, $this->reflectionMethod, 1, new Type('string')
+            new HeaderMap(),
+            new GET('/users/{login}'),
+            null,
+            $this->reflectionMethod,
+            1,
+            new Type('string'),
         );
 
         //then

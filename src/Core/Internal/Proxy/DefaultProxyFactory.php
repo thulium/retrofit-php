@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal\Proxy;
@@ -66,9 +67,8 @@ readonly class DefaultProxyFactory implements ProxyFactory
 
     public function __construct(
         private BuilderFactory $builderFactory,
-        private PrettyPrinterAbstract $prettyPrinterAbstract
-    )
-    {
+        private PrettyPrinterAbstract $prettyPrinterAbstract,
+    ) {
     }
 
     public function create(Retrofit $retrofit, ReflectionClass $service): object
@@ -122,9 +122,9 @@ readonly class DefaultProxyFactory implements ProxyFactory
                     new Name(Utils::toFQCN(ParameterHandlerFactoryProvider::class)),
                     [
                         new PropertyFetch(new Variable('retrofit'), 'converterProvider'),
-                    ]
+                    ],
                 ),
-            ]
+            ],
         );
         $assign = new Assign($serviceMethodFactoryProperty, $serviceMethodFactoryInstance);
 
@@ -176,14 +176,14 @@ readonly class DefaultProxyFactory implements ProxyFactory
             [
                 new String_(Utils::toFQCN($service->getName())),
                 new Function_(),
-            ]
+            ],
         );
         return new MethodCall(
             $serviceMethodFactoryCreateMethodCall,
             'invoke',
             [
                 new FuncCall(new Name('func_get_args')),
-            ]
+            ],
         );
     }
 
@@ -196,8 +196,10 @@ readonly class DefaultProxyFactory implements ProxyFactory
         $returnType = $method->getReturnType()->getName();
         $callClassReturnType = Call::class;
         if ($returnType !== $callClassReturnType) {
-            throw Utils::methodException($method,
-                "Method return type should be a {$callClassReturnType} class. '{$returnType}' return type found.");
+            throw Utils::methodException(
+                $method,
+                "Method return type should be a {$callClassReturnType} class. '{$returnType}' return type found.",
+            );
         }
     }
 

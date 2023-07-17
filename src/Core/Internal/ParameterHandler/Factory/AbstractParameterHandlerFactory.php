@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal\ParameterHandler\Factory;
@@ -22,7 +23,7 @@ use Retrofit\Core\Internal\Encoding;
 use Retrofit\Core\Internal\ParameterHandler\ParameterHandler;
 use Retrofit\Core\Type;
 
-readonly abstract class AbstractParameterHandlerFactory
+abstract readonly class AbstractParameterHandlerFactory
 {
     public function __construct(protected ConverterProvider $converterProvider)
     {
@@ -34,6 +35,6 @@ readonly abstract class AbstractParameterHandlerFactory
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,
         int $position,
-        Type $type
+        Type $type,
     ): ParameterHandler;
 }

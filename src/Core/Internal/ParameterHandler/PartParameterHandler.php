@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal\ParameterHandler;
@@ -20,9 +21,8 @@ readonly class PartParameterHandler implements ParameterHandler
         private MimeEncoding $encoding,
         private Converter $converter,
         private ReflectionMethod $reflectionMethod,
-        private int $position
-    )
-    {
+        private int $position,
+    ) {
     }
 
     public function apply(RequestBuilder $requestBuilder, mixed $value): void
@@ -32,13 +32,19 @@ readonly class PartParameterHandler implements ParameterHandler
         }
 
         if (Strings::isBlank($this->name) && !$value instanceof PartInterface) {
-            throw Utils::parameterException($this->reflectionMethod, $this->position,
-                '#[Part] attribute must supply a name or use MultipartBody.Part parameter type.');
+            throw Utils::parameterException(
+                $this->reflectionMethod,
+                $this->position,
+                '#[Part] attribute must supply a name or use MultipartBody.Part parameter type.',
+            );
         }
 
         if (Strings::isNotBlank($this->name) && $value instanceof PartInterface) {
-            throw Utils::parameterException($this->reflectionMethod, $this->position,
-                '#[Part] attribute using the MultipartBody.Part must not include a part name in the attribute.');
+            throw Utils::parameterException(
+                $this->reflectionMethod,
+                $this->position,
+                '#[Part] attribute using the MultipartBody.Part must not include a part name in the attribute.',
+            );
         }
 
         if ($value instanceof PartInterface) {

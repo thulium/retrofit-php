@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\Proxy;
@@ -113,7 +114,7 @@ class DefaultProxyFactoryTest extends TestCase
             ->extracting(fn(ReflectionAttribute $a): string => $a->getName(), fn(ReflectionAttribute $a): array => $a->getArguments())
             ->containsExactly(
                 [GET::class, ['/info/{login}']],
-                [ResponseBody::class, ['string']]
+                [ResponseBody::class, ['string']],
             );
 
         $reflectionMethod2 = $reflectionClass->getMethod('createUser');
@@ -122,7 +123,7 @@ class DefaultProxyFactoryTest extends TestCase
             ->extracting(fn(ReflectionAttribute $a): string => $a->getName(), fn(ReflectionAttribute $a): array => $a->getArguments())
             ->containsExactly(
                 [POST::class, ['/users/{login}']],
-                [ResponseBody::class, ['string']]
+                [ResponseBody::class, ['string']],
             );
     }
 
@@ -173,11 +174,11 @@ class DefaultProxyFactoryTest extends TestCase
             ->extracting(
                 fn(ReflectionParameter $p): string => $p->getName(),
                 fn(ReflectionParameter $p): array => Arrays::map($p->getAttributes(), fn(ReflectionAttribute $a) => $a->getName()),
-                fn(ReflectionParameter $p): string => $p->getType()->getName()
+                fn(ReflectionParameter $p): string => $p->getType()->getName(),
             )
             ->containsOnly(
                 ['login', [Path::class], 'string'],
-                ['userRequest', [Body::class], UserRequest::class]
+                ['userRequest', [Body::class], UserRequest::class],
             );
     }
 

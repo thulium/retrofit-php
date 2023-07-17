@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Attribute;
@@ -10,9 +11,8 @@ readonly class Query
 {
     public function __construct(
         private string $name,
-        private bool $encoded = false
-    )
-    {
+        private bool $encoded = false,
+    ) {
     }
 
     public function name(): string

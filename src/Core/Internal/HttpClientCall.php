@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal;
@@ -19,9 +20,8 @@ readonly class HttpClientCall implements Call
         private HttpClient $httpClient,
         private RequestInterface $request,
         private ?ResponseBodyConverter $responseBodyConverter,
-        private ?ResponseBodyConverter $errorBodyConverter
-    )
-    {
+        private ?ResponseBodyConverter $errorBodyConverter,
+    ) {
     }
 
     public function execute(): Response
@@ -35,7 +35,7 @@ readonly class HttpClientCall implements Call
         $this->httpClient->sendAsync(
             $this->request(),
             fn(ResponseInterface $response) => $callback->onResponse($this, $this->createResponse($response)),
-            fn(Throwable $throwable) => $callback->onFailure($this, $throwable)
+            fn(Throwable $throwable) => $callback->onFailure($this, $throwable),
         );
         return $this;
     }

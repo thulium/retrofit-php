@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core;
@@ -22,9 +23,8 @@ class TypeTest extends TestCase
         ReflectionMethod $reflectionMethod,
         ReflectionParameter $reflectionParameter,
         array $params,
-        string $expectedRawType
-    ): void
-    {
+        string $expectedRawType,
+    ): void {
         //when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
@@ -44,9 +44,8 @@ class TypeTest extends TestCase
         ReflectionMethod $reflectionMethod,
         ReflectionParameter $reflectionParameter,
         array $params,
-        string $expectedRawType
-    ): void
-    {
+        string $expectedRawType,
+    ): void {
         //when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
@@ -66,9 +65,8 @@ class TypeTest extends TestCase
         ReflectionMethod $reflectionMethod,
         ReflectionParameter $reflectionParameter,
         array $params,
-        string $expectedRawType
-    ): void
-    {
+        string $expectedRawType,
+    ): void {
         //when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
@@ -89,9 +87,8 @@ class TypeTest extends TestCase
         ReflectionMethod $reflectionMethod,
         ReflectionParameter $reflectionParameter,
         array $params,
-        string $expectedRawType
-    ): void
-    {
+        string $expectedRawType,
+    ): void {
         //when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
@@ -113,9 +110,8 @@ class TypeTest extends TestCase
         ReflectionMethod $reflectionMethod,
         ReflectionParameter $reflectionParameter,
         array $params,
-        string $expectedRawType
-    ): void
-    {
+        string $expectedRawType,
+    ): void {
         //when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
@@ -137,9 +133,8 @@ class TypeTest extends TestCase
         ReflectionMethod $reflectionMethod,
         ReflectionParameter $reflectionParameter,
         array $params,
-        string $expectedRawType
-    ): void
-    {
+        string $expectedRawType,
+    ): void {
         //when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 

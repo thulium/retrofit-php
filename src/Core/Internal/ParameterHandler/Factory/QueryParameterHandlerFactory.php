@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal\ParameterHandler\Factory;
@@ -19,9 +20,8 @@ readonly class QueryParameterHandlerFactory extends AbstractParameterHandlerFact
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,
         int $position,
-        Type $type
-    ): ParameterHandler
-    {
+        Type $type,
+    ): ParameterHandler {
         return new QueryParameterHandler($param->name(), $param->encoded(), $this->converterProvider->getStringConverter($type), $reflectionMethod, $position);
     }
 }

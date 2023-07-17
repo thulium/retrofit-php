@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler\Factory;
@@ -41,7 +42,12 @@ class FieldMapParameterHandlerFactoryTest extends TestCase
 
         //when
         CatchException::when($fieldMapParameterHandlerFactory)->create(
-            new FieldMap(false), new GET('/users/{login}'), $encoding, $this->reflectionMethod, 1, new Type('string')
+            new FieldMap(false),
+            new GET('/users/{login}'),
+            $encoding,
+            $this->reflectionMethod,
+            1,
+            new Type('string'),
         );
 
         //then
@@ -58,7 +64,12 @@ class FieldMapParameterHandlerFactoryTest extends TestCase
 
         //when
         $parameterHandler = $fieldMapParameterHandlerFactory->create(
-            new FieldMap(false), new GET('/users/{login}'), Encoding::FORM_URL_ENCODED, $this->reflectionMethod, 1, new Type('string')
+            new FieldMap(false),
+            new GET('/users/{login}'),
+            Encoding::FORM_URL_ENCODED,
+            $this->reflectionMethod,
+            1,
+            new Type('string'),
         );
 
         //then
