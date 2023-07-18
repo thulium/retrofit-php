@@ -52,6 +52,7 @@ return (new PhpCsFixer\Config())
         'native_function_type_declaration_casing' => true,
         'no_blank_lines_after_phpdoc' => true,
         'no_empty_comment' => true,
+        'no_empty_phpdoc' => true,
         'no_leading_namespace_whitespace' => true,
         'no_short_bool_cast' => true,
         'no_unused_imports' => true,
