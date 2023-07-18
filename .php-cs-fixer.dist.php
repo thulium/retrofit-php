@@ -30,6 +30,7 @@ return (new PhpCsFixer\Config())
         ],
         'class_reference_name_casing' => true,
         'comment_to_phpdoc' => true,
+        'fopen_flag_order' => true,
         'multiline_comment_opening_closing' => true,
         'native_function_casing' => true,
         'native_function_type_declaration_casing' => true,
