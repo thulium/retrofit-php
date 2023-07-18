@@ -32,12 +32,6 @@ class TypeTest extends TestCase
         $this->assertSame($expectedRawType, $type->getRawType());
     }
 
-    public static function scalarParameterTypes(): array
-    {
-        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'scalarTypes');
-        return self::getParameterTypes($reflectionMethod);
-    }
-
     #[Test]
     #[DataProvider('customClassParameterTypes')]
     public function shouldCreateTypeForCustomClassParameterType(
@@ -53,12 +47,6 @@ class TypeTest extends TestCase
         $this->assertSame($expectedRawType, $type->getRawType());
     }
 
-    public static function customClassParameterTypes(): array
-    {
-        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'customClass');
-        return self::getParameterTypes($reflectionMethod);
-    }
-
     #[Test]
     #[DataProvider('genericClassParameterTypes')]
     public function shouldCreateTypeForGenericClassParameterType(
@@ -72,12 +60,6 @@ class TypeTest extends TestCase
 
         //then
         $this->assertSame($expectedRawType, $type->getRawType());
-    }
-
-    public static function genericClassParameterTypes(): array
-    {
-        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'genericClass');
-        return self::getParameterTypes($reflectionMethod);
     }
 
     #[Test]
@@ -97,12 +79,6 @@ class TypeTest extends TestCase
         $this->assertNotNull($type->getParametrizedType());
     }
 
-    public static function arrayOfScalarParameterTypes(): array
-    {
-        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'arrayOfScalarTypes');
-        return self::getParameterTypes($reflectionMethod);
-    }
-
     #[Test]
     #[DataProvider('arrayOfCustomClassParameterTypes')]
     /** @param Param[] $params */
@@ -118,12 +94,6 @@ class TypeTest extends TestCase
         //then
         $this->assertSame($expectedRawType, $type->getRawType());
         $this->assertNotNull($type->getParametrizedType());
-    }
-
-    public static function arrayOfCustomClassParameterTypes(): array
-    {
-        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'arrayOfCustomClass');
-        return self::getParameterTypes($reflectionMethod);
     }
 
     #[Test]
@@ -143,12 +113,6 @@ class TypeTest extends TestCase
         $this->assertNotNull($type->getParametrizedType());
     }
 
-    public static function arrayOfGenericClassParameterTypes(): array
-    {
-        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'arrayOfGenericClass');
-        return self::getParameterTypes($reflectionMethod);
-    }
-
     #[Test]
     public function shouldCheckParameterIsATypeOf(): void
     {
@@ -162,6 +126,42 @@ class TypeTest extends TestCase
 
         //then
         $this->assertTrue($isA);
+    }
+
+    public static function scalarParameterTypes(): array
+    {
+        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'scalarTypes');
+        return self::getParameterTypes($reflectionMethod);
+    }
+
+    public static function customClassParameterTypes(): array
+    {
+        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'customClass');
+        return self::getParameterTypes($reflectionMethod);
+    }
+
+    public static function genericClassParameterTypes(): array
+    {
+        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'genericClass');
+        return self::getParameterTypes($reflectionMethod);
+    }
+
+    public static function arrayOfScalarParameterTypes(): array
+    {
+        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'arrayOfScalarTypes');
+        return self::getParameterTypes($reflectionMethod);
+    }
+
+    public static function arrayOfCustomClassParameterTypes(): array
+    {
+        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'arrayOfCustomClass');
+        return self::getParameterTypes($reflectionMethod);
+    }
+
+    public static function arrayOfGenericClassParameterTypes(): array
+    {
+        $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'arrayOfGenericClass');
+        return self::getParameterTypes($reflectionMethod);
     }
 
     private static function getParameterTypes(ReflectionMethod $reflectionMethod): array

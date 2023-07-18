@@ -49,11 +49,6 @@ readonly class Type
         return !is_null($this->parametrizedType) && in_array($this->parametrizedType, self::SCALARS);
     }
 
-    public function __toString(): string
-    {
-        return is_null($this->parametrizedType) ? $this->rawType : "{$this->rawType}<{$this->parametrizedType}>";
-    }
-
     /** @param Param[] $params */
     public static function create(
         ReflectionMethod $reflectionMethod,
@@ -66,6 +61,11 @@ readonly class Type
         $parametrizedType = self::handleParametrizedTypeForArray($rawType, $reflectionParameter, $reflectionMethod, $params);
 
         return new Type($rawType, $parametrizedType);
+    }
+
+    public function __toString(): string
+    {
+        return is_null($this->parametrizedType) ? $this->rawType : "{$this->rawType}<{$this->parametrizedType}>";
     }
 
     private static function handleParametrizedTypeForArray(

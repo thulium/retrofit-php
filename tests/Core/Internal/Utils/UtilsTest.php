@@ -134,14 +134,6 @@ class UtilsTest extends TestCase
         $this->assertSame($expectedPathParameters, $pathParameters);
     }
 
-    public static function pathParameters(): array
-    {
-        return [
-            ['/users/{id}', ['id']],
-            ['/users/{login}/tickets/{id}', ['login', 'id']],
-        ];
-    }
-
     #[Test]
     public function shouldReturnOnlyUniqueParameters(): void
     {
@@ -173,5 +165,13 @@ class UtilsTest extends TestCase
         Assert::thatArray(array_values($sortedReflectionParameters))
             ->extracting(fn(ReflectionParameter $p): string => $p->getName())
             ->containsExactly('url', 'login');
+    }
+
+    public static function pathParameters(): array
+    {
+        return [
+            ['/users/{id}', ['id']],
+            ['/users/{login}/tickets/{id}', ['login', 'id']],
+        ];
     }
 }
