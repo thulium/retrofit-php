@@ -5,8 +5,6 @@ declare(strict_types=1);
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
-include 'vendor/autoload.php';
-
 $finder = Finder::create()
     ->in(__DIR__ . '/src')
     ->in(__DIR__ . '/tests');
