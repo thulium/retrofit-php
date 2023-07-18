@@ -34,6 +34,7 @@ return (new PhpCsFixer\Config())
         'function_declaration' => [
             'closure_fn_spacing' => 'none',
         ],
+        'lambda_not_used_import' => true,
         'multiline_comment_opening_closing' => true,
         'native_function_casing' => true,
         'native_function_type_declaration_casing' => true,
