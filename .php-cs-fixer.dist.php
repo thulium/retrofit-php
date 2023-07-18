@@ -16,9 +16,6 @@ return (new PhpCsFixer\Config())
         '@PHP82Migration' => true,
         '@PSR12:risky' => true,
 
-        'curly_braces_position' => [
-            'anonymous_classes_opening_brace' => 'next_line_unless_newline_at_signature_end',
-        ],
         'declare_strict_types' => true,
         'function_declaration' => [
             'closure_fn_spacing' => 'none',

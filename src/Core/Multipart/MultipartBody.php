@@ -10,8 +10,7 @@ class MultipartBody
 {
     public static function Part(): PartInterface
     {
-        return new class () implements PartInterface
-        {
+        return new class () implements PartInterface {
             public function __construct(
                 private readonly string $name = '',
                 private readonly StreamInterface|string $body = '',

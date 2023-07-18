@@ -54,8 +54,7 @@ readonly class ServiceMethodFactory
 
         $requestFactory = new RequestFactory($this->retrofit->baseUrl, $httpRequest, $defaultHeaders, $parameterHandlers);
 
-        return new class ($this->retrofit->httpClient, $requestFactory, $responseBodyConverter, $errorBodyConverter) implements ServiceMethod
-        {
+        return new class ($this->retrofit->httpClient, $requestFactory, $responseBodyConverter, $errorBodyConverter) implements ServiceMethod {
             public function __construct(
                 private readonly HttpClient $httpClient,
                 private readonly RequestFactory $requestFactory,
