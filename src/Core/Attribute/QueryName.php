@@ -7,7 +7,7 @@ namespace Retrofit\Core\Attribute;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
-readonly class QueryName
+readonly class QueryName implements ParameterAttribute
 {
     public function __construct(private bool $encoded = false)
     {

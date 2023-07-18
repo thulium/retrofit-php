@@ -1,5 +1,12 @@
+includes:
+    - vendor-bin/phpstan/vendor/phpstan/phpstan-deprecation-rules/rules.neon
+
 parameters:
     paths:
-        - src
-        - tests
-    level: 1
+        - src/Core/Attribute
+        - src/Core/Converter
+        - src/Core/Internal/ParameterHandler
+        - src/Core/Internal/Proxy
+        - src/Core/Internal/Utils
+        - src/Core/Multipart
+    level: max

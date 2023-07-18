@@ -5,32 +5,33 @@ declare(strict_types=1);
 namespace Retrofit\Core\Internal\ParameterHandler\Factory;
 
 use ReflectionMethod;
-use Retrofit\Core\Attribute\Body;
-use Retrofit\Core\Attribute\Field;
-use Retrofit\Core\Attribute\FieldMap;
-use Retrofit\Core\Attribute\Header;
-use Retrofit\Core\Attribute\HeaderMap;
 use Retrofit\Core\Attribute\HttpRequest;
-use Retrofit\Core\Attribute\Part;
-use Retrofit\Core\Attribute\PartMap;
-use Retrofit\Core\Attribute\Path;
-use Retrofit\Core\Attribute\Query;
-use Retrofit\Core\Attribute\QueryMap;
-use Retrofit\Core\Attribute\QueryName;
-use Retrofit\Core\Attribute\Url;
+use Retrofit\Core\Attribute\ParameterAttribute;
 use Retrofit\Core\Internal\ConverterProvider;
 use Retrofit\Core\Internal\Encoding;
 use Retrofit\Core\Internal\ParameterHandler\ParameterHandler;
 use Retrofit\Core\Type;
 
+/**
+ * @template-covariant T of ParameterAttribute
+ */
 abstract readonly class AbstractParameterHandlerFactory
 {
     public function __construct(protected ConverterProvider $converterProvider)
     {
     }
 
+    /**
+     * @param ParameterAttribute $param
+     * @param HttpRequest $httpRequest
+     * @param Encoding|null $encoding
+     * @param ReflectionMethod $reflectionMethod
+     * @param int $position
+     * @param Type $type
+     * @return ParameterHandler
+     */
     abstract public function create(
-        Body&Field&FieldMap&Header&HeaderMap&Part&PartMap&Path&Query&QueryMap&QueryName&Url $param,
+        ParameterAttribute $param,
         HttpRequest $httpRequest,
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,

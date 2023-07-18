@@ -16,6 +16,9 @@ use ReflectionParameter;
 
 readonly class Type
 {
+    /**
+     * @var list<string>
+     */
     private const SCALARS = ['bool', 'int', 'float', 'string'];
 
     public function __construct(
@@ -50,7 +53,9 @@ readonly class Type
         return !is_null($this->parametrizedType) && in_array($this->parametrizedType, self::SCALARS);
     }
 
-    /** @param Param[] $params */
+    /**
+     * @param list<Param> $params
+     */
     public static function create(
         ReflectionMethod $reflectionMethod,
         ReflectionParameter $reflectionParameter,
@@ -70,6 +75,9 @@ readonly class Type
         return is_null($this->parametrizedType) ? $this->rawType : "{$this->rawType}<{$this->parametrizedType}>";
     }
 
+    /**
+     * @param list<Param> $params
+     */
     private static function handleParametrizedTypeForArray(
         string $rawType,
         ReflectionParameter $reflectionParameter,

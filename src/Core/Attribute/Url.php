@@ -7,6 +7,6 @@ namespace Retrofit\Core\Attribute;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
-readonly class Url
+readonly class Url implements ParameterAttribute
 {
 }

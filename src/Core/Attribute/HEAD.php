@@ -11,6 +11,9 @@ use Retrofit\Core\Internal\Utils\Utils;
 #[Attribute(Attribute::TARGET_METHOD)]
 readonly class HEAD implements HttpRequest
 {
+    /**
+     * @var list<string>
+     */
     private array $pathParameters;
 
     public function __construct(private ?string $path = null)

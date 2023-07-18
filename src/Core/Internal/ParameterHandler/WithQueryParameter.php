@@ -9,7 +9,11 @@ use Retrofit\Core\Internal\Utils\Utils;
 
 trait WithQueryParameter
 {
-    protected function validateAndConvert(mixed $value): mixed
+    /**
+     * @param mixed $value
+     * @return list<string>|string
+     */
+    protected function validateAndConvert(mixed $value): array|string
     {
         if (is_array($value)) {
             if (!array_is_list($value)) {

@@ -7,7 +7,7 @@ namespace Retrofit\Core\Attribute;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
-readonly class FieldMap
+readonly class FieldMap implements ParameterAttribute
 {
     public function __construct(private bool $encoded = false)
     {

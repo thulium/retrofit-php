@@ -6,12 +6,13 @@ namespace Retrofit\Core\Internal\ParameterHandler;
 
 use Closure;
 use Ouzo\Utilities\Strings;
-use Retrofit\Core\Converter\Converter;
+use Retrofit\Core\Converter\RequestBodyConverter;
+use Retrofit\Core\Converter\StringConverter;
 use Retrofit\Core\Internal\Utils\Utils;
 
 trait WithMapParameter
 {
-    protected function validateAndApply(mixed $value, string $context, Converter $converter, Closure $apply): void
+    protected function validateAndApply(mixed $value, string $context, StringConverter|RequestBodyConverter $converter, Closure $apply): void
     {
         if (!is_array($value)) {
             throw Utils::parameterException($this->reflectionMethod, $this->position, 'Parameter should be an array.');

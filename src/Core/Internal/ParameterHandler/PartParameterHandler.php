@@ -6,7 +6,7 @@ namespace Retrofit\Core\Internal\ParameterHandler;
 
 use Ouzo\Utilities\Strings;
 use ReflectionMethod;
-use Retrofit\Core\Converter\Converter;
+use Retrofit\Core\Converter\RequestBodyConverter;
 use Retrofit\Core\Internal\RequestBuilder;
 use Retrofit\Core\Internal\Utils\Utils;
 use Retrofit\Core\MimeEncoding;
@@ -19,7 +19,7 @@ readonly class PartParameterHandler implements ParameterHandler
     public function __construct(
         private ?string $name,
         private MimeEncoding $encoding,
-        private Converter $converter,
+        private RequestBodyConverter $converter,
         private ReflectionMethod $reflectionMethod,
         private int $position,
     )
@@ -55,6 +55,6 @@ readonly class PartParameterHandler implements ParameterHandler
 
         $value = $this->converter->convert($value);
         $headers[self::CONTENT_TRANSFER_ENCODING_HEADER] = $this->encoding->value;
-        $requestBuilder->addPart($this->name, $value, $headers);
+        $requestBuilder->addPart((string)$this->name, $value, $headers);
     }
 }

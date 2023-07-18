@@ -6,13 +6,15 @@ namespace Retrofit\Tests\Fixtures\Converter;
 
 use Retrofit\Core\Converter\Converter;
 use Retrofit\Core\Converter\ConverterFactory;
+use Retrofit\Core\Converter\RequestBodyConverter;
+use Retrofit\Core\Converter\StringConverter;
 use Retrofit\Core\Internal\BuiltInConverters;
 use Retrofit\Core\Type;
 use stdClass;
 
 class TestConverterFactory implements ConverterFactory
 {
-    public function requestBodyConverter(Type $type): ?Converter
+    public function requestBodyConverter(Type $type): ?RequestBodyConverter
     {
         return BuiltInConverters::JsonEncodeRequestBodyConverter();
     }
@@ -31,7 +33,7 @@ class TestConverterFactory implements ConverterFactory
         return null;
     }
 
-    public function stringConverter(Type $type): ?Converter
+    public function stringConverter(Type $type): ?StringConverter
     {
         if (!$type->isScalar()) {
             return BuiltInConverters::ToStringConverter();

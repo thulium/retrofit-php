@@ -7,6 +7,8 @@ namespace Retrofit\Core\Internal;
 use Ouzo\Utilities\Arrays;
 use Retrofit\Core\Converter\Converter;
 use Retrofit\Core\Converter\ConverterFactory;
+use Retrofit\Core\Converter\RequestBodyConverter;
+use Retrofit\Core\Converter\StringConverter;
 use Retrofit\Core\Type;
 use RuntimeException;
 
@@ -17,7 +19,7 @@ readonly class ConverterProvider
     {
     }
 
-    public function getRequestBodyConverter(Type $type): Converter
+    public function getRequestBodyConverter(Type $type): RequestBodyConverter
     {
         /** @var ConverterFactory|null $converterFactory */
         $converterFactory = Arrays::find($this->converterFactories, fn(ConverterFactory $factory) => !is_null($factory->requestBodyConverter($type)));
@@ -37,7 +39,7 @@ readonly class ConverterProvider
         throw new RuntimeException("Cannot find response body converter for type '{$type}'.");
     }
 
-    public function getStringConverter(Type $type): Converter
+    public function getStringConverter(Type $type): StringConverter
     {
         /** @var ConverterFactory|null $converterFactory */
         $converterFactory = Arrays::find($this->converterFactories, fn(ConverterFactory $factory) => !is_null($factory->stringConverter($type)));

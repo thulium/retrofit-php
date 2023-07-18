@@ -9,6 +9,8 @@ use PhpParser\Builder\Method;
 use PhpParser\Builder\Namespace_;
 use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
+use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
@@ -24,6 +26,7 @@ use PhpParser\PrettyPrinterAbstract;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionNamedType;
 use ReflectionParameter;
 use Retrofit\Core\Call;
 use Retrofit\Core\Internal\ParameterHandler\Factory\ParameterHandlerFactoryProvider;
@@ -59,6 +62,9 @@ use Retrofit\Core\Retrofit;
  *      }
  * }
  * </pre>
+ *
+ * @template T of object
+ * @implements ProxyFactory<T>
  */
 readonly class DefaultProxyFactory implements ProxyFactory
 {
@@ -73,6 +79,11 @@ readonly class DefaultProxyFactory implements ProxyFactory
     {
     }
 
+    /**
+     * @param Retrofit $retrofit
+     * @param ReflectionClass<T> $service
+     * @return object
+     */
     public function create(Retrofit $retrofit, ReflectionClass $service): object
     {
         $proxyServiceNamespace = self::SERVICE_IMPLEMENTATION_NAMESPACE_PREFIX . $service->getNamespaceName();
@@ -92,6 +103,11 @@ readonly class DefaultProxyFactory implements ProxyFactory
         return new $proxyServiceFQCN($retrofit);
     }
 
+    /**
+     * @param ReflectionClass<T> $service
+     * @param string $proxyServiceName
+     * @return Class_
+     */
     private function serviceClassImplementation(ReflectionClass $service, string $proxyServiceName): Class_
     {
         $serviceFQCN = Utils::toFQCN($service->getName());
@@ -119,12 +135,14 @@ readonly class DefaultProxyFactory implements ProxyFactory
         $serviceMethodFactoryInstance = new New_(
             new Name(Utils::toFQCN(ServiceMethodFactory::class)),
             [
-                new Variable('retrofit'),
-                new New_(
-                    new Name(Utils::toFQCN(ParameterHandlerFactoryProvider::class)),
-                    [
-                        new PropertyFetch(new Variable('retrofit'), 'converterProvider'),
-                    ],
+                new Arg(new Variable('retrofit')),
+                new Arg(
+                    new New_(
+                        new Name(Utils::toFQCN(ParameterHandlerFactoryProvider::class)),
+                        [
+                            new Arg(new PropertyFetch(new Variable('retrofit'), 'converterProvider')),
+                        ],
+                    ),
                 ),
             ],
         );
@@ -139,6 +157,11 @@ readonly class DefaultProxyFactory implements ProxyFactory
         $serviceClassImplementation->addStmt($constructor->getNode());
     }
 
+    /**
+     * @param ReflectionClass<T> $service
+     * @param Class_ $serviceClassImplementation
+     * @return void
+     */
     private function appendMethods(ReflectionClass $service, Class_ $serviceClassImplementation): void
     {
         $serviceMethodInvokeReturnStmt = $this->createServiceMethodInvokeReturnStmt($service);
@@ -156,7 +179,12 @@ readonly class DefaultProxyFactory implements ProxyFactory
             $methodParameters = $this->appendMethodParameters($method);
             $serviceClassMethodImplementation->addParams($methodParameters);
 
-            $serviceClassMethodImplementation->setReturnType(Utils::toFQCN($method->getReturnType()->getName()));
+            $returnType = $method->getReturnType();
+            if (!$returnType instanceof ReflectionNamedType) {
+                throw Utils::methodException($method, 'Cannot detect return type name.');
+            }
+
+            $serviceClassMethodImplementation->setReturnType(Utils::toFQCN($returnType->getName()));
             $serviceClassMethodImplementation->addStmt(new Return_($serviceMethodInvokeReturnStmt));
 
             $serviceClassImplementation->addStmt($serviceClassMethodImplementation->getNode());
@@ -170,21 +198,25 @@ readonly class DefaultProxyFactory implements ProxyFactory
             ->addStmt($serviceClassImplementation);
     }
 
+    /**
+     * @param ReflectionClass<T> $service
+     * @return MethodCall
+     */
     private function createServiceMethodInvokeReturnStmt(ReflectionClass $service): MethodCall
     {
         $serviceMethodFactoryCreateMethodCall = new MethodCall(
             new PropertyFetch(new Variable('this'), 'serviceMethodFactory'),
             'create',
             [
-                new String_(Utils::toFQCN($service->getName())),
-                new Function_(),
+                new Arg(new String_(Utils::toFQCN($service->getName()))),
+                new Arg(new Function_()),
             ],
         );
         return new MethodCall(
             $serviceMethodFactoryCreateMethodCall,
             'invoke',
             [
-                new FuncCall(new Name('func_get_args')),
+                new Arg(new FuncCall(new Name('func_get_args'))),
             ],
         );
     }
@@ -195,18 +227,24 @@ readonly class DefaultProxyFactory implements ProxyFactory
             throw Utils::methodException($method, 'Method return type is required, none found.');
         }
 
-        $returnType = $method->getReturnType()->getName();
+        $returnType = $method->getReturnType();
+        if (!$returnType instanceof ReflectionNamedType) {
+            throw Utils::methodException($method, 'Cannot detect return type name.');
+        }
+
+        $returnTypeName = $returnType->getName();
         $callClassReturnType = Call::class;
-        if ($returnType !== $callClassReturnType) {
+        if ($returnTypeName !== $callClassReturnType) {
             throw Utils::methodException(
                 $method,
-                "Method return type should be a {$callClassReturnType} class. '{$returnType}' return type found.",
+                "Method return type should be a {$callClassReturnType} class. '{$returnTypeName}' return type found.",
             );
         }
     }
 
     /**
-     * @return Param[]
+     * @param ReflectionMethod $method
+     * @return list<Node>
      */
     private function appendMethodParameters(ReflectionMethod $method): array
     {
@@ -220,12 +258,18 @@ readonly class DefaultProxyFactory implements ProxyFactory
                 $paramBuilder->setDefault($parameter->getDefaultValue());
             }
 
-            $reflectionTypeName = $parameter->getType()->getName();
-            if (!$parameter->getType()->isBuiltin()) {
+            $reflectionType = $parameter->getType();
+
+            if (!$reflectionType instanceof ReflectionNamedType) {
+                throw Utils::parameterException($method, $parameter->getPosition(), 'Cannot detect parameter type name.');
+            }
+
+            $reflectionTypeName = $reflectionType->getName();
+            if (!$reflectionType->isBuiltin()) {
                 $reflectionTypeName = Utils::toFQCN($reflectionTypeName);
             }
 
-            $type = $parameter->getType()->allowsNull() ? new NullableType($reflectionTypeName) : $reflectionTypeName;
+            $type = $reflectionType->allowsNull() ? new NullableType($reflectionTypeName) : $reflectionTypeName;
             $paramBuilder->setType($type);
 
             if ($parameter->isPassedByReference()) {
@@ -251,7 +295,8 @@ readonly class DefaultProxyFactory implements ProxyFactory
     }
 
     /**
-     * @param ReflectionAttribute[] $attributes
+     * @template A of object
+     * @param list<ReflectionAttribute<A>> $attributes
      */
     private function appendAttributes(array $attributes, Method|Param $destination): void
     {

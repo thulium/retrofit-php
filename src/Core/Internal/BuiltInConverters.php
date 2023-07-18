@@ -29,7 +29,7 @@ readonly class BuiltInConverters
         return new class () implements RequestBodyConverter {
             public function convert(mixed $value): StreamInterface
             {
-                return $value;
+                return Utils::streamFor($value);
             }
         };
     }
