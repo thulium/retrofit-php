@@ -49,6 +49,7 @@ return (new PhpCsFixer\Config())
         'lambda_not_used_import' => true,
         'linebreak_after_opening_tag' => true,
         'logical_operators' => true,
+        'method_chaining_indentation' => true,
         'multiline_comment_opening_closing' => true,
         'native_function_casing' => true,
         'native_function_type_declaration_casing' => true,
