@@ -16,10 +16,12 @@ return (new PhpCsFixer\Config())
         '@PHP82Migration' => true,
         '@PSR12:risky' => true,
 
-        'function_declaration' => [
-            'closure_fn_spacing' => 'none',
-        ],
-        'trailing_comma_in_multiline' => [
-            'elements' => ['arguments', 'arrays', 'match', 'parameters'],
-        ],
+        'trim_array_spaces' => true,
+//        '' => true,
+//        'function_declaration' => [
+//            'closure_fn_spacing' => 'none',
+//        ],
+//        'trailing_comma_in_multiline' => [
+//            'elements' => ['arguments', 'arrays', 'match', 'parameters'],
+//        ],
     ]);
