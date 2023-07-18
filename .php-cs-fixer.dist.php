@@ -43,6 +43,7 @@ return (new PhpCsFixer\Config())
             'import_functions' => true,
         ],
         'lambda_not_used_import' => true,
+        'linebreak_after_opening_tag' => true,
         'logical_operators' => true,
         'multiline_comment_opening_closing' => true,
         'native_function_casing' => true,
