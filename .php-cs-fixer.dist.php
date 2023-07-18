@@ -54,6 +54,7 @@ return (new PhpCsFixer\Config())
         'no_unneeded_import_alias' => true,
         'no_unneeded_control_parentheses' => true,
         'no_unneeded_curly_braces' => true,
+        'no_useless_concat_operator' => true,
         'no_useless_else' => true,
         'nullable_type_declaration' => true,
         'nullable_type_declaration_for_default_null_value' => true,
