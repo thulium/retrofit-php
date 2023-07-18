@@ -12,6 +12,8 @@ return (new PhpCsFixer\Config())
     ->setFinder($finder)
     ->setRiskyAllowed(true)
     ->setRules([
+        '@PHP80Migration:risky' => true,
+        '@PHP82Migration' => true,
         '@PSR12:risky' => true,
 
         'curly_braces_position' => [
