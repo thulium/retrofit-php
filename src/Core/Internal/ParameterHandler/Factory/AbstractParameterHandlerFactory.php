@@ -30,7 +30,7 @@ abstract readonly class AbstractParameterHandlerFactory
     }
 
     abstract public function create(
-        Body & Field & FieldMap & Header & HeaderMap & Part & PartMap & Path & Query & QueryMap & QueryName & Url $param,
+        Body&Field&FieldMap&Header&HeaderMap&Part&PartMap&Path&Query&QueryMap&QueryName&Url $param,
         HttpRequest $httpRequest,
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,
