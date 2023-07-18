@@ -31,7 +31,7 @@ class HttpClientCallTest extends TestCase
 
     private ResponseBodyConverter|MockInterface $responseErrorBodyConverter;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->request = new Request(HttpMethod::GET->value, '/users');

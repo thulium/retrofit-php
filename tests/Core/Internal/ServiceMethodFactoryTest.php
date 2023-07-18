@@ -53,7 +53,7 @@ class ServiceMethodFactoryTest extends TestCase
 
     private ServiceMethodFactory $serviceMethodFactory;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->httpClient = Mock::create(HttpClient::class);

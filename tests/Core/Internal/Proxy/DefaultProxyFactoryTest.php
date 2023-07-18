@@ -46,7 +46,7 @@ class DefaultProxyFactoryTest extends TestCase
 
     private Retrofit $retrofit;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         /** @var HttpClient|MockInterface $httpClient */

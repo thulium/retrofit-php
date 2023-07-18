@@ -22,7 +22,7 @@ class QueryMapParameterHandlerFactoryTest extends TestCase
 
     private ConverterProvider $converterProvider;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');

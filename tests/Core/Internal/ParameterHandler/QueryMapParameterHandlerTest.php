@@ -22,7 +22,7 @@ class QueryMapParameterHandlerTest extends TestCase
 
     private ReflectionMethod $reflectionMethod;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users'));

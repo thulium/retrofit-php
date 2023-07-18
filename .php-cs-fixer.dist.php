@@ -80,6 +80,7 @@ return (new PhpCsFixer\Config())
                 'property_protected',
                 'property_private',
                 'construct',
+                'phpunit',
                 'method_public',
                 'method_public_static',
                 'magic',
@@ -90,6 +91,7 @@ return (new PhpCsFixer\Config())
                 'method_private_static',
             ],
         ],
+        'php_unit_set_up_tear_down_visibility' => true,
         'return_type_declaration' => true,
         'single_class_element_per_statement' => [
             'elements' => [
