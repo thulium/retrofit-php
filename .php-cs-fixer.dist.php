@@ -17,6 +17,9 @@ return (new PhpCsFixer\Config())
         '@PSR12:risky' => true,
 
         'trim_array_spaces' => true,
+        'whitespace_after_comma_in_array' => [
+            'ensure_single_space' => true,
+        ],
 //        '' => true,
 //        'function_declaration' => [
 //            'closure_fn_spacing' => 'none',
