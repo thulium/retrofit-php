@@ -17,6 +17,7 @@ return (new PhpCsFixer\Config())
         '@PSR12:risky' => true,
 
         'class_reference_name_casing' => true,
+        'native_function_casing' => true,
         'trim_array_spaces' => true,
         'whitespace_after_comma_in_array' => [
             'ensure_single_space' => true,
