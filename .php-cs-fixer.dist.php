@@ -16,6 +16,9 @@ return (new PhpCsFixer\Config())
         '@PHP82Migration' => true,
         '@PSR12:risky' => true,
 
+        'cast_spaces' => [
+            'space' => 'none',
+        ],
         'class_reference_name_casing' => true,
         'native_function_casing' => true,
         'native_function_type_declaration_casing' => true,
