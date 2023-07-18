@@ -16,6 +16,7 @@ return (new PhpCsFixer\Config())
         '@PHP82Migration' => true,
         '@PSR12:risky' => true,
 
+        'binary_operator_spaces' => true,
         'cast_spaces' => [
             'space' => 'none',
         ],
