@@ -18,6 +18,7 @@ return (new PhpCsFixer\Config())
         '@PSR12:risky' => true,
 
         'align_multiline_comment' => true,
+        'array_indentation' => true,
         'binary_operator_spaces' => true,
         'cast_spaces' => [
             'space' => 'none',
