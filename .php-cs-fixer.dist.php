@@ -60,6 +60,7 @@ return (new PhpCsFixer\Config())
         'no_leading_namespace_whitespace' => true,
         'no_short_bool_cast' => true,
         'no_singleline_whitespace_before_semicolons' => true,
+        'no_spaces_around_offset' => true,
         'no_unused_imports' => true,
         'no_unneeded_import_alias' => true,
         'no_unneeded_control_parentheses' => true,
