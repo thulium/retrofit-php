@@ -92,7 +92,7 @@ readonly class ServiceMethodFactory
             $httpMethodNames = Joiner::on(', ')
                 ->mapValues(fn(HttpRequest $request): string => $request::class)
                 ->join($httpRequestMethods);
-            throw Utils::methodException($reflectionMethod, "Only one HTTP method is allowed. Found: [$httpMethodNames].");
+            throw Utils::methodException($reflectionMethod, "Only one HTTP method is allowed. Found: [{$httpMethodNames}].");
         }
 
         return Arrays::first($httpRequestMethods);

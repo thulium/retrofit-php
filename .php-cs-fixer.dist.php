@@ -34,6 +34,7 @@ return (new PhpCsFixer\Config())
         'class_reference_name_casing' => true,
         'comment_to_phpdoc' => true,
         'explicit_indirect_variable' => true,
+        'explicit_string_variable' => true,
         'fopen_flag_order' => true,
         'fully_qualified_strict_types' => true,
         'function_declaration' => [
