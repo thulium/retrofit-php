@@ -59,6 +59,7 @@ return (new PhpCsFixer\Config())
         'no_useless_nullsafe_operator' => true,
         'nullable_type_declaration' => true,
         'nullable_type_declaration_for_default_null_value' => true,
+        'object_operator_without_whitespace' => true,
         'ordered_class_elements' => [
             'order' => [
                 'use_trait',
