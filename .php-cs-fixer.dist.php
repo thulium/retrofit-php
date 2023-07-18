@@ -118,6 +118,7 @@ return (new PhpCsFixer\Config())
         'php_unit_test_annotation' => [
             'style' => 'annotation',
         ],
+        'return_assignment' => true,
         'return_type_declaration' => true,
         'single_class_element_per_statement' => [
             'elements' => [
