@@ -38,7 +38,8 @@ readonly class ServiceMethodFactory
     public function __construct(
         private Retrofit $retrofit,
         private ParameterHandlerFactoryProvider $parameterHandlerFactoryProvider,
-    ) {
+    )
+    {
     }
 
     public function create(string $service, string $method): ServiceMethod
@@ -60,7 +61,8 @@ readonly class ServiceMethodFactory
                 private readonly RequestFactory $requestFactory,
                 private readonly ?ResponseBodyConverter $responseBodyConverter,
                 private readonly ?ResponseBodyConverter $errorBodyConverter,
-            ) {
+            )
+            {
             }
 
             public function invoke(array $args): Call
@@ -121,15 +123,14 @@ readonly class ServiceMethodFactory
                 );
             }
             return Encoding::FORM_URL_ENCODED;
-        } else {
-            if (!$httpRequest->hasBody()) {
-                throw Utils::methodException(
-                    $reflectionMethod,
-                    '#[Multipart] can only be specified on HTTP methods with request body (e.g., #[POST]).',
-                );
-            }
-            return Encoding::MULTIPART;
         }
+        if (!$httpRequest->hasBody()) {
+            throw Utils::methodException(
+                $reflectionMethod,
+                '#[Multipart] can only be specified on HTTP methods with request body (e.g., #[POST]).',
+            );
+        }
+        return Encoding::MULTIPART;
     }
 
     private function getDefaultHeaders(ReflectionMethod $reflectionMethod): array
