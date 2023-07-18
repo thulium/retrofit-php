@@ -68,6 +68,7 @@ return (new PhpCsFixer\Config())
                 'method_private_static',
             ],
         ],
+        'return_type_declaration' => true,
         'single_class_element_per_statement' => [
             'elements' => [
                 'const',
