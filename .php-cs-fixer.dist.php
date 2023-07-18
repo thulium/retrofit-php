@@ -108,6 +108,10 @@ return (new PhpCsFixer\Config())
         'phpdoc_single_line_var_spacing' => true,
         'phpdoc_trim' => true,
         'phpdoc_trim_consecutive_blank_line_separation' => true,
+        'phpdoc_types_order' => [
+            'sort_algorithm' => 'none',
+            'null_adjustment' => 'always_last',
+        ],
         'php_unit_set_up_tear_down_visibility' => true,
         'php_unit_test_annotation' => [
             'style' => 'annotation',
