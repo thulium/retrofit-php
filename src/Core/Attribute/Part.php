@@ -15,7 +15,8 @@ readonly class Part
     public function __construct(
         private ?string $name = null,
         MimeEncoding|string $encoding = MimeEncoding::BINARY,
-    ) {
+    )
+    {
         $this->encoding = MimeEncoding::fromEnumOrString($encoding);
     }
 

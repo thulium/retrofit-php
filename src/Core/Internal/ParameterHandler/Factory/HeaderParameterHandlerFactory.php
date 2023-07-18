@@ -21,7 +21,8 @@ readonly class HeaderParameterHandlerFactory extends AbstractParameterHandlerFac
         ReflectionMethod $reflectionMethod,
         int $position,
         Type $type,
-    ): ParameterHandler {
+    ): ParameterHandler
+    {
         return new HeaderParameterHandler($param->name(), $this->converterProvider->getStringConverter($type));
     }
 }

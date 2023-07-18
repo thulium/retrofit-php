@@ -20,8 +20,9 @@ readonly class HttpClientCall implements Call
         private HttpClient $httpClient,
         private RequestInterface $request,
         private ?ResponseBodyConverter $responseBodyConverter,
-        private ?ResponseBodyConverter $errorBodyConverter
-    ) {
+        private ?ResponseBodyConverter $errorBodyConverter,
+    )
+    {
     }
 
     public function execute(): Response

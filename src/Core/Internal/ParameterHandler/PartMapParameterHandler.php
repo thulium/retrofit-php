@@ -24,7 +24,8 @@ readonly class PartMapParameterHandler implements ParameterHandler
         private Converter $converter,
         private ReflectionMethod $reflectionMethod,
         private int $position,
-    ) {
+    )
+    {
     }
 
     public function apply(RequestBuilder $requestBuilder, mixed $value): void

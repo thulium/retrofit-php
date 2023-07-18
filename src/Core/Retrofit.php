@@ -35,7 +35,8 @@ readonly class Retrofit
         public UriInterface $baseUrl,
         public ConverterProvider $converterProvider,
         private ProxyFactory $proxyFactory,
-    ) {
+    )
+    {
     }
 
     /**

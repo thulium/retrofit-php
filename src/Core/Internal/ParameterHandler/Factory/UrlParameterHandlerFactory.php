@@ -21,7 +21,8 @@ readonly class UrlParameterHandlerFactory extends AbstractParameterHandlerFactor
         ReflectionMethod $reflectionMethod,
         int $position,
         Type $type,
-    ): ParameterHandler {
+    ): ParameterHandler
+    {
         return new UrlParameterHandler($reflectionMethod, $position);
     }
 }

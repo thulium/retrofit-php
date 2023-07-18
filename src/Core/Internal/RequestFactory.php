@@ -20,7 +20,8 @@ readonly class RequestFactory
         private HttpRequest $httpRequest,
         private array $defaultHeaders,
         private array $parameterHandlers,
-    ) {
+    )
+    {
     }
 
     public function create(array $args): RequestInterface
