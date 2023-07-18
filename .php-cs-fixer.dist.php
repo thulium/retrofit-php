@@ -92,6 +92,9 @@ return (new PhpCsFixer\Config())
             ],
         ],
         'php_unit_set_up_tear_down_visibility' => true,
+        'php_unit_test_annotation' => [
+            'style' => 'annotation',
+        ],
         'return_type_declaration' => true,
         'single_class_element_per_statement' => [
             'elements' => [
