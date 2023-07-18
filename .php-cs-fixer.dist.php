@@ -105,6 +105,7 @@ return (new PhpCsFixer\Config())
             ],
         ],
         'phpdoc_scalar' => true,
+        'phpdoc_single_line_var_spacing' => true,
         'php_unit_set_up_tear_down_visibility' => true,
         'php_unit_test_annotation' => [
             'style' => 'annotation',
