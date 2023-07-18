@@ -56,6 +56,12 @@ return (new PhpCsFixer\Config())
                 'method_private_static',
             ],
         ],
+        'single_class_element_per_statement' => [
+            'elements' => [
+                'const',
+                'property',
+            ],
+        ],
         'trim_array_spaces' => true,
         'whitespace_after_comma_in_array' => [
             'ensure_single_space' => true,
