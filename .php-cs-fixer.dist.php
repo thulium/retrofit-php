@@ -60,6 +60,10 @@ return (new PhpCsFixer\Config())
         'nullable_type_declaration' => true,
         'nullable_type_declaration_for_default_null_value' => true,
         'object_operator_without_whitespace' => true,
+        'operator_linebreak' => [
+            'only_booleans' => true,
+            'position' => 'end',
+        ],
         'ordered_class_elements' => [
             'order' => [
                 'use_trait',
