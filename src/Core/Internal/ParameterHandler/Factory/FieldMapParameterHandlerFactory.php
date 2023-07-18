@@ -21,7 +21,7 @@ readonly class FieldMapParameterHandlerFactory extends AbstractParameterHandlerF
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,
         int $position,
-        Type $type
+        Type $type,
     ): ParameterHandler
     {
         if ($encoding !== Encoding::FORM_URL_ENCODED) {
