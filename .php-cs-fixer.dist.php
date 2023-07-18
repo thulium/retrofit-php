@@ -17,6 +17,7 @@ return (new PhpCsFixer\Config())
         '@PHPUnit100Migration:risky' => true,
         '@PSR12:risky' => true,
 
+        'align_multiline_comment' => true,
         'binary_operator_spaces' => true,
         'cast_spaces' => [
             'space' => 'none',
