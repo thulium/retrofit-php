@@ -33,6 +33,7 @@ return (new PhpCsFixer\Config())
         'multiline_comment_opening_closing' => true,
         'native_function_casing' => true,
         'native_function_type_declaration_casing' => true,
+        'no_empty_comment' => true,
         'no_short_bool_cast' => true,
         'ordered_class_elements' => [
             'order' => [
