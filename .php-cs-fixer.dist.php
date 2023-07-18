@@ -16,7 +16,6 @@ return (new PhpCsFixer\Config())
         '@PHP82Migration' => true,
         '@PSR12:risky' => true,
 
-        'declare_strict_types' => true,
         'function_declaration' => [
             'closure_fn_spacing' => 'none',
         ],
