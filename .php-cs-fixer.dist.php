@@ -113,6 +113,7 @@ return (new PhpCsFixer\Config())
             'null_adjustment' => 'always_last',
         ],
         'phpdoc_var_annotation_correct_order' => true,
+        'phpdoc_var_without_name' => true,
         'php_unit_set_up_tear_down_visibility' => true,
         'php_unit_test_annotation' => [
             'style' => 'annotation',
