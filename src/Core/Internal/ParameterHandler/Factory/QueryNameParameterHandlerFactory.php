@@ -21,7 +21,8 @@ readonly class QueryNameParameterHandlerFactory extends AbstractParameterHandler
         ReflectionMethod $reflectionMethod,
         int $position,
         Type $type,
-    ): ParameterHandler {
+    ): ParameterHandler
+    {
         return new QueryNameParameterHandler($param->encoded(), $this->converterProvider->getStringConverter($type), $reflectionMethod, $position);
     }
 }

@@ -12,7 +12,8 @@ readonly class HeaderParameterHandler implements ParameterHandler
     public function __construct(
         private string $name,
         private Converter $converter,
-    ) {
+    )
+    {
     }
 
     public function apply(RequestBuilder $requestBuilder, mixed $value): void

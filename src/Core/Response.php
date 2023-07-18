@@ -15,7 +15,8 @@ readonly class Response
         private ResponseInterface $rawResponse,
         private mixed $body,
         private mixed $errorBody,
-    ) {
+    )
+    {
     }
 
     /**

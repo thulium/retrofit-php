@@ -21,8 +21,9 @@ readonly class FieldMapParameterHandlerFactory extends AbstractParameterHandlerF
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,
         int $position,
-        Type $type,
-    ): ParameterHandler {
+        Type $type
+    ): ParameterHandler
+    {
         if ($encoding !== Encoding::FORM_URL_ENCODED) {
             throw Utils::parameterException($reflectionMethod, $position, '#[FieldMap] parameters can only be used with form encoding.');
         }

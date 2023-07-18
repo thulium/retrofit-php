@@ -1,7 +1,9 @@
 name: PHP-CS-Fixer
 
 on:
-  - pull_request_target
+  pull_request:
+    branches:
+      - '*'
 
 jobs:
   lint:
@@ -29,7 +31,7 @@ jobs:
         run: composer --working-dir=vendor-bin/php-cs-fixer --no-progress install
 
       - name: Run PHP-CS-Fixer
-        run: ./vendor-bin/php-cs-fixer/vendor/bin/php-cs-fixer --diff --config=.php-cs-fixer.dist.php fix
+        run: ./vendor-bin/php-cs-fixer/vendor/bin/php-cs-fixer fix
 
       - name: Commit lint changes
         uses: stefanzweifel/git-auto-commit-action@v4.16.0

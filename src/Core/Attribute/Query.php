@@ -12,7 +12,8 @@ readonly class Query
     public function __construct(
         private string $name,
         private bool $encoded = false,
-    ) {
+    )
+    {
     }
 
     public function name(): string

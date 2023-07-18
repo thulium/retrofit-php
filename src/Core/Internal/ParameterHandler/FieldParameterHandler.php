@@ -13,7 +13,8 @@ readonly class FieldParameterHandler implements ParameterHandler
         private string $name,
         private bool $encoded,
         private Converter $converter,
-    ) {
+    )
+    {
     }
 
     public function apply(RequestBuilder $requestBuilder, mixed $value): void
