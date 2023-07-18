@@ -96,6 +96,7 @@ return (new PhpCsFixer\Config())
             ],
         ],
         'single_line_comment_spacing' => true,
+        'standardize_not_equals' => true,
         'trailing_comma_in_multiline' => [
             'elements' => [
                 'arguments',
