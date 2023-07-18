@@ -85,7 +85,7 @@ readonly class ServiceMethodFactory
             );
         }
 
-        //todo check issue https://github.com/nikic/PHP-Parser/issues/930 is fixed
+        // todo check issue https://github.com/nikic/PHP-Parser/issues/930 is fixed
         if (count($httpRequestMethods) > 1) {
             $httpMethodNames = Joiner::on(', ')
                 ->mapValues(fn(HttpRequest $request): string => $request::class)

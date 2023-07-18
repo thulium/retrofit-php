@@ -32,13 +32,13 @@ class QueryMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldSkipWhenValueIsNull(): void
     {
-        //given
+        // given
         $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryMapParameterHandler->apply($this->requestBuilder, null);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users', $request->getUri()->__toString());
     }
@@ -46,13 +46,13 @@ class QueryMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueIsNotArray(): void
     {
-        //given
+        // given
         $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($queryMapParameterHandler)->apply($this->requestBuilder, 'some-string-value');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Parameter should be an array.');
@@ -61,13 +61,13 @@ class QueryMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenKeyInArrayIsNull(): void
     {
-        //given
+        // given
         $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($queryMapParameterHandler)->apply($this->requestBuilder, [null => 'value']);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Query map contained empty key.');
@@ -76,13 +76,13 @@ class QueryMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueInArrayIsNull(): void
     {
-        //given
+        // given
         $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($queryMapParameterHandler)->apply($this->requestBuilder, ['key' => null]);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage("Method MockMethod::mockMethod() parameter #1. Query map contained null value for key 'key'.");
@@ -91,13 +91,13 @@ class QueryMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddEncodedQueries(): void
     {
-        //given
+        // given
         $queryMapParameterHandler = new QueryMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryMapParameterHandler->apply($this->requestBuilder, ['name' => 'jon+doe', 'age' => 34, 'registered' => false]);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users?name=jon%2Bdoe&age=34&registered=false', $request->getUri()->__toString());
     }
@@ -105,13 +105,13 @@ class QueryMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddNotEncodedQueries(): void
     {
-        //given
+        // given
         $queryMapParameterHandler = new QueryMapParameterHandler(true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryMapParameterHandler->apply($this->requestBuilder, ['name' => 'jon+doe', 'age' => 34, 'registered' => false]);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users?name=jon+doe&age=34&registered=false', $request->getUri()->__toString());
     }

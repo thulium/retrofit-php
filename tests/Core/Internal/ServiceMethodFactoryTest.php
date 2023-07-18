@@ -70,10 +70,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenMethodDoesNotHaveHttpAttribute(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'withoutHttpAttribute');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::withoutHttpAttribute(). HTTP method annotation is required (e.g., #[GET], #[POST], etc.).');
@@ -82,10 +82,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenMethodHasMultipleHttpAttributes(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'multipleHttpAttribute');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::multipleHttpAttribute(). Only one HTTP method is allowed. Found: [Retrofit\Core\Attribute\GET, Retrofit\Core\Attribute\HTTP].');
@@ -94,10 +94,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenMultipleUrlAttributesFound(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'multipleUrlAttributes');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::multipleUrlAttributes() parameter #2. Multiple #[Url] method attributes found.');
@@ -113,10 +113,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[TestWith(['put'])]
     public function shouldInvokeAllHttpMethods(string $method): void
     {
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(AllHttpRequestMethods::class, $method);
 
-        //then
+        // then
         $request = $serviceMethod->invoke([])->request();
         $this->assertSame(strtoupper($method), $request->getMethod());
         $this->assertSame("https://example.com/{$method}", $request->getUri()->__toString());
@@ -125,10 +125,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldProcessUrlBeforePath(): void
     {
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'pathIsBeforeUrl');
 
-        //then
+        // then
         $request = $serviceMethod->invoke(['jon', 'https://example.com/users/{login}'])->request();
         $this->assertSame('https://example.com/users/jon', $request->getUri()->__toString());
     }
@@ -136,10 +136,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldAddQueryStringToUrlAttribute(): void
     {
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'urlWithQuery');
 
-        //then
+        // then
         $request = $serviceMethod->invoke(['new', 'https://example.com/users'])->request();
         $this->assertSame('https://example.com/users?group=new', $request->getUri()->__toString());
     }
@@ -147,10 +147,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldAddPathAndQueryString(): void
     {
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'pathAndQuery');
 
-        //then
+        // then
         $request = $serviceMethod->invoke(['jon', 'new'])->request();
         $this->assertSame('https://example.com/users/jon?group=new', $request->getUri()->__toString());
     }
@@ -158,10 +158,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldAddPathAndQueryName(): void
     {
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addQueryName');
 
-        //then
+        // then
         $request = $serviceMethod->invoke(['user(jon)'])->request();
         $this->assertSame('https://example.com/users?user(jon)', $request->getUri()->__toString());
     }
@@ -169,10 +169,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldAddPathAndQueryMap(): void
     {
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addQueryMap');
 
-        //then
+        // then
         $request = $serviceMethod->invoke([['name' => 'jon+doe', 'age' => 34, 'registered' => false]])->request();
         $this->assertSame('https://example.com/users?name=jon%2Bdoe&age=34&registered=false', $request->getUri()->__toString());
     }
@@ -180,10 +180,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldAddHeader(): void
     {
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addHeader');
 
-        //then
+        // then
         $request = $serviceMethod->invoke(['some-custom-value'])->request();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['some-custom-value']]);
     }
@@ -191,10 +191,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldAddHeaderMap(): void
     {
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addHeaderMap');
 
-        //then
+        // then
         $request = $serviceMethod->invoke([['x-custom' => 'jon+doe', 'x-age' => 34, 'Content-Type' => 'application/json']])->request();
         Assert::thatArray($request->getHeaders())
             ->containsKeyAndValue(['x-custom' => ['jon+doe'], 'x-age' => ['34'], 'content-type' => ['application/json']]);
@@ -203,10 +203,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldSetDefaultHeaders(): void
     {
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addHeaders');
 
-        //then
+        // then
         $request = $serviceMethod->invoke([['x-custom' => 'jon+doe', 'x-age' => 34, 'Content-Type' => 'application/json']])->request();
         Assert::thatArray($request->getHeaders())
             ->containsKeyAndValue(['x-custom' => ['jon+doe'], 'x-age' => ['34'], 'content-type' => ['application/json']]);
@@ -215,10 +215,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldParameterHeaderHaveHighestPrecedenceThanMethodHeaders(): void
     {
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addHeadersWithParameterHeader');
 
-        //then
+        // then
         $request = $serviceMethod->invoke([100])->request();
         Assert::thatArray($request->getHeaders())
             ->containsKeyAndValue(['x-custom' => ['jon+doe'], 'x-age' => ['100'], 'content-type' => ['application/json']]);
@@ -227,10 +227,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenKeyInHeadersAttributeIsNull(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'headersKeyIsNull');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::headersKeyIsNull(). Headers map contained empty key.');
@@ -239,10 +239,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueInHeadersAttributeIsNull(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'headersValueIsNull');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage("Method InvalidMethods::headersValueIsNull(). Headers map contained null value for key 'key'.");
@@ -251,10 +251,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenMultipleEncodingDefined(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'multipleEncodings');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::multipleEncodings(). Only one encoding annotation is allowed.');
@@ -263,7 +263,7 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldPassNullEncodingWhenMethodIsNotImplementingAny(): void
     {
-        //given
+        // given
         $factory = Mock::create(AbstractParameterHandlerFactory::class);
         Mock::when($factory)->create(Mock::anyArgList())->thenReturn(Mock::create(ParameterHandler::class));
 
@@ -272,17 +272,17 @@ class ServiceMethodFactoryTest extends TestCase
 
         $serviceMethodFactory = new ServiceMethodFactory($this->retrofit, $this->parameterHandlerFactoryProvider);
 
-        //when
+        // when
         $serviceMethodFactory->create(FullyValidApi::class, 'addHeader');
 
-        //then
+        // then
         Mock::verify($factory)->create(Mock::any(), Mock::any(), null, Mock::any(), Mock::any(), Mock::any());
     }
 
     #[Test]
     public function shouldPassFormUrlEncodedEncodingWhenMethodIsNotImplementingFormUrlEncodedAttribute(): void
     {
-        //given
+        // given
         $factory = Mock::create(AbstractParameterHandlerFactory::class);
         Mock::when($factory)->create(Mock::anyArgList())->thenReturn(Mock::create(ParameterHandler::class));
 
@@ -291,17 +291,17 @@ class ServiceMethodFactoryTest extends TestCase
 
         $serviceMethodFactory = new ServiceMethodFactory($this->retrofit, $this->parameterHandlerFactoryProvider);
 
-        //when
+        // when
         $serviceMethodFactory->create(FullyValidApi::class, 'formUrlEncoded');
 
-        //then
+        // then
         Mock::verify($factory)->create(Mock::any(), Mock::any(), Encoding::FORM_URL_ENCODED, Mock::any(), Mock::any(), Mock::any());
     }
 
     #[Test]
     public function shouldPassMultipartEncodingWhenMethodIsNotImplementingFormUrlEncodedAttribute(): void
     {
-        //given
+        // given
         $factory = Mock::create(AbstractParameterHandlerFactory::class);
         Mock::when($factory)->create(Mock::anyArgList())->thenReturn(Mock::create(ParameterHandler::class));
 
@@ -310,20 +310,20 @@ class ServiceMethodFactoryTest extends TestCase
 
         $serviceMethodFactory = new ServiceMethodFactory($this->retrofit, $this->parameterHandlerFactoryProvider);
 
-        //when
+        // when
         $serviceMethodFactory->create(FullyValidApi::class, 'multipart');
 
-        //then
+        // then
         Mock::verify($factory)->create(Mock::any(), Mock::any(), Encoding::MULTIPART, Mock::any(), Mock::any(), Mock::any());
     }
 
     #[Test]
     public function shouldThrowExceptionWhenMultipartIsNotForHttpMethodWithBody(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'multipartForHttpMethodWithoutBody');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::multipartForHttpMethodWithoutBody(). #[Multipart] can only be specified on HTTP methods with request body (e.g., #[POST]).');
@@ -332,10 +332,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenFormUrlEncodedIsNotForHttpMethodWithBody(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'formUrlEncodedForHttpMethodWithoutBody');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::formUrlEncodedForHttpMethodWithoutBody(). #[FormUrlEncoded] can only be specified on HTTP methods with request body (e.g., #[POST]).');
@@ -344,10 +344,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldAddField(): void
     {
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addField');
 
-        //then
+        // then
         $request = $serviceMethod->invoke(['jon+doe', 'users+admin'])->request();
         $this->assertSame('x-login=jon%2Bdoe&filters=users+admin', $request->getBody()->getContents());
     }
@@ -355,10 +355,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldAddFieldMap(): void
     {
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addFieldMap');
 
-        //then
+        // then
         $request = $serviceMethod->invoke([['x-login' => 'jon+doe', 'filters' => 'users+admin']])->request();
         $this->assertSame('x-login=jon+doe&filters=users+admin', $request->getBody()->getContents());
     }
@@ -366,10 +366,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenFormUrlEncodedDoesNotHaveAtLeastOneFieldAttribute(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'formUrlEncodedDoesNotHaveAtLeastOneFieldAttribute');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::formUrlEncodedDoesNotHaveAtLeastOneFieldAttribute(). #[FormUrlEncoded] method must contain at least one #[Field] or #[FieldMap].');
@@ -378,10 +378,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenMultipartDoesNotHaveAtLeastOnePartAttribute(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'multipartDoesNotHaveAtLeastOnePartAttribute');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::multipartDoesNotHaveAtLeastOnePartAttribute(). #[Multipart] method must contain at least one #[Part] or #[PartMap].');
@@ -390,7 +390,7 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldAddPart(): void
     {
-        //given
+        // given
         $fileResource = $this->getFileResource('sample-image.jpg');
 
         $string = 'some-string';
@@ -399,10 +399,10 @@ class ServiceMethodFactoryTest extends TestCase
         $partInterface = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor($fileResource), [], 'image.png');
         $streamInterface = Utils::streamFor($fileResource);
 
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addPart');
 
-        //then
+        // then
         $request = $serviceMethod->invoke([$string, $userRequest, $partInterface, $streamInterface])->request();
 
         $contents = $request->getBody()->getContents();
@@ -423,7 +423,7 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldAddPartMap(): void
     {
-        //given
+        // given
         $part1 = (new UserRequest())
             ->setLogin('jon-doe');
 
@@ -431,10 +431,10 @@ class ServiceMethodFactoryTest extends TestCase
 
         $part2 = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor($fileResource), [], 'image.png');
 
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'addPartMap');
 
-        //then
+        // then
         $request = $serviceMethod->invoke([['part1' => $part1, 'part2' => $part2]])->request();
 
         $contents = $request->getBody()->getContents();
@@ -449,10 +449,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenParameterDoesNotHaveType(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'parameterWithoutType');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::parameterWithoutType() parameter #1. Type is required.');
@@ -461,10 +461,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenNotFoundRetrofitAttributesForParameter(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidMethods::class, 'parameterWithoutAttribute');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method InvalidMethods::parameterWithoutAttribute() parameter #1. No Retrofit attribute found.');
@@ -473,7 +473,7 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldHandleScalarTypes(): void
     {
-        //given
+        // given
         $factory = Mock::create(AbstractParameterHandlerFactory::class);
         Mock::when($factory)->create(Mock::anyArgList())->thenReturn(Mock::create(ParameterHandler::class));
 
@@ -482,10 +482,10 @@ class ServiceMethodFactoryTest extends TestCase
 
         $serviceMethodFactory = new ServiceMethodFactory($this->retrofit, $this->parameterHandlerFactoryProvider);
 
-        //when
+        // when
         $serviceMethodFactory->create(TypeResolverApi::class, 'scalarTypes');
 
-        //then
+        // then
         Mock::verify($factory)->create(Mock::any(), Mock::any(), Mock::any(), Mock::any(), Mock::any(), new Type('bool'));
         Mock::verify($factory)->create(Mock::any(), Mock::any(), Mock::any(), Mock::any(), Mock::any(), new Type('float'));
         Mock::verify($factory)->create(Mock::any(), Mock::any(), Mock::any(), Mock::any(), Mock::any(), new Type('int'));
@@ -496,7 +496,7 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldHandleArrayOfCustomClass(): void
     {
-        //given
+        // given
         $factory = Mock::create(AbstractParameterHandlerFactory::class);
         Mock::when($factory)->create(Mock::anyArgList())->thenReturn(Mock::create(ParameterHandler::class));
 
@@ -505,10 +505,10 @@ class ServiceMethodFactoryTest extends TestCase
 
         $serviceMethodFactory = new ServiceMethodFactory($this->retrofit, $this->parameterHandlerFactoryProvider);
 
-        //when
+        // when
         $serviceMethodFactory->create(TypeResolverApi::class, 'arrayOfCustomClass');
 
-        //then
+        // then
         $type = new Type('array', UserRequest::class);
         Mock::verify($factory)->create(Mock::any(), Mock::any(), Mock::any(), Mock::any(), Mock::any(), $type);
     }
@@ -516,14 +516,14 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldSetBody(): void
     {
-        //given
+        // given
         $userRequest = (new UserRequest())
             ->setLogin('jon-doe');
 
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'setBody');
 
-        //then
+        // then
         $request = $serviceMethod->invoke([$userRequest])->request();
 
         $this->assertStringContainsString('{"login":"jon-doe"}', $request->getBody()->getContents());
@@ -536,16 +536,16 @@ class ServiceMethodFactoryTest extends TestCase
     #[TestWith([true])]
     public function shouldHandleBodyAsScalar(mixed $body): void
     {
-        //given
+        // given
         Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], Utils::streamFor($body)));
 
         $userRequest = (new UserRequest())
             ->setLogin('jon-doe');
 
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'returnScalar');
 
-        //then
+        // then
         $execute = $serviceMethod->invoke([$userRequest])->execute();
         $this->assertSame((string)$body, $execute->body());
     }
@@ -553,16 +553,16 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldHandleVoidResponseBody(): void
     {
-        //given
+        // given
         Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], Utils::streamFor('sample body')));
 
         $userRequest = (new UserRequest())
             ->setLogin('jon-doe');
 
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'returnVoid');
 
-        //then
+        // then
         $execute = $serviceMethod->invoke([$userRequest])->execute();
         $this->assertNull($execute->body());
     }
@@ -570,14 +570,14 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldHandleStdClassResponseBody(): void
     {
-        //given
+        // given
         $stream = Utils::streamFor('{"login":"jon-doe"}');
         Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], $stream));
 
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'returnStdClass');
 
-        //then
+        // then
         $execute = $serviceMethod->invoke([])->execute();
         $body = $execute->body();
         $this->assertInstanceOf(stdClass::class, $body);
@@ -590,16 +590,16 @@ class ServiceMethodFactoryTest extends TestCase
     #[TestWith(['[]', []])]
     public function shouldHandleBodyAsArrayOfScalar(string $body, array $expectedBody): void
     {
-        //given
+        // given
         Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], Utils::streamFor($body)));
 
         $userRequest = (new UserRequest())
             ->setLogin('jon-doe');
 
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'returnArrayOfScalar');
 
-        //then
+        // then
         $execute = $serviceMethod->invoke([$userRequest])->execute();
         $this->assertSame($expectedBody, $execute->body());
     }
@@ -607,14 +607,14 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldHandleBodyAsArrayOfStdClass(): void
     {
-        //given
+        // given
         $stream = Utils::streamFor('[{"key":"value1"},{"key":"value2"}]');
         Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], $stream));
 
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'returnArrayOfStdClass');
 
-        //then
+        // then
         $execute = $serviceMethod->invoke([])->execute();
         Assert::thatArray($execute->body())
             ->extracting(fn(stdClass $c): string => $c->key)
@@ -624,14 +624,14 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldHandleErrorBody(): void
     {
-        //given
+        // given
         $stream = Utils::streamFor('{"result":false, "message":"invalid-request"}');
         Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(400, [], $stream));
 
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'testErrorBody');
 
-        //then
+        // then
         $execute = $serviceMethod->invoke([])->execute();
 
         $this->assertNull($execute->body());
@@ -644,14 +644,14 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldHandleErrorBodyWhenErrorBodyConverterIsNotSet(): void
     {
-        //given
+        // given
         $stream = Utils::streamFor('{"result":false, "message"":"invalid-request"}');
         Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(400, [], $stream));
 
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'testErrorBodyWithoutMapping');
 
-        //then
+        // then
         $execute = $serviceMethod->invoke([])->execute();
         $this->assertNull($execute->body());
         $this->assertNull($execute->errorBody());
@@ -660,10 +660,10 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenNotArrayTypeHasParametrizedType(): void
     {
-        //when
+        // when
         CatchException::when($this->serviceMethodFactory)->create(InvalidRequestBody::class, 'notArrayTypeHasParametrizedType');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(InvalidArgumentException::class)
             ->hasMessage('Parametrized type can be set only for array raw type.');
@@ -672,14 +672,14 @@ class ServiceMethodFactoryTest extends TestCase
     #[Test]
     public function shouldHandleStreamInterfaceAsResponseBodyUsingStreamingAttribute(): void
     {
-        //given
+        // given
         $stream = Utils::streamFor('[{"key":"value1"},{"key":"value2"}]');
         Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], $stream));
 
-        //when
+        // when
         $serviceMethod = $this->serviceMethodFactory->create(FullyValidApi::class, 'streamInterfaceAsResponseBody');
 
-        //then
+        // then
         $execute = $serviceMethod->invoke([])->execute();
         $body = $execute->body();
         $this->assertInstanceOf(StreamInterface::class, $body);

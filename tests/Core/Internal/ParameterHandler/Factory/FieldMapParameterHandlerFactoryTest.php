@@ -38,10 +38,10 @@ class FieldMapParameterHandlerFactoryTest extends TestCase
     #[TestWith([null])]
     public function shouldThrowExceptionWhenMetodEncodedIsNotFormUrlEncoded(?Encoding $encoding): void
     {
-        //given
+        // given
         $fieldMapParameterHandlerFactory = new FieldMapParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         CatchException::when($fieldMapParameterHandlerFactory)->create(
             new FieldMap(false),
             new GET('/users/{login}'),
@@ -51,7 +51,7 @@ class FieldMapParameterHandlerFactoryTest extends TestCase
             new Type('string'),
         );
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #2. #[FieldMap] parameters can only be used with form encoding.');
@@ -60,10 +60,10 @@ class FieldMapParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreateFieldMapParameterHandler(): void
     {
-        //given
+        // given
         $fieldMapParameterHandlerFactory = new FieldMapParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $fieldMapParameterHandlerFactory->create(
             new FieldMap(false),
             new GET('/users/{login}'),
@@ -73,7 +73,7 @@ class FieldMapParameterHandlerFactoryTest extends TestCase
             new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(FieldMapParameterHandler::class, $parameterHandler);
     }
 }

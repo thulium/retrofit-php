@@ -26,13 +26,13 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldCreateRequest(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users'));
 
-        //when
+        // when
         $request = $requestBuilder->build();
 
-        //then
+        // then
         $this->assertSame('GET', $request->getMethod());
         $this->assertSame('https://example.com/users', $request->getUri()->__toString());
     }
@@ -42,13 +42,13 @@ class RequestBuilderTest extends TestCase
     #[TestWith([new Uri('https://foo.bar/api/users')])]
     public function shouldSetNewBaseUrl(Uri|string $uri): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
-        //when
+        // when
         $requestBuilder->setBaseUrl($uri);
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('https://foo.bar/api/users', $request->getUri()->__toString());
     }
@@ -56,13 +56,13 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldReplacePathParameter(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users/{id}'));
 
-        //when
+        // when
         $requestBuilder->addPathParam('id', '1', false);
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('https://example.com/users/1', $request->getUri()->__toString());
     }
@@ -70,13 +70,13 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldReplaceEncodedPathParameter(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users/{login}'));
 
-        //when
+        // when
         $requestBuilder->addPathParam('login', 'Jon+Doe', true);
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('https://example.com/users/Jon+Doe', $request->getUri()->__toString());
     }
@@ -84,14 +84,14 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldReplaceMultiplePathParameters(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users/{login}/tickets/{id}'));
 
-        //when
+        // when
         $requestBuilder->addPathParam('login', 'Jon+Doe', false);
         $requestBuilder->addPathParam('id', '1', false);
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('https://example.com/users/Jon%2BDoe/tickets/1', $request->getUri()->__toString());
     }
@@ -99,14 +99,14 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenPathNameDoesNotPresentInUrl(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new POST('/users/{login}'));
 
-        //when
+        // when
         $requestBuilder->addPathParam('not-matching', 'joe', false);
         CatchException::when($requestBuilder)->build();
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage("URL '/users/{login}' does not contain 'not-matching'.");
@@ -115,14 +115,14 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldSetNewBaseUrlAndReplacePathParameters(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
-        //when
+        // when
         $requestBuilder->addPathParam('login', 'Jon+Doe', false);
         $requestBuilder->setBaseUrl('https://foo.bar/api/users/{login}');
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('https://foo.bar/api/users/Jon%2BDoe', $request->getUri()->__toString());
     }
@@ -130,13 +130,13 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldAddQueryParameter(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
-        //when
+        // when
         $requestBuilder->addQueryParam('groups', 'new,old', false);
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('https://example.com?groups=new%2Cold', $request->getUri()->__toString());
     }
@@ -144,13 +144,13 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldAddEncodedQueryParameter(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
-        //when
+        // when
         $requestBuilder->addQueryParam('groups', 'new,old', true);
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('https://example.com?groups=new,old', $request->getUri()->__toString());
     }
@@ -158,13 +158,13 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldAddArrayOfQueryParameters(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
-        //when
+        // when
         $requestBuilder->addQueryParam('groups', ['new', 'old'], false);
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('https://example.com?groups=new&groups=old', $request->getUri()->__toString());
     }
@@ -172,13 +172,13 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldAddEncodedArrayOfQueryParameters(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
-        //when
+        // when
         $requestBuilder->addQueryParam('groups', ['new+users', 'old'], true);
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('https://example.com?groups=new+users&groups=old', $request->getUri()->__toString());
     }
@@ -186,13 +186,13 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldAddHeaderToRequest(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
-        //when
+        // when
         $requestBuilder->addHeader('x-custom', 'value');
 
-        //then
+        // then
         $request = $requestBuilder->build();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['value']]);
     }
@@ -200,13 +200,13 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldSanitizeHeaderName(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET());
 
-        //when
+        // when
         $requestBuilder->addHeader('X-CusTom', 'value');
 
-        //then
+        // then
         $request = $requestBuilder->build();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['value']]);
     }
@@ -214,10 +214,10 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldAddDefaultHeaders(): void
     {
-        //when
+        // when
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['X-CusTom' => 'value']);
 
-        //then
+        // then
         $request = $requestBuilder->build();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['value']]);
     }
@@ -227,10 +227,10 @@ class RequestBuilderTest extends TestCase
     {
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['x-age' => '10']);
 
-        //when
+        // when
         $requestBuilder->addHeader('x-age', '20');
 
-        //then
+        // then
         $request = $requestBuilder->build();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-age' => ['20']]);
     }
@@ -238,14 +238,14 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldAddFormFields(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['x-age' => '10']);
 
-        //when
+        // when
         $requestBuilder->addFormField('x-name', 'Jon+Doe', false);
         $requestBuilder->addFormField('filter', 'user+admin', true);
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('x-name=Jon%2BDoe&filter=user+admin', $request->getBody()->getContents());
     }
@@ -254,13 +254,13 @@ class RequestBuilderTest extends TestCase
     #[DataProvider('multipartProvider')]
     public function shouldAddPart(string $name, StreamInterface|string $body, array $headers, ?string $filename, array $expectedLines): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['x-age' => '10']);
 
-        //when
+        // when
         $requestBuilder->addPart($name, $body, $headers, $filename);
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $contents = $request->getBody()->getContents();
         foreach ($expectedLines as $expectedLine) {
@@ -271,13 +271,13 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function shouldSetBody(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['x-age' => '10']);
 
-        //when
+        // when
         $requestBuilder->setBody(Utils::streamFor('some-body'));
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('some-body', $request->getBody()->getContents());
     }
@@ -285,14 +285,14 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function bodyShouldHasHighestPrecedenceThanForm(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['x-age' => '10']);
         $requestBuilder->addFormField('field-name', 'field-value', true);
 
-        //when
+        // when
         $requestBuilder->setBody(Utils::streamFor('some-body'));
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('some-body', $request->getBody()->getContents());
     }
@@ -300,14 +300,14 @@ class RequestBuilderTest extends TestCase
     #[Test]
     public function bodyShouldHasHighestPrecedenceThanMultipart(): void
     {
-        //given
+        // given
         $requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET(), ['x-age' => '10']);
         $requestBuilder->addPart('multipart', Utils::streamFor('body-from-multipart'));
 
-        //when
+        // when
         $requestBuilder->setBody(Utils::streamFor('some-body'));
 
-        //then
+        // then
         $request = $requestBuilder->build();
         $this->assertSame('some-body', $request->getBody()->getContents());
     }

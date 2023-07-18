@@ -33,13 +33,13 @@ class HeaderMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueIsNull(): void
     {
-        //given
+        // given
         $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($headerMapParameterHandler)->apply($this->requestBuilder, null);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Header map was null.');
@@ -48,13 +48,13 @@ class HeaderMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueIsNotArray(): void
     {
-        //given
+        // given
         $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($headerMapParameterHandler)->apply($this->requestBuilder, 'some-string-value');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Parameter should be an array.');
@@ -63,13 +63,13 @@ class HeaderMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenKeyInArrayIsNull(): void
     {
-        //given
+        // given
         $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($headerMapParameterHandler)->apply($this->requestBuilder, [null => 'value']);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Header map contained empty key.');
@@ -78,13 +78,13 @@ class HeaderMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueInArrayIsNull(): void
     {
-        //given
+        // given
         $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($headerMapParameterHandler)->apply($this->requestBuilder, ['key' => null]);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage("Method MockMethod::mockMethod() parameter #1. Header map contained null value for key 'key'.");
@@ -93,13 +93,13 @@ class HeaderMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddHeaders(): void
     {
-        //given
+        // given
         $headerMapParameterHandler = new HeaderMapParameterHandler(BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $headerMapParameterHandler->apply($this->requestBuilder, ['x-custom' => 'jon+doe', 'x-age' => 34, 'Content-Type' => 'application/json']);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         Assert::thatArray($request->getHeaders())
             ->containsKeyAndValue(['x-custom' => ['jon+doe'], 'x-age' => ['34'], 'content-type' => ['application/json']]);

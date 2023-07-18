@@ -30,13 +30,13 @@ class QueryNameParameterHandlerTest extends TestCase
     #[Test]
     public function shouldSkipNullValues(): void
     {
-        //given
+        // given
         $queryParameterHandler = new QueryNameParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryParameterHandler->apply($this->requestBuilder, null);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users', $request->getUri()->__toString());
     }
@@ -44,13 +44,13 @@ class QueryNameParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddEncodedQueryName(): void
     {
-        //given
+        // given
         $queryNameParameterHandler = new QueryNameParameterHandler(true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryNameParameterHandler->apply($this->requestBuilder, 'contains(Bob)');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users?contains(Bob)', $request->getUri()->__toString());
     }
@@ -58,13 +58,13 @@ class QueryNameParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddArrayOfEncodedQueryName(): void
     {
-        //given
+        // given
         $queryNameParameterHandler = new QueryNameParameterHandler(true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryNameParameterHandler->apply($this->requestBuilder, ['contains(Bob)', 'age(20)']);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users?contains(Bob)&age(20)', $request->getUri()->__toString());
     }
@@ -72,13 +72,13 @@ class QueryNameParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddQueryName(): void
     {
-        //given
+        // given
         $queryNameParameterHandler = new QueryNameParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryNameParameterHandler->apply($this->requestBuilder, 'contains(Bob)');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users?contains%28Bob%29', $request->getUri()->__toString());
     }
@@ -86,13 +86,13 @@ class QueryNameParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddArrayOfQueryName(): void
     {
-        //given
+        // given
         $queryNameParameterHandler = new QueryNameParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryNameParameterHandler->apply($this->requestBuilder, ['contains(Bob)', 'age(20)']);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users?contains%28Bob%29&age%2820%29', $request->getUri()->__toString());
     }

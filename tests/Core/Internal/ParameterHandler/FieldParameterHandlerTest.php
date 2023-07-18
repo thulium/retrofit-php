@@ -30,13 +30,13 @@ class FieldParameterHandlerTest extends TestCase
     #[Test]
     public function shouldSkipNullValues(): void
     {
-        //given
+        // given
         $fieldParameterHandler = new FieldParameterHandler('name', false, BuiltInConverters::ToStringConverter());
 
-        //when
+        // when
         $fieldParameterHandler->apply($this->requestBuilder, null);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users', $request->getUri()->__toString());
     }
@@ -44,13 +44,13 @@ class FieldParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddNotEncodedFormField(): void
     {
-        //given
+        // given
         $fieldParameterHandler = new FieldParameterHandler('name', false, BuiltInConverters::ToStringConverter());
 
-        //when
+        // when
         $fieldParameterHandler->apply($this->requestBuilder, 'jon+doe');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users', $request->getUri()->__toString());
         $this->assertSame('name=jon%2Bdoe', $request->getBody()->getContents());
@@ -59,13 +59,13 @@ class FieldParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddEncodedFormField(): void
     {
-        //given
+        // given
         $fieldParameterHandler = new FieldParameterHandler('name', true, BuiltInConverters::ToStringConverter());
 
-        //when
+        // when
         $fieldParameterHandler->apply($this->requestBuilder, 'jon+doe');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users', $request->getUri()->__toString());
         $this->assertSame('name=jon+doe', $request->getBody()->getContents());

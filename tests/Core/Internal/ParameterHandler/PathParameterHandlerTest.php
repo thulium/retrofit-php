@@ -32,13 +32,13 @@ class PathParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueIsNull(): void
     {
-        //given
+        // given
         $pathParameterHandler = new PathParameterHandler('login', false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($pathParameterHandler)->apply($this->requestBuilder, null);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage("Method MockMethod::mockMethod() parameter #1. #[Path] parameter 'login' value must not be null.");
@@ -47,13 +47,13 @@ class PathParameterHandlerTest extends TestCase
     #[Test]
     public function shouldReplaceNotEncodedValue(): void
     {
-        //given
+        // given
         $pathParameterHandler = new PathParameterHandler('login', false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $pathParameterHandler->apply($this->requestBuilder, 'Jon+Doe');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users/Jon%2BDoe', $request->getUri()->__toString());
     }
@@ -61,13 +61,13 @@ class PathParameterHandlerTest extends TestCase
     #[Test]
     public function shouldReplaceEncodedValue(): void
     {
-        //given
+        // given
         $pathParameterHandler = new PathParameterHandler('login', true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $pathParameterHandler->apply($this->requestBuilder, 'Jon+Doe');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users/Jon+Doe', $request->getUri()->__toString());
     }

@@ -32,10 +32,10 @@ class QueryMapParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreateQueryMapParameterHandler(): void
     {
-        //given
+        // given
         $queryMapParameterHandler = new QueryMapParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $queryMapParameterHandler->create(
             new QueryMap(),
             new GET('/users'),
@@ -45,7 +45,7 @@ class QueryMapParameterHandlerFactoryTest extends TestCase
             new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(QueryMapParameterHandler::class, $parameterHandler);
     }
 }

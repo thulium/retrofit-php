@@ -61,13 +61,13 @@ class DefaultProxyFactoryTest extends TestCase
     #[Test]
     public function shouldCreateImplementationWithImplSuffixInName(): void
     {
-        //given
+        // given
         $service = new ReflectionClass(FullyValidApi::class);
 
-        //when
+        // when
         $impl = $this->defaultProxyFactory->create($this->retrofit, $service);
 
-        //then
+        // then
         $reflectionClass = new ReflectionClass($impl);
         $this->assertSame('Retrofit\Proxy\Retrofit\Tests\Fixtures\Api\FullyValidApiImpl', $reflectionClass->getName());
         $this->assertSame([FullyValidApi::class], $reflectionClass->getInterfaceNames());
@@ -76,13 +76,13 @@ class DefaultProxyFactoryTest extends TestCase
     #[Test]
     public function shouldCreateImplementationWithOneConstructorParameterWhichIsRetrofit(): void
     {
-        //given
+        // given
         $service = new ReflectionClass(FullyValidApi::class);
 
-        //when
+        // when
         $impl = $this->defaultProxyFactory->create($this->retrofit, $service);
 
-        //then
+        // then
         $reflectionClass = new ReflectionClass($impl);
         $reflectionMethod = $reflectionClass->getConstructor();
         $reflectionParameters = $reflectionMethod->getParameters();
@@ -98,13 +98,13 @@ class DefaultProxyFactoryTest extends TestCase
     #[Test]
     public function shouldCreateImplementationWithMethods(): void
     {
-        //given
+        // given
         $service = new ReflectionClass(FullyValidApi::class);
 
-        //when
+        // when
         $impl = $this->defaultProxyFactory->create($this->retrofit, $service);
 
-        //then
+        // then
         $reflectionClass = new ReflectionClass($impl);
         $this->assertTrue($reflectionClass->hasMethod('getInfo'));
         $this->assertTrue($reflectionClass->hasMethod('createUser'));
@@ -131,13 +131,13 @@ class DefaultProxyFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenMethodDoesNotHaveReturnType(): void
     {
-        //given
+        // given
         $service = new ReflectionClass(MethodWithoutReturnType::class);
 
-        //when
+        // when
         CatchException::when($this->defaultProxyFactory)->create($this->retrofit, $service);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MethodWithoutReturnType::withoutReturnType(). Method return type is required, none found.');
@@ -146,13 +146,13 @@ class DefaultProxyFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenMethodDoesNotHaveCallReturnType(): void
     {
-        //given
+        // given
         $service = new ReflectionClass(MethodWithWrongReturnType::class);
 
-        //when
+        // when
         CatchException::when($this->defaultProxyFactory)->create($this->retrofit, $service);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage("Method MethodWithWrongReturnType::methodWithWrongReturnType(). Method return type should be a Retrofit\Core\Call class. 'int' return type found.");
@@ -161,13 +161,13 @@ class DefaultProxyFactoryTest extends TestCase
     #[Test]
     public function shouldCreateMethodWithParametersContainsAttributes(): void
     {
-        //given
+        // given
         $service = new ReflectionClass(FullyValidApi::class);
 
-        //when
+        // when
         $impl = $this->defaultProxyFactory->create($this->retrofit, $service);
 
-        //then
+        // then
         $reflectionMethod = new ReflectionMethod($impl, 'createUser');
         $reflectionParameters = $reflectionMethod->getParameters();
 
@@ -186,13 +186,13 @@ class DefaultProxyFactoryTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenParametersDoesNotHaveType(): void
     {
-        //given
+        // given
         $service = new ReflectionClass(ParameterWithoutType::class);
 
-        //when
+        // when
         CatchException::when($this->defaultProxyFactory)->create($this->retrofit, $service);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method ParameterWithoutType::parameterWithoutType() parameter #1. Parameter type is required, none found.');
@@ -201,13 +201,13 @@ class DefaultProxyFactoryTest extends TestCase
     #[Test]
     public function shouldHandleNullableParameterType(): void
     {
-        //given
+        // given
         $service = new ReflectionClass(NullableParameter::class);
 
-        //when
+        // when
         $impl = $this->defaultProxyFactory->create($this->retrofit, $service);
 
-        //then
+        // then
         $reflectionMethod = new ReflectionMethod($impl, 'nullableParameter');
         $reflectionParameters = $reflectionMethod->getParameters();
 
@@ -219,12 +219,12 @@ class DefaultProxyFactoryTest extends TestCase
     #[Test]
     public function shouldHandleParameterWithDefaultValue(): void
     {
-        //given
+        // given
         $service = new ReflectionClass(VariousParameters::class);
 
-        //when
+        // when
         $impl = $this->defaultProxyFactory->create($this->retrofit, $service);
-        //then
+        // then
         $reflectionMethod = new ReflectionMethod($impl, 'defaultValue');
         $reflectionParameters = $reflectionMethod->getParameters();
 
@@ -236,12 +236,12 @@ class DefaultProxyFactoryTest extends TestCase
     #[Test]
     public function shouldHandleParameterPassedByReference(): void
     {
-        //given
+        // given
         $service = new ReflectionClass(VariousParameters::class);
 
-        //when
+        // when
         $impl = $this->defaultProxyFactory->create($this->retrofit, $service);
-        //then
+        // then
         $reflectionMethod = new ReflectionMethod($impl, 'passedByReference');
         $reflectionParameters = $reflectionMethod->getParameters();
 
@@ -253,12 +253,12 @@ class DefaultProxyFactoryTest extends TestCase
     #[Test]
     public function shouldHandleVariadicParameter(): void
     {
-        //given
+        // given
         $service = new ReflectionClass(VariousParameters::class);
 
-        //when
+        // when
         $impl = $this->defaultProxyFactory->create($this->retrofit, $service);
-        //then
+        // then
         $reflectionMethod = new ReflectionMethod($impl, 'variadic');
         $reflectionParameters = $reflectionMethod->getParameters();
 

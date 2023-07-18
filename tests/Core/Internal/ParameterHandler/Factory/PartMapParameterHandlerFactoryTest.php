@@ -39,14 +39,14 @@ class PartMapParameterHandlerFactoryTest extends TestCase
     #[TestWith([null])]
     public function shouldThrowExceptionWhenMetodEncodedIsNotMultipart(?Encoding $encoding): void
     {
-        //given
+        // given
         $partMapParameterHandlerFactory = new PartMapParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         CatchException::when($partMapParameterHandlerFactory)
             ->create(new PartMap(), new GET('/users/{login}'), $encoding, $this->reflectionMethod, 1, new Type('string'));
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #2. #[PartMap] parameters can only be used with multipart.');
@@ -55,10 +55,10 @@ class PartMapParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreatePartMapParameterHandler(): void
     {
-        //given
+        // given
         $partMapParameterHandlerFactory = new PartMapParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $partMapParameterHandlerFactory->create(
             new PartMap(),
             new GET('/users/{login}'),
@@ -68,7 +68,7 @@ class PartMapParameterHandlerFactoryTest extends TestCase
             new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(PartMapParameterHandler::class, $parameterHandler);
     }
 }

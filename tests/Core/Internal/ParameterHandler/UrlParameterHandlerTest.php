@@ -32,10 +32,10 @@ class UrlParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueIsNull(): void
     {
-        //when
+        // when
         CatchException::when($this->urlParameterHandler)->apply($this->requestBuilder, null);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. #[Url] parameter value must not be null.');
@@ -44,10 +44,10 @@ class UrlParameterHandlerTest extends TestCase
     #[Test]
     public function shouldReplaceUrlUsingPassedInRuntime(): void
     {
-        //when
+        // when
         $this->urlParameterHandler->apply($this->requestBuilder, 'https://foo.bar/v2/api');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://foo.bar/v2/api', $request->getUri()->__toString());
     }

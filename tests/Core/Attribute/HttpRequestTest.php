@@ -24,7 +24,7 @@ class HttpRequestTest extends TestCase
     #[DataProvider('httpMethods')]
     public function shouldCheckHttpRequest(HttpRequest $httpRequest, HttpMethod $httpMethod, string $path, array $pathParameters, bool $hasBody): void
     {
-        //then
+        // then
         $this->assertSame($httpMethod, $httpRequest->httpMethod());
         $this->assertSame($path, $httpRequest->path());
         $this->assertSame($pathParameters, $httpRequest->pathParameters());

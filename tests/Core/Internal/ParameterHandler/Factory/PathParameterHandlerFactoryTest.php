@@ -32,10 +32,10 @@ class PathParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreatePathParameterHandler(): void
     {
-        //given
+        // given
         $pathParameterHandlerFactory = new PathParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $pathParameterHandlerFactory->create(
             new Path('login'),
             new POST('/users/{login}'),
@@ -45,7 +45,7 @@ class PathParameterHandlerFactoryTest extends TestCase
             new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(PathParameterHandler::class, $parameterHandler);
     }
 }

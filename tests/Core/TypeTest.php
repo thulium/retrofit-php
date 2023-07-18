@@ -25,10 +25,10 @@ class TypeTest extends TestCase
         array $params,
         string $expectedRawType,
     ): void {
-        //when
+        // when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
-        //then
+        // then
         $this->assertSame($expectedRawType, $type->getRawType());
     }
 
@@ -40,10 +40,10 @@ class TypeTest extends TestCase
         array $params,
         string $expectedRawType,
     ): void {
-        //when
+        // when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
-        //then
+        // then
         $this->assertSame($expectedRawType, $type->getRawType());
     }
 
@@ -55,10 +55,10 @@ class TypeTest extends TestCase
         array $params,
         string $expectedRawType,
     ): void {
-        //when
+        // when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
-        //then
+        // then
         $this->assertSame($expectedRawType, $type->getRawType());
     }
 
@@ -71,10 +71,10 @@ class TypeTest extends TestCase
         array $params,
         string $expectedRawType,
     ): void {
-        //when
+        // when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
-        //then
+        // then
         $this->assertSame($expectedRawType, $type->getRawType());
         $this->assertNotNull($type->getParametrizedType());
     }
@@ -88,10 +88,10 @@ class TypeTest extends TestCase
         array $params,
         string $expectedRawType,
     ): void {
-        //when
+        // when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
-        //then
+        // then
         $this->assertSame($expectedRawType, $type->getRawType());
         $this->assertNotNull($type->getParametrizedType());
     }
@@ -105,10 +105,10 @@ class TypeTest extends TestCase
         array $params,
         string $expectedRawType,
     ): void {
-        //when
+        // when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
-        //then
+        // then
         $this->assertSame($expectedRawType, $type->getRawType());
         $this->assertNotNull($type->getParametrizedType());
     }
@@ -116,15 +116,15 @@ class TypeTest extends TestCase
     #[Test]
     public function shouldCheckParameterIsATypeOf(): void
     {
-        //given
+        // given
         $reflectionMethod = new ReflectionMethod(TypeResolverApi::class, 'customClass');
 
         $type = Type::create($reflectionMethod, $reflectionMethod->getParameters()[0]);
 
-        //when
+        // when
         $isA = $type->isA(UserRequest::class);
 
-        //then
+        // then
         $this->assertTrue($isA);
     }
 

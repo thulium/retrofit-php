@@ -36,13 +36,13 @@ class PartParameterHandlerTest extends TestCase
     #[Test]
     public function shouldSkipNullValues(): void
     {
-        //given
+        // given
         $partParameterHandler = new PartParameterHandler('part-nane', MimeEncoding::BINARY, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $partParameterHandler->apply($this->requestBuilder, null);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame(Strings::EMPTY, $request->getBody()->getContents());
     }
@@ -50,13 +50,13 @@ class PartParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenNameIsBlankAndTypeIsNotPartInterface(): void
     {
-        //given
+        // given
         $partParameterHandler = new PartParameterHandler('', MimeEncoding::BINARY, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($partParameterHandler)->apply($this->requestBuilder, 'some-value');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. #[Part] attribute must supply a name or use MultipartBody.Part parameter type.');
@@ -65,14 +65,14 @@ class PartParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenNameIsNotBlankAndTypeIsPartInterface(): void
     {
-        //given
+        // given
         $partParameterHandler = new PartParameterHandler('part-name', MimeEncoding::BINARY, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
         $part = MultipartBody::Part()::createFromData('part-name-from-object', 'body');
 
-        //when
+        // when
         CatchException::when($partParameterHandler)->apply($this->requestBuilder, $part);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. #[Part] attribute using the MultipartBody.Part must not include a part name in the attribute.');
@@ -81,15 +81,15 @@ class PartParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddPart(): void
     {
-        //given
+        // given
         $partParameterHandler = new PartParameterHandler('some-part-name', MimeEncoding::BIT_7, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
         $part = (new UserRequest())
             ->setLogin('jon-doe');
 
-        //when
+        // when
         $partParameterHandler->apply($this->requestBuilder, $part);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $part = "Content-Transfer-Encoding: 7bit\r\nContent-Disposition: form-data; name=\"some-part-name\"\r\nContent-Length: 19\r\n\r\n{\"login\":\"jon-doe\"}";
         $this->assertStringContainsString($part, $request->getBody()->getContents());
@@ -98,14 +98,14 @@ class PartParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddPartUsingPartInterface(): void
     {
-        //given
+        // given
         $partParameterHandler = new PartParameterHandler(null, MimeEncoding::BINARY, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
         $part = MultipartBody::Part()::createFromData('part-name-from-object', 'body');
 
-        //when
+        // when
         $partParameterHandler->apply($this->requestBuilder, $part);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $part = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-name-from-object\"\r\nContent-Length: 4\r\n\r\nbody";
         $this->assertStringContainsString($part, $request->getBody()->getContents());

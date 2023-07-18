@@ -25,13 +25,13 @@ class RetrofitBuilderTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenHttpClientIsNotSet(): void
     {
-        //given
+        // given
         $retrofitBuilder = new RetrofitBuilder();
 
-        //when
+        // when
         CatchException::when($retrofitBuilder)->build();
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(LogicException::class)
             ->hasMessage('Must set HttpClient object to make requests.');
@@ -40,15 +40,15 @@ class RetrofitBuilderTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenBaseUrlIsNotSet(): void
     {
-        //given
+        // given
         /** @var HttpClient|MockInterface $httpClient */
         $httpClient = Mock::create(HttpClient::class);
         $retrofitBuilder = (new RetrofitBuilder())->client($httpClient);
 
-        //when
+        // when
         CatchException::when($retrofitBuilder)->build();
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(LogicException::class)
             ->hasMessage('Base URL required.');
@@ -57,17 +57,17 @@ class RetrofitBuilderTest extends TestCase
     #[Test]
     public function shouldBuildRetrofit(): void
     {
-        //given
+        // given
         /** @var HttpClient|MockInterface $httpClient */
         $httpClient = Mock::create(HttpClient::class);
         $retrofitBuilder = (new RetrofitBuilder())
             ->client($httpClient)
             ->baseUrl('https://example.com');
 
-        //when
+        // when
         $retrofit = $retrofitBuilder->build();
 
-        //then
+        // then
         $this->assertSame($httpClient, $retrofit->httpClient);
         $this->assertEquals(new Uri('https://example.com'), $retrofit->baseUrl);
     }
@@ -75,7 +75,7 @@ class RetrofitBuilderTest extends TestCase
     #[Test]
     public function shouldBuildRetrofitUsingUriInterfaceAsBaseUrl(): void
     {
-        //given
+        // given
         /** @var HttpClient|MockInterface $httpClient */
         $httpClient = Mock::create(HttpClient::class);
         $baseUrl = new Uri('https://example.com');
@@ -83,10 +83,10 @@ class RetrofitBuilderTest extends TestCase
             ->client($httpClient)
             ->baseUrl($baseUrl);
 
-        //when
+        // when
         $retrofit = $retrofitBuilder->build();
 
-        //then
+        // then
         $this->assertSame($httpClient, $retrofit->httpClient);
         $this->assertSame($baseUrl, $retrofit->baseUrl);
     }
@@ -94,7 +94,7 @@ class RetrofitBuilderTest extends TestCase
     #[Test]
     public function shouldBuildRetrofitWithBuiltInConverters(): void
     {
-        //given
+        // given
         /** @var HttpClient|MockInterface $httpClient */
         $httpClient = Mock::create(HttpClient::class);
         $baseUrl = new Uri('https://example.com');
@@ -102,10 +102,10 @@ class RetrofitBuilderTest extends TestCase
             ->client($httpClient)
             ->baseUrl($baseUrl);
 
-        //when
+        // when
         $retrofit = $retrofitBuilder->build();
 
-        //then
+        // then
         $converterProvider = $retrofit->converterProvider;
         $converter = $converterProvider->getStringConverter(new Type('string'));
         $this->assertInstanceOf(Converter::class, $converter);
@@ -117,7 +117,7 @@ class RetrofitBuilderTest extends TestCase
     #[Test]
     public function shouldBuildRetrofitWithAdditionalConverters(): void
     {
-        //given
+        // given
         /** @var HttpClient|MockInterface $httpClient */
         $httpClient = Mock::create(HttpClient::class);
         $baseUrl = new Uri('https://example.com');
@@ -126,10 +126,10 @@ class RetrofitBuilderTest extends TestCase
             ->baseUrl($baseUrl)
             ->addConverterFactory(new TestConverterFactory());
 
-        //when
+        // when
         $retrofit = $retrofitBuilder->build();
 
-        //then
+        // then
         $converterProvider = $retrofit->converterProvider;
         $converter = $converterProvider->getResponseBodyConverter(new Type(stdClass::class));
         $this->assertInstanceOf(Converter::class, $converter);

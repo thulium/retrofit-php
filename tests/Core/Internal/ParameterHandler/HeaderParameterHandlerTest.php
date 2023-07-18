@@ -26,13 +26,13 @@ class HeaderParameterHandlerTest extends TestCase
     #[Test]
     public function shouldSkipNullValues(): void
     {
-        //given
+        // given
         $headerParameterHandler = new HeaderParameterHandler('x-custom', BuiltInConverters::ToStringConverter());
 
-        //when
+        // when
         $headerParameterHandler->apply($this->requestBuilder, null);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue([]);
     }
@@ -40,13 +40,13 @@ class HeaderParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddHeader(): void
     {
-        //given
+        // given
         $headerParameterHandler = new HeaderParameterHandler('x-custom', BuiltInConverters::ToStringConverter());
 
-        //when
+        // when
         $headerParameterHandler->apply($this->requestBuilder, 'value');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['value']]);
     }

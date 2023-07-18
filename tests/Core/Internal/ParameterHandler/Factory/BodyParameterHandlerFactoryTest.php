@@ -33,10 +33,10 @@ class BodyParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreateBodyParameterHandler(): void
     {
-        //given
+        // given
         $partParameterHandlerFactory = new BodyParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $partParameterHandlerFactory->create(
             new Body(),
             new GET('/users/{login}'),
@@ -46,7 +46,7 @@ class BodyParameterHandlerFactoryTest extends TestCase
             new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(BodyParameterHandler::class, $parameterHandler);
     }
 }

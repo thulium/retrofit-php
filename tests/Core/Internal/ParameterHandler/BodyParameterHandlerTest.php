@@ -32,13 +32,13 @@ class BodyParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueIsNull(): void
     {
-        //given
+        // given
         $headerMapParameterHandler = new BodyParameterHandler(BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($headerMapParameterHandler)->apply($this->requestBuilder, null);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Body was null.');

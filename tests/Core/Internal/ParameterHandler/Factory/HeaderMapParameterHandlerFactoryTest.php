@@ -32,10 +32,10 @@ class HeaderMapParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreateHeaderMapParameterHandler(): void
     {
-        //given
+        // given
         $headerMapParameterHandlerFactory = new HeaderMapParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $headerMapParameterHandlerFactory->create(
             new HeaderMap(),
             new GET('/users/{login}'),
@@ -45,7 +45,7 @@ class HeaderMapParameterHandlerFactoryTest extends TestCase
             new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(HeaderMapParameterHandler::class, $parameterHandler);
     }
 }

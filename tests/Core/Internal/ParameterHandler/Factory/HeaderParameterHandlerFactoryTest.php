@@ -32,10 +32,10 @@ class HeaderParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreateHeaderParameterHandler(): void
     {
-        //given
+        // given
         $headerParameterHandlerFactory = new HeaderParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $headerParameterHandlerFactory->create(
             new Header('x-custom'),
             new GET('/users/{login}'),
@@ -45,7 +45,7 @@ class HeaderParameterHandlerFactoryTest extends TestCase
             new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(HeaderParameterHandler::class, $parameterHandler);
     }
 }

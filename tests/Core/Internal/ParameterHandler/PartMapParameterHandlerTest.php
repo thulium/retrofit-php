@@ -39,13 +39,13 @@ class PartMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionOnNullValues(): void
     {
-        //given
+        // given
         $partMapParameterHandler = new PartMapParameterHandler(MimeEncoding::BINARY, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($partMapParameterHandler)->apply($this->requestBuilder, null);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Part map was null.');
@@ -54,13 +54,13 @@ class PartMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueIsNotArray(): void
     {
-        //given
+        // given
         $partMapParameterHandler = new PartMapParameterHandler(MimeEncoding::BINARY, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($partMapParameterHandler)->apply($this->requestBuilder, 'some-string-value');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Parameter should be an array.');
@@ -69,13 +69,13 @@ class PartMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenKeyInArrayIsNull(): void
     {
-        //given
+        // given
         $partMapParameterHandler = new PartMapParameterHandler(MimeEncoding::BINARY, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($partMapParameterHandler)->apply($this->requestBuilder, [null => 'value']);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Part map contained empty key.');
@@ -84,13 +84,13 @@ class PartMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueInArrayIsNull(): void
     {
-        //given
+        // given
         $partMapParameterHandler = new PartMapParameterHandler(MimeEncoding::BINARY, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($partMapParameterHandler)->apply($this->requestBuilder, ['key' => null]);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage("Method MockMethod::mockMethod() parameter #1. Part map contained null value for key 'key'.");
@@ -99,7 +99,7 @@ class PartMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddPart(): void
     {
-        //given
+        // given
         $fileResource = $this->getFileResource('sample-image.jpg');
 
         $partMapParameterHandler = new PartMapParameterHandler(MimeEncoding::BINARY, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
@@ -108,10 +108,10 @@ class PartMapParameterHandlerTest extends TestCase
 
         $part2 = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor($fileResource), [], 'image.png');
 
-        //when
+        // when
         $partMapParameterHandler->apply($this->requestBuilder, ['part1' => $part1, 'part2' => $part2]);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $contents = $request->getBody()->getContents();
 
