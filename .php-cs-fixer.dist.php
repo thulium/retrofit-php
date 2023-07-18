@@ -36,6 +36,7 @@ return (new PhpCsFixer\Config())
         'no_empty_comment' => true,
         'no_short_bool_cast' => true,
         'no_unneeded_control_parentheses' => true,
+        'no_unneeded_curly_braces' => true,
         'ordered_class_elements' => [
             'order' => [
                 'use_trait',
