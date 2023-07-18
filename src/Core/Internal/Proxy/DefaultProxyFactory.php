@@ -63,6 +63,7 @@ use Retrofit\Core\Retrofit;
 readonly class DefaultProxyFactory implements ProxyFactory
 {
     private const SERVICE_IMPLEMENTATION_NAMESPACE_PREFIX = 'Retrofit\Proxy\\';
+
     private const SERVICE_IMPLEMENTATION_CLASS_SUFFIX = 'Impl';
 
     public function __construct(

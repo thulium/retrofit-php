@@ -19,6 +19,7 @@ use RuntimeException;
 class QueryMapParameterHandlerTest extends TestCase
 {
     private RequestBuilder $requestBuilder;
+
     private ReflectionMethod $reflectionMethod;
 
     public function setUp(): void

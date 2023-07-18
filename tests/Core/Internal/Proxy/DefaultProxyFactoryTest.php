@@ -43,6 +43,7 @@ use RuntimeException;
 class DefaultProxyFactoryTest extends TestCase
 {
     private ProxyFactory $defaultProxyFactory;
+
     private Retrofit $retrofit;
 
     public function setUp(): void

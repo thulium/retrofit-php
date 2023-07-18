@@ -17,6 +17,7 @@ use Retrofit\Tests\Fixtures\Api\MockMethod;
 class QueryNameParameterHandlerTest extends TestCase
 {
     private RequestBuilder $requestBuilder;
+
     private ReflectionMethod $reflectionMethod;
 
     public function setUp(): void

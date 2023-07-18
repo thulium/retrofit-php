@@ -19,6 +19,9 @@ return (new PhpCsFixer\Config())
         'cast_spaces' => [
             'space' => 'none',
         ],
+        'class_attributes_separation' => [
+            'elements' => ['const' => 'one', 'method' => 'one', 'property' => 'one', 'trait_import' => 'none', 'case' => 'none'],
+        ],
         'class_reference_name_casing' => true,
         'native_function_casing' => true,
         'native_function_type_declaration_casing' => true,

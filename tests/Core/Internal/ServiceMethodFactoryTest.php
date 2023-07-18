@@ -46,8 +46,11 @@ class ServiceMethodFactoryTest extends TestCase
     use WithFixtureFile;
 
     private HttpClient|MockInterface $httpClient;
+
     private Retrofit $retrofit;
+
     private ParameterHandlerFactoryProvider|MockInterface $parameterHandlerFactoryProvider;
+
     private ServiceMethodFactory $serviceMethodFactory;
 
     public function setUp(): void

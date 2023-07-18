@@ -17,6 +17,7 @@ use Retrofit\Tests\Fixtures\Api\MockMethod;
 class FieldParameterHandlerTest extends TestCase
 {
     private RequestBuilder $requestBuilder;
+
     private ReflectionMethod $reflectionMethod;
 
     public function setUp(): void

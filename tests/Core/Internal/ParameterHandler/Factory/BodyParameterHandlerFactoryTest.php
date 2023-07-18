@@ -20,6 +20,7 @@ use Retrofit\Tests\Fixtures\Converter\TestConverterFactory;
 class BodyParameterHandlerFactoryTest extends TestCase
 {
     private ReflectionMethod $reflectionMethod;
+
     private ConverterProvider $converterProvider;
 
     public function setUp(): void

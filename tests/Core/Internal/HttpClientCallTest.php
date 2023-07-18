@@ -26,7 +26,9 @@ use Throwable;
 class HttpClientCallTest extends TestCase
 {
     private RequestInterface $request;
+
     private ResponseBodyConverter|MockInterface $responseBodyConverter;
+
     private ResponseBodyConverter|MockInterface $responseErrorBodyConverter;
 
     public function setUp(): void
@@ -131,6 +133,7 @@ class HttpClientCallTest extends TestCase
     {
         return new class ($result) implements HttpClient {
             private Closure $onResponse;
+
             private Closure $onFailure;
 
             public function __construct(private readonly ResponseInterface|Throwable $result)
@@ -167,6 +170,7 @@ class HttpClientCallTest extends TestCase
     {
         return new class () implements Callback {
             public static bool $onResponseCalled = false;
+
             public static bool $onFailureCalled = false;
 
             public function onResponse(Call $call, \Retrofit\Core\Response $response): void

@@ -19,6 +19,7 @@ use Retrofit\Tests\Fixtures\Api\MockMethod;
 class PathParameterHandlerFactoryTest extends TestCase
 {
     private ReflectionMethod $reflectionMethod;
+
     private ConverterProvider $converterProvider;
 
     public function setUp(): void

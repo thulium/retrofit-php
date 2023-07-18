@@ -20,6 +20,7 @@ use stdClass;
 class QueryParameterHandlerTest extends TestCase
 {
     private RequestBuilder $requestBuilder;
+
     private ReflectionMethod $reflectionMethod;
 
     public function setUp(): void

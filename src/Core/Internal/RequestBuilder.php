@@ -23,12 +23,18 @@ class RequestBuilder
     private const PARAMETER_PLACEHOLDER = '{%s}';
 
     private UriInterface $uri;
+
     #[ArrayShape([0 => ['name' => 'string', 'value' => 'string']])]
     private array $pathParameters = [];
+
     private array $queries = [];
+
     private array $headers = [];
+
     private array $fields = [];
+
     private array $parts = [];
+
     private ?StreamInterface $body = null;
 
     /**

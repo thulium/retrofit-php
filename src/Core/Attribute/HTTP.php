@@ -12,6 +12,7 @@ use Retrofit\Core\Internal\Utils\Utils;
 readonly class HTTP implements HttpRequest
 {
     private HttpMethod $httpMethod;
+
     private array $pathParameters;
 
     public function __construct(

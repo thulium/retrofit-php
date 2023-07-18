@@ -20,7 +20,9 @@ use Retrofit\Core\Internal\Proxy\DefaultProxyFactory;
 class RetrofitBuilder
 {
     private ?HttpClient $httpClient = null;
+
     private ?UriInterface $baseUrl = null;
+
     private array $converterFactories = [];
 
     public function client(HttpClient $httpClient): static

@@ -361,5 +361,4 @@ class RequestBuilderTest extends TestCase
         $request = $requestBuilder->build();
         $this->assertSame('some-body', $request->getBody()->getContents());
     }
-
 }

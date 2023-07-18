@@ -18,6 +18,7 @@ use RuntimeException;
 class UrlParameterHandlerTest extends TestCase
 {
     private RequestBuilder $requestBuilder;
+
     private UrlParameterHandler $urlParameterHandler;
 
     public function setUp(): void

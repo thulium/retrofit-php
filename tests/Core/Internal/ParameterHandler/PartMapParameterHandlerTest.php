@@ -26,6 +26,7 @@ class PartMapParameterHandlerTest extends TestCase
     use WithFixtureFile;
 
     private RequestBuilder $requestBuilder;
+
     private ReflectionMethod $reflectionMethod;
 
     public function setUp(): void
