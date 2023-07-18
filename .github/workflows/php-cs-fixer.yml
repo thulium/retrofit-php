@@ -1,15 +1,10 @@
-name: CI
+name: PHP-CS-Fixer
 
 on:
-  push:
-    branches:
-      - '*'
-  pull_request:
-    branches:
-      - '*'
+  - pull_request_target
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
 
     strategy:
@@ -30,9 +25,10 @@ jobs:
         env:
           fail-fast: true
 
-      - name: Install Composer dependencies
-        run: composer install --no-progress
+      - name: Install PHP-CS-Fixer
+        run: composer --working-dir=vendor-bin/php-cs-fixer --no-progress install
 
-      - name: Run tests
-        run: ./vendor/bin/phpunit --configuration ./phpunit.xml.dist
-
+      - name: Commit lint changes
+        uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        with:
+          commit_message: Apply PHP-CS-Fixer changes
