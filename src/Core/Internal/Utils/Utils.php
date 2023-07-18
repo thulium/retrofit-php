@@ -32,7 +32,7 @@ readonly class Utils
     /**
      * Transforms {@code $names} to the valid FQCN (Full Qualified Class Name) with leading namespace delimiter.
      */
-    public static function toFQCN(string...$names): string
+    public static function toFQCN(string ...$names): string
     {
         return Joiner::on(Strings::EMPTY)
             ->mapValues(fn(string $name): string => str_starts_with($name, self::NAMESPACE_DELIMITER) ? $name : (self::NAMESPACE_DELIMITER . $name))

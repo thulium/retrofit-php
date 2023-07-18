@@ -22,5 +22,5 @@ interface VariousParameters
 
     #[GET('/users')]
     #[ResponseBody('void')]
-    public function variadic(#[Query('ids')] int...$ids): Call;
+    public function variadic(#[Query('ids')] int ...$ids): Call;
 }
