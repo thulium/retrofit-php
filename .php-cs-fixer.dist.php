@@ -97,6 +97,13 @@ return (new PhpCsFixer\Config())
         'phpdoc_indent' => true,
         'phpdoc_no_package' => true,
         'phpdoc_no_useless_inheritdoc' => true,
+        'phpdoc_order' => [
+            'order' => [
+                'param',
+                'return',
+                'throws',
+            ],
+        ],
         'php_unit_set_up_tear_down_visibility' => true,
         'php_unit_test_annotation' => [
             'style' => 'annotation',
