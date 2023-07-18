@@ -12,7 +12,7 @@ return (new PhpCsFixer\Config())
     ->setFinder($finder)
     ->setRiskyAllowed(true)
     ->setRules([
-        '@PSR12' => true,
+        '@PSR12:risky' => true,
 
         'curly_braces_position' => [
             'anonymous_classes_opening_brace' => 'next_line_unless_newline_at_signature_end',

@@ -21,8 +21,7 @@ readonly class Type
     public function __construct(
         private string $rawType,
         private ?string $parametrizedType = null,
-    )
-    {
+    ) {
     }
 
     public function getRawType(): string
@@ -60,8 +59,7 @@ readonly class Type
         ReflectionMethod $reflectionMethod,
         ReflectionParameter $reflectionParameter,
         array $params = [],
-    ): Type
-    {
+    ): Type {
         $reflectionType = $reflectionParameter->getType();
 
         $rawType = $reflectionType->getName();
@@ -75,8 +73,7 @@ readonly class Type
         ReflectionParameter $reflectionParameter,
         ReflectionMethod $reflectionMethod,
         array $params,
-    ): ?string
-    {
+    ): ?string {
         if ($rawType !== 'array') {
             return null;
         }
