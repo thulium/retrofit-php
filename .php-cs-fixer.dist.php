@@ -112,6 +112,7 @@ return (new PhpCsFixer\Config())
             'sort_algorithm' => 'none',
             'null_adjustment' => 'always_last',
         ],
+        'phpdoc_var_annotation_correct_order' => true,
         'php_unit_set_up_tear_down_visibility' => true,
         'php_unit_test_annotation' => [
             'style' => 'annotation',
