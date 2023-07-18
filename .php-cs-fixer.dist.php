@@ -35,6 +35,7 @@ return (new PhpCsFixer\Config())
         'native_function_type_declaration_casing' => true,
         'no_empty_comment' => true,
         'no_short_bool_cast' => true,
+        'no_unneeded_control_parentheses' => true,
         'ordered_class_elements' => [
             'order' => [
                 'use_trait',
