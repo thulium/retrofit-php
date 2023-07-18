@@ -14,6 +14,7 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PHP80Migration:risky' => true,
         '@PHP82Migration' => true,
+        '@PHPUnit100Migration:risky' => true,
         '@PSR12:risky' => true,
 
         'binary_operator_spaces' => true,
