@@ -29,6 +29,7 @@ return (new PhpCsFixer\Config())
             ],
         ],
         'class_reference_name_casing' => true,
+        'comment_to_phpdoc' => true,
         'native_function_casing' => true,
         'native_function_type_declaration_casing' => true,
         'no_short_bool_cast' => true,
