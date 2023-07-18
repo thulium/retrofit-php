@@ -2,14 +2,11 @@
 
 declare(strict_types=1);
 
-use PhpCsFixer\Config;
-use PhpCsFixer\Finder;
-
-$finder = Finder::create()
+$finder = PhpCsFixer\Finder::create()
     ->in(__DIR__ . '/src')
     ->in(__DIR__ . '/tests');
 
-return (new Config())
+return (new PhpCsFixer\Config())
     ->setFinder($finder)
     ->setRiskyAllowed(true)
     ->setRules([
