@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler;
@@ -17,9 +18,10 @@ use RuntimeException;
 class UrlParameterHandlerTest extends TestCase
 {
     private RequestBuilder $requestBuilder;
+
     private UrlParameterHandler $urlParameterHandler;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users/{name}'));
@@ -30,10 +32,10 @@ class UrlParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueIsNull(): void
     {
-        //when
+        // when
         CatchException::when($this->urlParameterHandler)->apply($this->requestBuilder, null);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. #[Url] parameter value must not be null.');
@@ -42,10 +44,10 @@ class UrlParameterHandlerTest extends TestCase
     #[Test]
     public function shouldReplaceUrlUsingPassedInRuntime(): void
     {
-        //when
+        // when
         $this->urlParameterHandler->apply($this->requestBuilder, 'https://foo.bar/v2/api');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://foo.bar/v2/api', $request->getUri()->__toString());
     }

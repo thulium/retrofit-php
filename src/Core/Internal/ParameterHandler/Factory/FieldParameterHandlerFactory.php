@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal\ParameterHandler\Factory;
@@ -20,9 +21,8 @@ readonly class FieldParameterHandlerFactory extends AbstractParameterHandlerFact
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,
         int $position,
-        Type $type
-    ): ParameterHandler
-    {
+        Type $type,
+    ): ParameterHandler {
         if ($encoding !== Encoding::FORM_URL_ENCODED) {
             throw Utils::parameterException($reflectionMethod, $position, '#[Field] parameters can only be used with form encoding.');
         }

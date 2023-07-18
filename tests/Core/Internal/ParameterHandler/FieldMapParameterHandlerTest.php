@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler;
@@ -18,9 +19,10 @@ use RuntimeException;
 class FieldMapParameterHandlerTest extends TestCase
 {
     private RequestBuilder $requestBuilder;
+
     private ReflectionMethod $reflectionMethod;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users'));
@@ -30,13 +32,13 @@ class FieldMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueIsNull(): void
     {
-        //given
+        // given
         $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($fieldMapParameterHandler)->apply($this->requestBuilder, null);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Field map was null.');
@@ -45,13 +47,13 @@ class FieldMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueIsNotArray(): void
     {
-        //given
+        // given
         $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($fieldMapParameterHandler)->apply($this->requestBuilder, 'some-string-value');
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Parameter should be an array.');
@@ -60,13 +62,13 @@ class FieldMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenKeyInArrayIsNull(): void
     {
-        //given
+        // given
         $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($fieldMapParameterHandler)->apply($this->requestBuilder, [null => 'value']);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Field map contained empty key.');
@@ -75,13 +77,13 @@ class FieldMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenValueInArrayIsNull(): void
     {
-        //given
+        // given
         $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($fieldMapParameterHandler)->apply($this->requestBuilder, ['key' => null]);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage("Method MockMethod::mockMethod() parameter #1. Field map contained null value for key 'key'.");
@@ -90,13 +92,13 @@ class FieldMapParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddFormFields(): void
     {
-        //given
+        // given
         $fieldMapParameterHandler = new FieldMapParameterHandler(false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $fieldMapParameterHandler->apply($this->requestBuilder, ['x-custom' => 'jon+doe', 'x-age' => 34]);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('x-custom=jon%2Bdoe&x-age=34', $request->getBody()->getContents());
     }

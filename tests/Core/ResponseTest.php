@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core;
@@ -14,56 +15,56 @@ class ResponseTest extends TestCase
     #[Test]
     public function shouldGetRawResponse(): void
     {
-        //given
+        // given
         $responseInterface = new \GuzzleHttp\Psr7\Response();
         $response = new Response($responseInterface, null, null);
 
-        //when
+        // when
         $actualRawResponse = $response->raw();
 
-        //then
+        // then
         $this->assertSame($responseInterface, $actualRawResponse);
     }
 
     #[Test]
     public function shouldGetCode(): void
     {
-        //given
+        // given
         $responseInterface = new \GuzzleHttp\Psr7\Response(401);
         $response = new Response($responseInterface, null, null);
 
-        //when
+        // when
         $code = $response->code();
 
-        //then
+        // then
         $this->assertSame(401, $code);
     }
 
     #[Test]
     public function shouldGetMessage(): void
     {
-        //given
+        // given
         $responseInterface = new \GuzzleHttp\Psr7\Response(401);
         $response = new Response($responseInterface, null, null);
 
-        //when
+        // when
         $message = $response->message();
 
-        //then
+        // then
         $this->assertSame('Unauthorized', $message);
     }
 
     #[Test]
     public function shouldGetHeaders(): void
     {
-        //given
+        // given
         $responseInterface = new \GuzzleHttp\Psr7\Response(401, ['Accept' => 'application/json']);
         $response = new Response($responseInterface, null, null);
 
-        //when
+        // when
         $headers = $response->headers();
 
-        //then
+        // then
         $this->assertSame(['Accept' => ['application/json']], $headers);
     }
 
@@ -77,61 +78,61 @@ class ResponseTest extends TestCase
     #[TestWith([500, false])]
     public function shouldCheckIsResponseSuccessful(int $status, bool $expectedSuccessful): void
     {
-        //given
+        // given
         $responseInterface = new \GuzzleHttp\Psr7\Response($status);
         $response = new Response($responseInterface, null, null);
 
-        //when
+        // when
         $successful = $response->isSuccessful();
 
-        //then
+        // then
         $this->assertSame($expectedSuccessful, $successful);
     }
 
     #[Test]
     public function shouldGetBody(): void
     {
-        //given
+        // given
         $responseInterface = new \GuzzleHttp\Psr7\Response(200);
         $body = new stdClass();
         $body->field = 'value';
         $response = new Response($responseInterface, $body, null);
 
-        //when
+        // when
         $actualBody = $response->body();
 
-        //then
+        // then
         $this->assertSame($body, $actualBody);
     }
 
     #[Test]
     public function shouldGetErrorBody(): void
     {
-        //given
+        // given
         $responseInterface = new \GuzzleHttp\Psr7\Response(200);
         $errorBody = new stdClass();
         $errorBody->success = false;
         $response = new Response($responseInterface, null, $errorBody);
 
-        //when
+        // when
         $actualErrorBody = $response->errorBody();
 
-        //then
+        // then
         $this->assertSame($errorBody, $actualErrorBody);
     }
 
     #[Test]
     public function shouldAllowEmptyBodyAndEmptyErrorBody(): void
     {
-        //given
+        // given
         $responseInterface = new \GuzzleHttp\Psr7\Response(200);
         $response = new Response($responseInterface, null, null);
 
-        //when
+        // when
         $body = $response->body();
         $errorBody = $response->errorBody();
 
-        //then
+        // then
         $this->assertNull($body);
         $this->assertNull($errorBody);
     }

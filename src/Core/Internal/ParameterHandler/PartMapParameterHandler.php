@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal\ParameterHandler;
@@ -13,7 +14,8 @@ use Retrofit\Core\Multipart\PartInterface;
 
 readonly class PartMapParameterHandler implements ParameterHandler
 {
-    use WithMapParameter, WithPartInterfaceHandle;
+    use WithMapParameter;
+    use WithPartInterfaceHandle;
 
     private const CONTENT_TRANSFER_ENCODING_HEADER = 'Content-Transfer-Encoding';
 
@@ -21,9 +23,8 @@ readonly class PartMapParameterHandler implements ParameterHandler
         private MimeEncoding $encoding,
         private Converter $converter,
         private ReflectionMethod $reflectionMethod,
-        private int $position
-    )
-    {
+        private int $position,
+    ) {
     }
 
     public function apply(RequestBuilder $requestBuilder, mixed $value): void

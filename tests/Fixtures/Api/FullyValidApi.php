@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Fixtures\Api;
@@ -112,7 +113,7 @@ interface FullyValidApi
         #[Part('string')] string $p1,
         #[Part('userRequest')] UserRequest $p2,
         #[Part] PartInterface $p3,
-        #[Part('stream')] StreamInterface $p4
+        #[Part('stream')] StreamInterface $p4,
     ): Call;
 
     #[POST('/users')]

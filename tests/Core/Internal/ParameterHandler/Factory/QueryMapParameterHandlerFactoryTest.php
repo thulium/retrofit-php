@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler\Factory;
@@ -18,9 +19,10 @@ use Retrofit\Tests\Fixtures\Api\MockMethod;
 class QueryMapParameterHandlerFactoryTest extends TestCase
 {
     private ReflectionMethod $reflectionMethod;
+
     private ConverterProvider $converterProvider;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
@@ -30,15 +32,20 @@ class QueryMapParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreateQueryMapParameterHandler(): void
     {
-        //given
+        // given
         $queryMapParameterHandler = new QueryMapParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $queryMapParameterHandler->create(
-            new QueryMap(), new GET('/users'), null, $this->reflectionMethod, 1, new Type('string')
+            new QueryMap(),
+            new GET('/users'),
+            null,
+            $this->reflectionMethod,
+            1,
+            new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(QueryMapParameterHandler::class, $parameterHandler);
     }
 }

@@ -14,7 +14,6 @@
         "rawr/t-regx": "^0.41.4"
     },
     "require-dev": {
-        "phpstan/phpstan": "^1.10.21",
         "phpunit/phpunit": "^10.2.5"
     },
     "autoload": {

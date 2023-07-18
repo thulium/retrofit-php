@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler\Factory;
@@ -19,9 +20,10 @@ use Retrofit\Tests\Fixtures\Converter\TestConverterFactory;
 class BodyParameterHandlerFactoryTest extends TestCase
 {
     private ReflectionMethod $reflectionMethod;
+
     private ConverterProvider $converterProvider;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
@@ -31,15 +33,20 @@ class BodyParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreateBodyParameterHandler(): void
     {
-        //given
+        // given
         $partParameterHandlerFactory = new BodyParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $partParameterHandlerFactory->create(
-            new Body(), new GET('/users/{login}'), null, $this->reflectionMethod, 1, new Type('string')
+            new Body(),
+            new GET('/users/{login}'),
+            null,
+            $this->reflectionMethod,
+            1,
+            new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(BodyParameterHandler::class, $parameterHandler);
     }
 }

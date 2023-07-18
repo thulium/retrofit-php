@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal\ParameterHandler\Factory;
@@ -20,9 +21,8 @@ readonly class PartParameterHandlerFactory extends AbstractParameterHandlerFacto
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,
         int $position,
-        Type $type
-    ): ParameterHandler
-    {
+        Type $type,
+    ): ParameterHandler {
         if ($encoding !== Encoding::MULTIPART) {
             throw Utils::parameterException($reflectionMethod, $position, '#[Part] parameters can only be used with multipart.');
         }

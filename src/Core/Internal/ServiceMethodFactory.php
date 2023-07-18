@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal;
@@ -36,7 +37,7 @@ readonly class ServiceMethodFactory
 {
     public function __construct(
         private Retrofit $retrofit,
-        private ParameterHandlerFactoryProvider $parameterHandlerFactoryProvider
+        private ParameterHandlerFactoryProvider $parameterHandlerFactoryProvider,
     )
     {
     }
@@ -54,12 +55,12 @@ readonly class ServiceMethodFactory
 
         $requestFactory = new RequestFactory($this->retrofit->baseUrl, $httpRequest, $defaultHeaders, $parameterHandlers);
 
-        return new class($this->retrofit->httpClient, $requestFactory, $responseBodyConverter, $errorBodyConverter) implements ServiceMethod {
+        return new class ($this->retrofit->httpClient, $requestFactory, $responseBodyConverter, $errorBodyConverter) implements ServiceMethod {
             public function __construct(
                 private readonly HttpClient $httpClient,
                 private readonly RequestFactory $requestFactory,
                 private readonly ?ResponseBodyConverter $responseBodyConverter,
-                private readonly ?ResponseBodyConverter $errorBodyConverter
+                private readonly ?ResponseBodyConverter $errorBodyConverter,
             )
             {
             }
@@ -80,16 +81,18 @@ readonly class ServiceMethodFactory
             ->toArray();
 
         if (empty($httpRequestMethods)) {
-            throw Utils::methodException($reflectionMethod,
-                'HTTP method annotation is required (e.g., #[GET], #[POST], etc.).');
+            throw Utils::methodException(
+                $reflectionMethod,
+                'HTTP method annotation is required (e.g., #[GET], #[POST], etc.).',
+            );
         }
 
-        //todo check issue https://github.com/nikic/PHP-Parser/issues/930 is fixed
+        // todo check issue https://github.com/nikic/PHP-Parser/issues/930 is fixed
         if (count($httpRequestMethods) > 1) {
             $httpMethodNames = Joiner::on(', ')
                 ->mapValues(fn(HttpRequest $request): string => $request::class)
                 ->join($httpRequestMethods);
-            throw Utils::methodException($reflectionMethod, "Only one HTTP method is allowed. Found: [$httpMethodNames].");
+            throw Utils::methodException($reflectionMethod, "Only one HTTP method is allowed. Found: [{$httpMethodNames}].");
         }
 
         return Arrays::first($httpRequestMethods);
@@ -114,17 +117,20 @@ readonly class ServiceMethodFactory
         $encoding = Arrays::first($encodingAttributes);
         if ($encoding instanceof FormUrlEncoded) {
             if (!$httpRequest->hasBody()) {
-                throw Utils::methodException($reflectionMethod,
-                    '#[FormUrlEncoded] can only be specified on HTTP methods with request body (e.g., #[POST]).');
+                throw Utils::methodException(
+                    $reflectionMethod,
+                    '#[FormUrlEncoded] can only be specified on HTTP methods with request body (e.g., #[POST]).',
+                );
             }
             return Encoding::FORM_URL_ENCODED;
-        } else {
-            if (!$httpRequest->hasBody()) {
-                throw Utils::methodException($reflectionMethod,
-                    '#[Multipart] can only be specified on HTTP methods with request body (e.g., #[POST]).');
-            }
-            return Encoding::MULTIPART;
         }
+        if (!$httpRequest->hasBody()) {
+            throw Utils::methodException(
+                $reflectionMethod,
+                '#[Multipart] can only be specified on HTTP methods with request body (e.g., #[POST]).',
+            );
+        }
+        return Encoding::MULTIPART;
     }
 
     private function getDefaultHeaders(ReflectionMethod $reflectionMethod): array
@@ -143,8 +149,10 @@ readonly class ServiceMethodFactory
                     throw Utils::methodException($reflectionMethod, 'Headers map contained empty key.');
                 }
                 if (is_null($entryValue)) {
-                    throw Utils::methodException($reflectionMethod,
-                        "Headers map contained null value for key '{$entryKey}'.");
+                    throw Utils::methodException(
+                        $reflectionMethod,
+                        "Headers map contained null value for key '{$entryKey}'.",
+                    );
                 }
 
                 $entryValue = $converter->convert($entryValue);
@@ -187,8 +195,11 @@ readonly class ServiceMethodFactory
 
             if ($newInstance instanceof Url) {
                 if ($gotUrl) {
-                    throw Utils::parameterException($reflectionMethod, $position,
-                        'Multiple #[Url] method attributes found.');
+                    throw Utils::parameterException(
+                        $reflectionMethod,
+                        $position,
+                        'Multiple #[Url] method attributes found.',
+                    );
                 }
 
                 $gotUrl = true;
@@ -207,13 +218,17 @@ readonly class ServiceMethodFactory
         }
 
         if ($encoding === Encoding::FORM_URL_ENCODED && !$gotField) {
-            throw Utils::methodException($reflectionMethod,
-                '#[FormUrlEncoded] method must contain at least one #[Field] or #[FieldMap].');
+            throw Utils::methodException(
+                $reflectionMethod,
+                '#[FormUrlEncoded] method must contain at least one #[Field] or #[FieldMap].',
+            );
         }
 
         if ($encoding === Encoding::MULTIPART && !$gotPart) {
-            throw Utils::methodException($reflectionMethod,
-                '#[Multipart] method must contain at least one #[Part] or #[PartMap].');
+            throw Utils::methodException(
+                $reflectionMethod,
+                '#[Multipart] method must contain at least one #[Part] or #[PartMap].',
+            );
         }
 
         ksort($parameterHandlers);

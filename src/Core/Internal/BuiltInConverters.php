@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal;
@@ -15,7 +16,7 @@ readonly class BuiltInConverters
 {
     public static function JsonEncodeRequestBodyConverter(): RequestBodyConverter
     {
-        return new class implements RequestBodyConverter {
+        return new class () implements RequestBodyConverter {
             public function convert(mixed $value): StreamInterface
             {
                 return Utils::streamFor(json_encode($value));
@@ -25,7 +26,7 @@ readonly class BuiltInConverters
 
     public static function StreamInterfaceRequestBodyConverter(): RequestBodyConverter
     {
-        return new class implements RequestBodyConverter {
+        return new class () implements RequestBodyConverter {
             public function convert(mixed $value): StreamInterface
             {
                 return $value;
@@ -35,7 +36,7 @@ readonly class BuiltInConverters
 
     public static function StreamInterfaceResponseBodyConverter(): ResponseBodyConverter
     {
-        return new class implements ResponseBodyConverter {
+        return new class () implements ResponseBodyConverter {
             public function convert(StreamInterface $value): StreamInterface
             {
                 return $value;
@@ -45,7 +46,7 @@ readonly class BuiltInConverters
 
     public static function StdClassResponseBodyConverter(): ResponseBodyConverter
     {
-        return new class implements ResponseBodyConverter {
+        return new class () implements ResponseBodyConverter {
             public function convert(StreamInterface $value): stdClass
             {
                 return json_decode($value->getContents());
@@ -55,7 +56,7 @@ readonly class BuiltInConverters
 
     public static function ArrayResponseBodyConverter(Type $type): ResponseBodyConverter
     {
-        return new class($type) implements ResponseBodyConverter {
+        return new class ($type) implements ResponseBodyConverter {
             public function __construct(private readonly Type $type)
             {
             }
@@ -69,7 +70,7 @@ readonly class BuiltInConverters
 
     public static function VoidResponseBodyConverter(): ResponseBodyConverter
     {
-        return new class implements ResponseBodyConverter {
+        return new class () implements ResponseBodyConverter {
             public function convert(StreamInterface $value): null
             {
                 return null;
@@ -79,7 +80,7 @@ readonly class BuiltInConverters
 
     public static function ScalarTypeResponseBodyConverter(Type $type): ResponseBodyConverter
     {
-        return new class($type) implements ResponseBodyConverter {
+        return new class ($type) implements ResponseBodyConverter {
             public function __construct(private readonly Type $type)
             {
             }
@@ -93,7 +94,7 @@ readonly class BuiltInConverters
                     'float' => (float)$contents,
                     'int' => (int)$contents,
                     'string' => (string)$contents,
-                    default => null
+                    default => null,
                 };
             }
         };
@@ -101,7 +102,7 @@ readonly class BuiltInConverters
 
     public static function ToStringConverter(): StringConverter
     {
-        return new class implements StringConverter {
+        return new class () implements StringConverter {
             public function convert(mixed $value): string
             {
                 // If it's an array or object, just serialize it.

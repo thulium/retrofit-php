@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal;
@@ -16,13 +17,13 @@ class BuiltInConvertersTest extends TestCase
     #[Test]
     public function toStringConverterShouldConvertNullToEmptyString(): void
     {
-        //given
+        // given
         $converter = BuiltInConverters::ToStringConverter();
 
-        //when
+        // when
         $value = $converter->convert(null);
 
-        //then
+        // then
         $this->assertSame(Strings::EMPTY, $value);
     }
 
@@ -31,28 +32,28 @@ class BuiltInConvertersTest extends TestCase
     #[TestWith([false, 'false'])]
     public function toStringConverterShouldConvertBoolToString(bool $bool, string $string): void
     {
-        //given
+        // given
         $converter = BuiltInConverters::ToStringConverter();
 
-        //when
+        // when
         $value = $converter->convert($bool);
 
-        //then
+        // then
         $this->assertSame($string, $value);
     }
 
     #[Test]
     public function toStringConverterShouldConvertArrayToSerializedValue(): void
     {
-        //given
+        // given
         $converter = BuiltInConverters::ToStringConverter();
 
         $array = ['one', 'two', 'three'];
 
-        //when
+        // when
         $value = $converter->convert($array);
 
-        //then
+        // then
         $serialize = serialize($array);
         $this->assertSame($serialize, $value);
     }
@@ -60,17 +61,17 @@ class BuiltInConvertersTest extends TestCase
     #[Test]
     public function toStringConverterShouldConvertStdObjectToSerializedValue(): void
     {
-        //given
+        // given
         $converter = BuiltInConverters::ToStringConverter();
 
         $obj = new stdClass();
         $obj->one = 'value for one';
         $obj->two = 2;
 
-        //when
+        // when
         $value = $converter->convert($obj);
 
-        //then
+        // then
         $serialize = serialize($obj);
         $this->assertSame($serialize, $value);
     }
@@ -78,16 +79,16 @@ class BuiltInConvertersTest extends TestCase
     #[Test]
     public function toStringConverterShouldConvertCustomObjectToSerializedValue(): void
     {
-        //given
+        // given
         $converter = BuiltInConverters::ToStringConverter();
 
         $userRequest = (new UserRequest())
             ->setLogin('jon_doe');
 
-        //when
+        // when
         $value = $converter->convert($userRequest);
 
-        //then
+        // then
         $serialize = serialize($userRequest);
         $this->assertSame($serialize, $value);
     }

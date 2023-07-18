@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal;
@@ -18,13 +19,13 @@ class ConverterProviderTest extends TestCase
     #[Test]
     public function shouldGetBuildInStringConverterWhenAnyOtherFound(): void
     {
-        //given
+        // given
         $converterProvider = new ConverterProvider([new BuiltInConverterFactory()]);
 
-        //when
+        // when
         $converter = $converterProvider->getStringConverter(new Type('int'));
 
-        //then
+        // then
         $this->assertInstanceOf(Converter::class, $converter);
         $this->assertInstanceOf(StringConverter::class, $converter);
         $this->assertStringStartsWith('Retrofit\Core\Converter\StringConverter@anonymous', $converter::class);
@@ -34,13 +35,13 @@ class ConverterProviderTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenStringConverterNotFound(): void
     {
-        //given
+        // given
         $converterProvider = new ConverterProvider([]);
 
-        //when
+        // when
         CatchException::when($converterProvider)->getStringConverter(new Type('string'));
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Cannot find string converter.');
@@ -49,13 +50,13 @@ class ConverterProviderTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenResponseBodyConverterNotFound(): void
     {
-        //given
+        // given
         $converterProvider = new ConverterProvider([]);
 
-        //when
+        // when
         CatchException::when($converterProvider)->getResponseBodyConverter(new Type('array', 'string'));
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage("Cannot find response body converter for type 'array<string>'.");
@@ -64,13 +65,13 @@ class ConverterProviderTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenRequestBodyConverterNotFound(): void
     {
-        //given
+        // given
         $converterProvider = new ConverterProvider([]);
 
-        //when
+        // when
         CatchException::when($converterProvider)->getRequestBodyConverter(new Type('string'));
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage("Cannot find request body converter for type 'string'.");

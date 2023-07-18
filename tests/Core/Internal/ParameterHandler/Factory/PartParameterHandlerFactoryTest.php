@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler\Factory;
@@ -23,9 +24,10 @@ use RuntimeException;
 class PartParameterHandlerFactoryTest extends TestCase
 {
     private ReflectionMethod $reflectionMethod;
+
     private ConverterProvider $converterProvider;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
@@ -37,14 +39,14 @@ class PartParameterHandlerFactoryTest extends TestCase
     #[TestWith([null])]
     public function shouldThrowExceptionWhenMetodEncodedIsNotMultipart(?Encoding $encoding): void
     {
-        //given
+        // given
         $partParameterHandlerFactory = new PartParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         CatchException::when($partParameterHandlerFactory)
             ->create(new Part('name'), new GET('/users/{login}'), $encoding, $this->reflectionMethod, 1, new Type('string'));
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #2. #[Part] parameters can only be used with multipart.');
@@ -53,15 +55,20 @@ class PartParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreatePartParameterHandler(): void
     {
-        //given
+        // given
         $partParameterHandlerFactory = new PartParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $partParameterHandlerFactory->create(
-            new Part('name'), new GET('/users/{login}'), Encoding::MULTIPART, $this->reflectionMethod, 1, new Type('string')
+            new Part('name'),
+            new GET('/users/{login}'),
+            Encoding::MULTIPART,
+            $this->reflectionMethod,
+            1,
+            new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(PartParameterHandler::class, $parameterHandler);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Fixtures\Api;
@@ -20,7 +21,7 @@ interface TypeResolverApi
         #[Query('float')] float $floatParam,
         #[Query('int')] int $intParam,
         #[Query('mixed')] mixed $mixedParam,
-        #[Query('string')] string $stringParam
+        #[Query('string')] string $stringParam,
     ): Call;
 
     #[GET('/users')]
@@ -37,7 +38,7 @@ interface TypeResolverApi
         #[Query('float')] array $floatParams,
         #[Query('int')] array $intParams,
         #[Query('mixed')] array $mixedParams,
-        #[Query('string')] array $stringParams
+        #[Query('string')] array $stringParams,
     ): Call;
 
     #[POST('/users')]

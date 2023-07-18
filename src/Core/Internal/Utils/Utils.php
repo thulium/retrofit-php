@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal\Utils;
@@ -21,6 +22,7 @@ use TRegx\CleanRegex\Match\Detail;
 readonly class Utils
 {
     private const NAMESPACE_DELIMITER = '\\';
+
     private const PARAM_URL_REGEX = '\{([a-zA-Z][a-zA-Z0-9_-]*)\}';
 
     private function __construct()
@@ -30,7 +32,7 @@ readonly class Utils
     /**
      * Transforms {@code $names} to the valid FQCN (Full Qualified Class Name) with leading namespace delimiter.
      */
-    public static function toFQCN(string...$names): string
+    public static function toFQCN(string ...$names): string
     {
         return Joiner::on(Strings::EMPTY)
             ->mapValues(fn(string $name): string => str_starts_with($name, self::NAMESPACE_DELIMITER) ? $name : (self::NAMESPACE_DELIMITER . $name))

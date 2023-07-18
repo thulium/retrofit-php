@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal;
@@ -25,10 +26,12 @@ use Throwable;
 class HttpClientCallTest extends TestCase
 {
     private RequestInterface $request;
+
     private ResponseBodyConverter|MockInterface $responseBodyConverter;
+
     private ResponseBodyConverter|MockInterface $responseErrorBodyConverter;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->request = new Request(HttpMethod::GET->value, '/users');
@@ -39,16 +42,16 @@ class HttpClientCallTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenCannotConvertBody(): void
     {
-        //given
+        // given
         $httpClient = self::MockHttpClient(new Response());
         Mock::when($this->responseBodyConverter)->convert(Mock::anyArgList())->thenThrow(new RuntimeException('cannot convert body'));
 
         $httpClientCall = new HttpClientCall($httpClient, $this->request, $this->responseBodyConverter, $this->responseErrorBodyConverter);
 
-        //when
+        // when
         CatchException::when($httpClientCall)->execute();
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Retrofit: Could not convert response body.');
@@ -57,16 +60,16 @@ class HttpClientCallTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenCannotConvertErrorBody(): void
     {
-        //given
+        // given
         $httpClient = self::MockHttpClient(new Response(400));
         Mock::when($this->responseErrorBodyConverter)->convert(Mock::anyArgList())->thenThrow(new RuntimeException('cannot convert body'));
 
         $httpClientCall = new HttpClientCall($httpClient, $this->request, $this->responseBodyConverter, $this->responseErrorBodyConverter);
 
-        //when
+        // when
         CatchException::when($httpClientCall)->execute();
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Retrofit: Could not convert error body.');
@@ -75,17 +78,17 @@ class HttpClientCallTest extends TestCase
     #[Test]
     public function shouldHandleOnResponseAsyncCall(): void
     {
-        //given
+        // given
         $callback = self::MockCallback();
         $httpClient = self::MockHttpClient(new Response(200));
 
         $httpClientCall = new HttpClientCall($httpClient, $this->request, $this->responseBodyConverter, $this->responseErrorBodyConverter);
 
-        //when
+        // when
         $httpClientCall->enqueue($callback);
         $httpClientCall->wait();
 
-        //then
+        // then
         $this->assertTrue($callback::$onResponseCalled);
         $this->assertFalse($callback::$onFailureCalled);
     }
@@ -93,17 +96,17 @@ class HttpClientCallTest extends TestCase
     #[Test]
     public function shouldHandleOnFailureAsyncCall(): void
     {
-        //given
+        // given
         $callback = self::MockCallback();
         $httpClient = self::MockHttpClient(new RuntimeException('something goes wrong'));
 
         $httpClientCall = new HttpClientCall($httpClient, $this->request, $this->responseBodyConverter, $this->responseErrorBodyConverter);
 
-        //when
+        // when
         $httpClientCall->enqueue($callback);
         $httpClientCall->wait();
 
-        //then
+        // then
         $this->assertFalse($callback::$onResponseCalled);
         $this->assertTrue($callback::$onFailureCalled);
     }
@@ -111,16 +114,16 @@ class HttpClientCallTest extends TestCase
     #[Test]
     public function shouldHandleNullableResponseBodyConverter(): void
     {
-        //given
+        // given
         $response = new Response(200);
         $httpClient = self::MockHttpClient($response);
 
         $httpClientCall = new HttpClientCall($httpClient, $this->request, null, $this->responseErrorBodyConverter);
 
-        //when
+        // when
         $retrofitResponse = $httpClientCall->execute();
 
-        //then
+        // then
         $this->assertSame($response, $retrofitResponse->raw());
         $this->assertNull($retrofitResponse->body());
         $this->assertNull($retrofitResponse->errorBody());
@@ -128,8 +131,9 @@ class HttpClientCallTest extends TestCase
 
     private static function MockHttpClient(ResponseInterface|Throwable $result): HttpClient
     {
-        return new class($result) implements HttpClient {
+        return new class ($result) implements HttpClient {
             private Closure $onResponse;
+
             private Closure $onFailure;
 
             public function __construct(private readonly ResponseInterface|Throwable $result)
@@ -164,8 +168,9 @@ class HttpClientCallTest extends TestCase
 
     private static function MockCallback(): Callback
     {
-        return new class implements Callback {
+        return new class () implements Callback {
             public static bool $onResponseCalled = false;
+
             public static bool $onFailureCalled = false;
 
             public function onResponse(Call $call, \Retrofit\Core\Response $response): void

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler\Factory;
@@ -23,9 +24,10 @@ use RuntimeException;
 class PartMapParameterHandlerFactoryTest extends TestCase
 {
     private ReflectionMethod $reflectionMethod;
+
     private ConverterProvider $converterProvider;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
@@ -37,14 +39,14 @@ class PartMapParameterHandlerFactoryTest extends TestCase
     #[TestWith([null])]
     public function shouldThrowExceptionWhenMetodEncodedIsNotMultipart(?Encoding $encoding): void
     {
-        //given
+        // given
         $partMapParameterHandlerFactory = new PartMapParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         CatchException::when($partMapParameterHandlerFactory)
             ->create(new PartMap(), new GET('/users/{login}'), $encoding, $this->reflectionMethod, 1, new Type('string'));
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #2. #[PartMap] parameters can only be used with multipart.');
@@ -53,15 +55,20 @@ class PartMapParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreatePartMapParameterHandler(): void
     {
-        //given
+        // given
         $partMapParameterHandlerFactory = new PartMapParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $partMapParameterHandlerFactory->create(
-            new PartMap(), new GET('/users/{login}'), Encoding::MULTIPART, $this->reflectionMethod, 1, new Type('string')
+            new PartMap(),
+            new GET('/users/{login}'),
+            Encoding::MULTIPART,
+            $this->reflectionMethod,
+            1,
+            new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(PartMapParameterHandler::class, $parameterHandler);
     }
 }

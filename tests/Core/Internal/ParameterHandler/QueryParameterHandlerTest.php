@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler;
@@ -19,9 +20,10 @@ use stdClass;
 class QueryParameterHandlerTest extends TestCase
 {
     private RequestBuilder $requestBuilder;
+
     private ReflectionMethod $reflectionMethod;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new POST('/users'));
@@ -31,13 +33,13 @@ class QueryParameterHandlerTest extends TestCase
     #[Test]
     public function shouldSkipNullValues(): void
     {
-        //given
+        // given
         $queryParameterHandler = new QueryParameterHandler('group', false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryParameterHandler->apply($this->requestBuilder, null);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users', $request->getUri()->__toString());
     }
@@ -45,13 +47,13 @@ class QueryParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddQueryParam(): void
     {
-        //given
+        // given
         $queryParameterHandler = new QueryParameterHandler('group', false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryParameterHandler->apply($this->requestBuilder, 'new+users');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users?group=new%2Busers', $request->getUri()->__toString());
     }
@@ -59,13 +61,13 @@ class QueryParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddEncodedQueryParam(): void
     {
-        //given
+        // given
         $queryParameterHandler = new QueryParameterHandler('group', true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryParameterHandler->apply($this->requestBuilder, 'new+users');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users?group=new+users', $request->getUri()->__toString());
     }
@@ -73,13 +75,13 @@ class QueryParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddArrayOfQueryParams(): void
     {
-        //given
+        // given
         $queryParameterHandler = new QueryParameterHandler('groups', false, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryParameterHandler->apply($this->requestBuilder, ['new+users', 'old']);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users?groups=new%2Busers&groups=old', $request->getUri()->__toString());
     }
@@ -87,13 +89,13 @@ class QueryParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddEncodedArrayOfQueryParams(): void
     {
-        //given
+        // given
         $queryParameterHandler = new QueryParameterHandler('groups', true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         $queryParameterHandler->apply($this->requestBuilder, ['new+users', 'old']);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users?groups=new+users&groups=old', $request->getUri()->__toString());
     }
@@ -101,13 +103,13 @@ class QueryParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenPassedArrayIsNotAList(): void
     {
-        //given
+        // given
         $queryParameterHandler = new QueryParameterHandler('groups', true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
-        //when
+        // when
         CatchException::when($queryParameterHandler)->apply($this->requestBuilder, ['key1' => 'new+users', 'old']);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. Parameter must be a list.');
@@ -116,15 +118,15 @@ class QueryParameterHandlerTest extends TestCase
     #[Test]
     public function shouldThrowExceptionWhenPassedArrayHasObject(): void
     {
-        //given
+        // given
         $queryParameterHandler = new QueryParameterHandler('groups', true, BuiltInConverters::ToStringConverter(), $this->reflectionMethod, 0);
 
         $stdClass = new stdClass();
 
-        //when
+        // when
         CatchException::when($queryParameterHandler)->apply($this->requestBuilder, ['new+users', $stdClass]);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(RuntimeException::class)
             ->hasMessage('Method MockMethod::mockMethod() parameter #1. One of the list value is an object.');

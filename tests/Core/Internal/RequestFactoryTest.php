@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal;
@@ -17,7 +18,7 @@ class RequestFactoryTest extends TestCase
     #[Test]
     public function shouldApplyParameterHandlers(): void
     {
-        //given
+        // given
         $loginParameterHandler = Mock::create(ParameterHandler::class);
         $idParameterHandler = Mock::create(ParameterHandler::class);
         $parameterHandlers = [$loginParameterHandler, $idParameterHandler];
@@ -26,10 +27,10 @@ class RequestFactoryTest extends TestCase
 
         $args = ['Jon+Doe', 1];
 
-        //when
+        // when
         $requestFactory->create($args);
 
-        //then
+        // then
         Mock::verify($loginParameterHandler)->apply(Mock::argThat()->isInstanceOf(RequestBuilder::class), 'Jon+Doe');
         Mock::verify($idParameterHandler)->apply(Mock::argThat()->isInstanceOf(RequestBuilder::class), '1');
     }

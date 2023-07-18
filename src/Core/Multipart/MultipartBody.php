@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Multipart;
@@ -9,14 +10,13 @@ class MultipartBody
 {
     public static function Part(): PartInterface
     {
-        return new class() implements PartInterface {
+        return new class () implements PartInterface {
             public function __construct(
                 private readonly string $name = '',
                 private readonly StreamInterface|string $body = '',
                 private readonly array $headers = [],
-                private readonly ?string $filename = null
-            )
-            {
+                private readonly ?string $filename = null,
+            ) {
             }
 
             public function getName(): string

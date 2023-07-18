@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core;
@@ -19,9 +20,8 @@ readonly class Type
 
     public function __construct(
         private string $rawType,
-        private ?string $parametrizedType = null
-    )
-    {
+        private ?string $parametrizedType = null,
+    ) {
     }
 
     public function getRawType(): string
@@ -49,18 +49,12 @@ readonly class Type
         return !is_null($this->parametrizedType) && in_array($this->parametrizedType, self::SCALARS);
     }
 
-    public function __toString(): string
-    {
-        return is_null($this->parametrizedType) ? $this->rawType : "{$this->rawType}<{$this->parametrizedType}>";
-    }
-
     /** @param Param[] $params */
     public static function create(
         ReflectionMethod $reflectionMethod,
         ReflectionParameter $reflectionParameter,
-        array $params = []
-    ): Type
-    {
+        array $params = [],
+    ): Type {
         $reflectionType = $reflectionParameter->getType();
 
         $rawType = $reflectionType->getName();
@@ -69,13 +63,17 @@ readonly class Type
         return new Type($rawType, $parametrizedType);
     }
 
+    public function __toString(): string
+    {
+        return is_null($this->parametrizedType) ? $this->rawType : "{$this->rawType}<{$this->parametrizedType}>";
+    }
+
     private static function handleParametrizedTypeForArray(
         string $rawType,
         ReflectionParameter $reflectionParameter,
         ReflectionMethod $reflectionMethod,
-        array $params
-    ): ?string
-    {
+        array $params,
+    ): ?string {
         if ($rawType !== 'array') {
             return null;
         }

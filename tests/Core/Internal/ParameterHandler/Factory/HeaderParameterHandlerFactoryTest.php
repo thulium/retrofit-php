@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler\Factory;
@@ -18,9 +19,10 @@ use Retrofit\Tests\Fixtures\Api\MockMethod;
 class HeaderParameterHandlerFactoryTest extends TestCase
 {
     private ReflectionMethod $reflectionMethod;
+
     private ConverterProvider $converterProvider;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
@@ -30,15 +32,20 @@ class HeaderParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreateHeaderParameterHandler(): void
     {
-        //given
+        // given
         $headerParameterHandlerFactory = new HeaderParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $headerParameterHandlerFactory->create(
-            new Header('x-custom'), new GET('/users/{login}'), null, $this->reflectionMethod, 1, new Type('string')
+            new Header('x-custom'),
+            new GET('/users/{login}'),
+            null,
+            $this->reflectionMethod,
+            1,
+            new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(HeaderParameterHandler::class, $parameterHandler);
     }
 }

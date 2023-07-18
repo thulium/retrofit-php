@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal;
@@ -22,12 +23,18 @@ class RequestBuilder
     private const PARAMETER_PLACEHOLDER = '{%s}';
 
     private UriInterface $uri;
+
     #[ArrayShape([0 => ['name' => 'string', 'value' => 'string']])]
     private array $pathParameters = [];
+
     private array $queries = [];
+
     private array $headers = [];
+
     private array $fields = [];
+
     private array $parts = [];
+
     private ?StreamInterface $body = null;
 
     /**
@@ -36,9 +43,8 @@ class RequestBuilder
     public function __construct(
         UriInterface $baseUrl,
         private readonly HttpRequest $httpRequest,
-        array $defaultHeaders = []
-    )
-    {
+        array $defaultHeaders = [],
+    ) {
         $this->uri = new Uri($baseUrl->__toString());
         if (!is_null($this->httpRequest->path())) {
             $this->uri = $this->uri->withPath($this->httpRequest->path());

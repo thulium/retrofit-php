@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal\ParameterHandler\Factory;
@@ -19,9 +20,8 @@ readonly class BodyParameterHandlerFactory extends AbstractParameterHandlerFacto
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,
         int $position,
-        Type $type
-    ): ParameterHandler
-    {
+        Type $type,
+    ): ParameterHandler {
         $converter = $this->converterProvider->getRequestBodyConverter($type);
 
         return new BodyParameterHandler($converter, $reflectionMethod, $position);

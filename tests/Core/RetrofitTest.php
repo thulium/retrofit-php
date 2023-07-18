@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core;
@@ -25,17 +26,17 @@ class RetrofitTest extends TestCase
     #[Test]
     public function shouldGetBuilder(): void
     {
-        //when
+        // when
         $retrofitBuilder = Retrofit::Builder();
 
-        //then
+        // then
         $this->assertInstanceOf(RetrofitBuilder::class, $retrofitBuilder);
     }
 
     #[Test]
     public function shouldThrowExceptionWhenServiceIsNotAnInterface(): void
     {
-        //given
+        // given
         /** @var HttpClient|MockInterface $httpClient */
         $httpClient = Mock::create(HttpClient::class);
         $baseUrl = new Uri('https://example.com');
@@ -45,10 +46,10 @@ class RetrofitTest extends TestCase
 
         $retrofit = new Retrofit($httpClient, $baseUrl, $converterProvider, $proxyFactory);
 
-        //when
+        // when
         CatchException::when($retrofit)->create(NotInterface::class);
 
-        //then
+        // then
         CatchException::assertThat()
             ->isInstanceOf(InvalidArgumentException::class)
             ->hasMessage("Service 'NotInterface' API declarations must be interface.");
@@ -57,7 +58,7 @@ class RetrofitTest extends TestCase
     #[Test]
     public function shouldCreateImplementationOfService(): void
     {
-        //given
+        // given
         /** @var HttpClient|MockInterface $httpClient */
         $httpClient = Mock::create(HttpClient::class);
         $baseUrl = new Uri('https://example.com');
@@ -69,10 +70,10 @@ class RetrofitTest extends TestCase
 
         $retrofit = new Retrofit($httpClient, $baseUrl, $converterProvider, $proxyFactory);
 
-        //when
+        // when
         $impl = $retrofit->create(FullyValidApi::class);
 
-        //then
+        // then
         $this->assertInstanceOf(stdClass::class, $impl);
 
         Mock::verify($proxyFactory)->create(Mock::argThat()->isInstanceOf(Retrofit::class), new ReflectionClass(FullyValidApi::class));

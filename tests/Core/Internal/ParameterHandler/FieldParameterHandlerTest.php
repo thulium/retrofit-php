@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler;
@@ -16,9 +17,10 @@ use Retrofit\Tests\Fixtures\Api\MockMethod;
 class FieldParameterHandlerTest extends TestCase
 {
     private RequestBuilder $requestBuilder;
+
     private ReflectionMethod $reflectionMethod;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users'));
@@ -28,13 +30,13 @@ class FieldParameterHandlerTest extends TestCase
     #[Test]
     public function shouldSkipNullValues(): void
     {
-        //given
+        // given
         $fieldParameterHandler = new FieldParameterHandler('name', false, BuiltInConverters::ToStringConverter());
 
-        //when
+        // when
         $fieldParameterHandler->apply($this->requestBuilder, null);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users', $request->getUri()->__toString());
     }
@@ -42,13 +44,13 @@ class FieldParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddNotEncodedFormField(): void
     {
-        //given
+        // given
         $fieldParameterHandler = new FieldParameterHandler('name', false, BuiltInConverters::ToStringConverter());
 
-        //when
+        // when
         $fieldParameterHandler->apply($this->requestBuilder, 'jon+doe');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users', $request->getUri()->__toString());
         $this->assertSame('name=jon%2Bdoe', $request->getBody()->getContents());
@@ -57,13 +59,13 @@ class FieldParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddEncodedFormField(): void
     {
-        //given
+        // given
         $fieldParameterHandler = new FieldParameterHandler('name', true, BuiltInConverters::ToStringConverter());
 
-        //when
+        // when
         $fieldParameterHandler->apply($this->requestBuilder, 'jon+doe');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         $this->assertSame('https://example.com/users', $request->getUri()->__toString());
         $this->assertSame('name=jon+doe', $request->getBody()->getContents());

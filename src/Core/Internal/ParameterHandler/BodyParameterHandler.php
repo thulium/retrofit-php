@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal\ParameterHandler;
@@ -15,9 +16,8 @@ readonly class BodyParameterHandler implements ParameterHandler
     public function __construct(
         private Converter $converter,
         private ReflectionMethod $reflectionMethod,
-        private int $position
-    )
-    {
+        private int $position,
+    ) {
     }
 
     public function apply(RequestBuilder $requestBuilder, mixed $value): void

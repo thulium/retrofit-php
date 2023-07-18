@@ -3,6 +3,5 @@
 composer.lock
 composer.phar
 phpstan.neon
-php-cs-fixer*.phar
-/.idea
-/vendor
+.idea/
+vendor/

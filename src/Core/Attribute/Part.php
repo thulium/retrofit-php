@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Attribute;
@@ -13,9 +14,8 @@ readonly class Part
 
     public function __construct(
         private ?string $name = null,
-        MimeEncoding|string $encoding = MimeEncoding::BINARY
-    )
-    {
+        MimeEncoding|string $encoding = MimeEncoding::BINARY,
+    ) {
         $this->encoding = MimeEncoding::fromEnumOrString($encoding);
     }
 

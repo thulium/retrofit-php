@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler;
@@ -16,7 +17,7 @@ class HeaderParameterHandlerTest extends TestCase
 {
     private RequestBuilder $requestBuilder;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->requestBuilder = new RequestBuilder(new Uri('https://example.com'), new GET('/users'));
@@ -25,13 +26,13 @@ class HeaderParameterHandlerTest extends TestCase
     #[Test]
     public function shouldSkipNullValues(): void
     {
-        //given
+        // given
         $headerParameterHandler = new HeaderParameterHandler('x-custom', BuiltInConverters::ToStringConverter());
 
-        //when
+        // when
         $headerParameterHandler->apply($this->requestBuilder, null);
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue([]);
     }
@@ -39,13 +40,13 @@ class HeaderParameterHandlerTest extends TestCase
     #[Test]
     public function shouldAddHeader(): void
     {
-        //given
+        // given
         $headerParameterHandler = new HeaderParameterHandler('x-custom', BuiltInConverters::ToStringConverter());
 
-        //when
+        // when
         $headerParameterHandler->apply($this->requestBuilder, 'value');
 
-        //then
+        // then
         $request = $this->requestBuilder->build();
         Assert::thatArray($request->getHeaders())->containsKeyAndValue(['x-custom' => ['value']]);
     }

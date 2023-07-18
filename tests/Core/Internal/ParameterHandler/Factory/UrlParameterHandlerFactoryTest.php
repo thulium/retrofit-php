@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Tests\Core\Internal\ParameterHandler\Factory;
@@ -18,9 +19,10 @@ use Retrofit\Tests\Fixtures\Api\MockMethod;
 class UrlParameterHandlerFactoryTest extends TestCase
 {
     private ReflectionMethod $reflectionMethod;
+
     private ConverterProvider $converterProvider;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->reflectionMethod = new ReflectionMethod(MockMethod::class, 'mockMethod');
@@ -30,15 +32,20 @@ class UrlParameterHandlerFactoryTest extends TestCase
     #[Test]
     public function shouldCreateUrlParameterHandler(): void
     {
-        //given
+        // given
         $urlParameterHandlerFactory = new UrlParameterHandlerFactory($this->converterProvider);
 
-        //when
+        // when
         $parameterHandler = $urlParameterHandlerFactory->create(
-            new Url(), new POST(), null, $this->reflectionMethod, 0, new Type('string')
+            new Url(),
+            new POST(),
+            null,
+            $this->reflectionMethod,
+            0,
+            new Type('string'),
         );
 
-        //then
+        // then
         $this->assertInstanceOf(UrlParameterHandler::class, $parameterHandler);
     }
 }

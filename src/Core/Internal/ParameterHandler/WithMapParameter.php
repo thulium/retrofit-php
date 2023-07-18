@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Retrofit\Core\Internal\ParameterHandler;
@@ -18,12 +19,18 @@ trait WithMapParameter
 
         foreach ($value as $entryKey => $entryValue) {
             if (Strings::isBlank($entryKey)) {
-                throw Utils::parameterException($this->reflectionMethod, $this->position,
-                    "{$context} map contained empty key.");
+                throw Utils::parameterException(
+                    $this->reflectionMethod,
+                    $this->position,
+                    "{$context} map contained empty key.",
+                );
             }
             if (is_null($entryValue)) {
-                throw Utils::parameterException($this->reflectionMethod, $this->position,
-                    "{$context} map contained null value for key '{$entryKey}'.");
+                throw Utils::parameterException(
+                    $this->reflectionMethod,
+                    $this->position,
+                    "{$context} map contained null value for key '{$entryKey}'.",
+                );
             }
 
             $originalValue = $entryValue;
