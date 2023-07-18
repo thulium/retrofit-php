@@ -46,6 +46,7 @@ return (new PhpCsFixer\Config())
         'native_function_type_declaration_casing' => true,
         'no_empty_comment' => true,
         'no_short_bool_cast' => true,
+        'no_unneeded_import_alias' => true,
         'no_unneeded_control_parentheses' => true,
         'no_unneeded_curly_braces' => true,
         'no_useless_else' => true,
