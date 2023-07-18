@@ -22,6 +22,7 @@ return (new PhpCsFixer\Config())
         'class_reference_name_casing' => true,
         'native_function_casing' => true,
         'native_function_type_declaration_casing' => true,
+        'no_short_bool_cast' => true,
         'trim_array_spaces' => true,
         'whitespace_after_comma_in_array' => [
             'ensure_single_space' => true,
