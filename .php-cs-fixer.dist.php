@@ -35,6 +35,11 @@ return (new PhpCsFixer\Config())
         'function_declaration' => [
             'closure_fn_spacing' => 'none',
         ],
+        'global_namespace_import' => [
+            'import_classes' => true,
+            'import_constants' => true,
+            'import_functions' => true,
+        ],
         'lambda_not_used_import' => true,
         'multiline_comment_opening_closing' => true,
         'native_function_casing' => true,
