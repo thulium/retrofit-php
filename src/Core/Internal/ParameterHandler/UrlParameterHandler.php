@@ -22,7 +22,7 @@ readonly class UrlParameterHandler implements ParameterHandler
             throw Utils::parameterException(
                 $this->reflectionMethod,
                 $this->position,
-                "#[Url] parameter value must not be null.",
+                '#[Url] parameter value must not be null.',
             );
         }
 

@@ -245,7 +245,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
     private function validateParameter(ReflectionParameter $parameter, ReflectionMethod $method): void
     {
         if (is_null($parameter->getType())) {
-            throw Utils::parameterException($method, $parameter->getPosition(), "Parameter type is required, none found.");
+            throw Utils::parameterException($method, $parameter->getPosition(), 'Parameter type is required, none found.');
         }
     }
 
