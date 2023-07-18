@@ -69,6 +69,14 @@ return (new PhpCsFixer\Config())
             ],
         ],
         'single_line_comment_spacing' => true,
+        'trailing_comma_in_multiline' => [
+            'elements' => [
+                'arguments',
+                'arrays',
+                'match',
+                'parameters',
+            ],
+        ],
         'trim_array_spaces' => true,
         'whitespace_after_comma_in_array' => [
             'ensure_single_space' => true,
@@ -76,8 +84,5 @@ return (new PhpCsFixer\Config())
 //        '' => true,
 //        'function_declaration' => [
 //            'closure_fn_spacing' => 'none',
-//        ],
-//        'trailing_comma_in_multiline' => [
-//            'elements' => ['arguments', 'arrays', 'match', 'parameters'],
 //        ],
     ]);
