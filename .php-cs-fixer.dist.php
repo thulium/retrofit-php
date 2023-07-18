@@ -56,6 +56,7 @@ return (new PhpCsFixer\Config())
         'no_blank_lines_after_phpdoc' => true,
         'no_empty_comment' => true,
         'no_empty_phpdoc' => true,
+        'no_extra_blank_lines' => true,
         'no_leading_namespace_whitespace' => true,
         'no_short_bool_cast' => true,
         'no_singleline_whitespace_before_semicolons' => true,
