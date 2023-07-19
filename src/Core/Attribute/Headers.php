@@ -11,7 +11,7 @@ readonly class Headers
 {
     public function __construct(
         /**
-         * @var array<string, string> $value
+         * @var array<string, string|null> $value
          */
         private array $value,
     )
@@ -19,7 +19,7 @@ readonly class Headers
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, string|null>
      */
     public function value(): array
     {

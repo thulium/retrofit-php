@@ -5,8 +5,6 @@ parameters:
     paths:
         - src/Core/Attribute
         - src/Core/Converter
-        - src/Core/Internal/ParameterHandler
-        - src/Core/Internal/Proxy
-        - src/Core/Internal/Utils
+        - src/Core/Internal
         - src/Core/Multipart
     level: max

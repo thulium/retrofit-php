@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Retrofit\Core\Internal;
 
 use Ouzo\Utilities\Arrays;
-use Retrofit\Core\Converter\Converter;
 use Retrofit\Core\Converter\ConverterFactory;
 use Retrofit\Core\Converter\RequestBodyConverter;
+use Retrofit\Core\Converter\ResponseBodyConverter;
 use Retrofit\Core\Converter\StringConverter;
 use Retrofit\Core\Type;
 use RuntimeException;
@@ -24,17 +24,23 @@ readonly class ConverterProvider
         /** @var ConverterFactory|null $converterFactory */
         $converterFactory = Arrays::find($this->converterFactories, fn(ConverterFactory $factory) => !is_null($factory->requestBodyConverter($type)));
         if (!is_null($converterFactory)) {
-            return $converterFactory->requestBodyConverter($type);
+            $converter = $converterFactory->requestBodyConverter($type);
+            if (!is_null($converter)) {
+                return $converter;
+            }
         }
         throw new RuntimeException("Cannot find request body converter for type '{$type}'.");
     }
 
-    public function getResponseBodyConverter(Type $type): Converter
+    public function getResponseBodyConverter(Type $type): ResponseBodyConverter
     {
         /** @var ConverterFactory|null $converterFactory */
         $converterFactory = Arrays::find($this->converterFactories, fn(ConverterFactory $factory) => !is_null($factory->responseBodyConverter($type)));
         if (!is_null($converterFactory)) {
-            return $converterFactory->responseBodyConverter($type);
+            $converter = $converterFactory->responseBodyConverter($type);
+            if (!is_null($converter)) {
+                return $converter;
+            }
         }
         throw new RuntimeException("Cannot find response body converter for type '{$type}'.");
     }
@@ -44,7 +50,10 @@ readonly class ConverterProvider
         /** @var ConverterFactory|null $converterFactory */
         $converterFactory = Arrays::find($this->converterFactories, fn(ConverterFactory $factory) => !is_null($factory->stringConverter($type)));
         if (!is_null($converterFactory)) {
-            return $converterFactory->stringConverter($type);
+            $converter = $converterFactory->stringConverter($type);
+            if (!is_null($converter)) {
+                return $converter;
+            }
         }
         throw new RuntimeException('Cannot find string converter.');
     }

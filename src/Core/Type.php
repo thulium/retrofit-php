@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Retrofit\Core;
 
 use Ouzo\Utilities\Arrays;
+use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use phpDocumentor\Reflection\Types\Object_;
 use PhpParser\Node;
@@ -54,7 +55,7 @@ readonly class Type
     }
 
     /**
-     * @param list<Param> $params
+     * @param list<Tag> $params
      */
     public static function create(
         ReflectionMethod $reflectionMethod,

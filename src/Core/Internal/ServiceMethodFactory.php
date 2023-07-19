@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Retrofit\Core\Internal;
 
+use Exception;
 use Ouzo\Utilities\Arrays;
 use Ouzo\Utilities\FluentArray;
 use Ouzo\Utilities\Joiner;
@@ -11,6 +12,7 @@ use Ouzo\Utilities\Strings;
 use phpDocumentor\Reflection\DocBlockFactory;
 use Psr\Http\Message\StreamInterface;
 use ReflectionAttribute;
+use ReflectionException;
 use ReflectionMethod;
 use Retrofit\Core\Attribute\Field;
 use Retrofit\Core\Attribute\FieldMap;
@@ -18,6 +20,7 @@ use Retrofit\Core\Attribute\FormUrlEncoded;
 use Retrofit\Core\Attribute\Headers;
 use Retrofit\Core\Attribute\HttpRequest;
 use Retrofit\Core\Attribute\Multipart;
+use Retrofit\Core\Attribute\ParameterAttribute;
 use Retrofit\Core\Attribute\Part;
 use Retrofit\Core\Attribute\PartMap;
 use Retrofit\Core\Attribute\Response\ErrorBody;
@@ -25,14 +28,17 @@ use Retrofit\Core\Attribute\Response\ResponseBody;
 use Retrofit\Core\Attribute\Streaming;
 use Retrofit\Core\Attribute\Url;
 use Retrofit\Core\Call;
-use Retrofit\Core\Converter\Converter;
 use Retrofit\Core\Converter\ResponseBodyConverter;
 use Retrofit\Core\HttpClient;
 use Retrofit\Core\Internal\ParameterHandler\Factory\ParameterHandlerFactoryProvider;
+use Retrofit\Core\Internal\ParameterHandler\ParameterHandler;
 use Retrofit\Core\Internal\Utils\Utils;
 use Retrofit\Core\Retrofit;
 use Retrofit\Core\Type;
 
+/**
+ * @template T
+ */
 readonly class ServiceMethodFactory
 {
     public function __construct(
@@ -42,6 +48,12 @@ readonly class ServiceMethodFactory
     {
     }
 
+    /**
+     * @param class-string<T> $service
+     * @param string $method
+     * @return ServiceMethod
+     * @throws ReflectionException
+     */
     public function create(string $service, string $method): ServiceMethod
     {
         $reflectionMethod = new ReflectionMethod($service, $method);
@@ -87,7 +99,7 @@ readonly class ServiceMethodFactory
             );
         }
 
-        // todo check issue https://github.com/nikic/PHP-Parser/issues/930 is fixed
+        // todo check if issue https://github.com/nikic/PHP-Parser/issues/930 is fixed
         if (count($httpRequestMethods) > 1) {
             $httpMethodNames = Joiner::on(', ')
                 ->mapValues(fn(HttpRequest $request): string => $request::class)
@@ -95,7 +107,12 @@ readonly class ServiceMethodFactory
             throw Utils::methodException($reflectionMethod, "Only one HTTP method is allowed. Found: [{$httpMethodNames}].");
         }
 
-        return Arrays::first($httpRequestMethods);
+        $first = Arrays::first($httpRequestMethods);
+        if ($first instanceof HttpRequest) {
+            return $first;
+        }
+
+        throw Utils::methodException($reflectionMethod, 'Found annotation is not a HttpRequest.');
     }
 
     private function getEncoding(HttpRequest $httpRequest, ReflectionMethod $reflectionMethod): ?Encoding
@@ -133,6 +150,10 @@ readonly class ServiceMethodFactory
         return Encoding::MULTIPART;
     }
 
+    /**
+     * @param ReflectionMethod $reflectionMethod
+     * @return array<string, string>
+     */
     private function getDefaultHeaders(ReflectionMethod $reflectionMethod): array
     {
         $defaultHeaders = [];
@@ -162,6 +183,12 @@ readonly class ServiceMethodFactory
         return $defaultHeaders;
     }
 
+    /**
+     * @param HttpRequest $httpRequest
+     * @param Encoding|null $encoding
+     * @param ReflectionMethod $reflectionMethod
+     * @return array<int, ParameterHandler>
+     */
     private function getParameterHandlers(HttpRequest $httpRequest, ?Encoding $encoding, ReflectionMethod $reflectionMethod): array
     {
         $docCommentParams = [];
@@ -192,6 +219,14 @@ readonly class ServiceMethodFactory
 
             $reflectionAttribute = $reflectionAttributes[0];
             $newInstance = $reflectionAttribute->newInstance();
+
+            if (!$newInstance instanceof ParameterAttribute) {
+                throw Utils::parameterException(
+                    $reflectionMethod,
+                    $position,
+                    'Parameter must implement ParameterAttribute interface.',
+                );
+            }
 
             if ($newInstance instanceof Url) {
                 if ($gotUrl) {
@@ -236,7 +271,7 @@ readonly class ServiceMethodFactory
         return $parameterHandlers;
     }
 
-    private function getResponseBodyConverter(ReflectionMethod $reflectionMethod): ?Converter
+    private function getResponseBodyConverter(ReflectionMethod $reflectionMethod): ?ResponseBodyConverter
     {
         $streamingReflectionAttributes = $reflectionMethod->getAttributes(Streaming::class);
         if (!empty($streamingReflectionAttributes)) {
@@ -247,7 +282,7 @@ readonly class ServiceMethodFactory
         return $this->getBodyConverter($reflectionAttributes[0]);
     }
 
-    private function getErrorBodyConverter(ReflectionMethod $reflectionMethod): ?Converter
+    private function getErrorBodyConverter(ReflectionMethod $reflectionMethod): ?ResponseBodyConverter
     {
         $reflectionAttributes = $reflectionMethod->getAttributes(ErrorBody::class);
         if (empty($reflectionAttributes)) {
@@ -256,11 +291,20 @@ readonly class ServiceMethodFactory
         return $this->getBodyConverter($reflectionAttributes[0]);
     }
 
-    private function getBodyConverter(ReflectionAttribute $reflectionAttribute): Converter
+    /**
+     * @template A of object
+     * @param ReflectionAttribute<A> $reflectionAttribute
+     * @return ResponseBodyConverter|null
+     */
+    private function getBodyConverter(ReflectionAttribute $reflectionAttribute): ?ResponseBodyConverter
     {
-        /** @var ResponseBody|ErrorBody $body */
-        $body = $reflectionAttribute->newInstance();
-        $responseType = new Type($body->rawType(), $body->parametrizedType());
-        return $this->retrofit->converterProvider->getResponseBodyConverter($responseType);
+        try {
+            /** @var ResponseBody|ErrorBody $body */
+            $body = $reflectionAttribute->newInstance();
+            $responseType = new Type($body->rawType(), $body->parametrizedType());
+            return $this->retrofit->converterProvider->getResponseBodyConverter($responseType);
+        } catch (Exception) {
+            return null;
+        }
     }
 }

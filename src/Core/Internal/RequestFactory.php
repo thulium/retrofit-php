@@ -24,6 +24,10 @@ readonly class RequestFactory
     {
     }
 
+    /**
+     * @param list<mixed> $args
+     * @return RequestInterface
+     */
     public function create(array $args): RequestInterface
     {
         $requestBuilder = new RequestBuilder($this->baseUrl, $this->httpRequest, $this->defaultHeaders);
