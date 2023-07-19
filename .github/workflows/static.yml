@@ -31,6 +31,9 @@ jobs:
         env:
           fail-fast: true
 
+      - name: Install Composer dependencies
+        run: composer install --no-progress
+
       - name: Install PHPStan
         run: composer --working-dir=vendor-bin/phpstan --no-progress install
 
