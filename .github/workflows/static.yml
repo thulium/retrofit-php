@@ -1,0 +1,38 @@
+name: Static analysis
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [ 8.2 ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+        env:
+          fail-fast: true
+
+      - name: Install PHP-CS-Fixer
+        run: composer --working-dir=vendor-bin/phpstan --no-progress install
+
+      - name: Run PHP-CS-Fixer
+        run: ./vendor-bin/phpstan/vendor/bin/phpstan --configuration=/opt/project/phpstan.neon.dist --autoload-file=/opt/project/vendor/autoload.php analyse
