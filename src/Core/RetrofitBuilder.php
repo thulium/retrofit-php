@@ -23,6 +23,9 @@ class RetrofitBuilder
 
     private ?UriInterface $baseUrl = null;
 
+    /**
+     * @var list<ConverterFactory>
+     */
     private array $converterFactories = [];
 
     public function client(HttpClient $httpClient): static
