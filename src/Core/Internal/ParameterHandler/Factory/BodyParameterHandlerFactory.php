@@ -21,7 +21,8 @@ readonly class BodyParameterHandlerFactory extends AbstractParameterHandlerFacto
         ReflectionMethod $reflectionMethod,
         int $position,
         Type $type,
-    ): ParameterHandler {
+    ): ParameterHandler
+    {
         $converter = $this->converterProvider->getRequestBodyConverter($type);
 
         return new BodyParameterHandler($converter, $reflectionMethod, $position);

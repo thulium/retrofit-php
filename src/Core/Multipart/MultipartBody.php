@@ -16,7 +16,8 @@ class MultipartBody
                 private readonly StreamInterface|string $body = '',
                 private readonly array $headers = [],
                 private readonly ?string $filename = null,
-            ) {
+            )
+            {
             }
 
             public function getName(): string

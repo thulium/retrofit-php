@@ -21,7 +21,8 @@ readonly class PathParameterHandlerFactory extends AbstractParameterHandlerFacto
         ReflectionMethod $reflectionMethod,
         int $position,
         Type $type,
-    ): ParameterHandler {
+    ): ParameterHandler
+    {
         return new PathParameterHandler($param->name(), $param->encoded(), $this->converterProvider->getStringConverter($type), $reflectionMethod, $position);
     }
 }

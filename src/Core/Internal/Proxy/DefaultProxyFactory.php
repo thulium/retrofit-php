@@ -69,7 +69,8 @@ readonly class DefaultProxyFactory implements ProxyFactory
     public function __construct(
         private BuilderFactory $builderFactory,
         private PrettyPrinterAbstract $prettyPrinterAbstract,
-    ) {
+    )
+    {
     }
 
     public function create(Retrofit $retrofit, ReflectionClass $service): object

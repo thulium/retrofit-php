@@ -11,7 +11,8 @@ trait WithBody
     public function __construct(
         private readonly string $rawType,
         private readonly ?string $parametrizedType = null,
-    ) {
+    )
+    {
         if (!is_null($this->parametrizedType) && $this->rawType !== 'array') {
             throw new InvalidArgumentException('Parametrized type can be set only for array raw type.');
         }

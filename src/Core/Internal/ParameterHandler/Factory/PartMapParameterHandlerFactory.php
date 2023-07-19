@@ -22,7 +22,8 @@ readonly class PartMapParameterHandlerFactory extends AbstractParameterHandlerFa
         ReflectionMethod $reflectionMethod,
         int $position,
         Type $type,
-    ): ParameterHandler {
+    ): ParameterHandler
+    {
         if ($encoding !== Encoding::MULTIPART) {
             throw Utils::parameterException($reflectionMethod, $position, '#[PartMap] parameters can only be used with multipart.');
         }

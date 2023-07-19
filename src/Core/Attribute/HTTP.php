@@ -19,7 +19,8 @@ readonly class HTTP implements HttpRequest
         HttpMethod|string $httpMethod,
         private ?string $path = null,
         private bool $hasBody = false,
-    ) {
+    )
+    {
         $this->httpMethod = is_string($httpMethod) ? HttpMethod::from($httpMethod) : $httpMethod;
         $this->pathParameters = Utils::parsePathParameters($this->path);
     }

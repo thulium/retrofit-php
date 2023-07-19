@@ -13,7 +13,8 @@ readonly class UrlParameterHandler implements ParameterHandler
     public function __construct(
         private ReflectionMethod $reflectionMethod,
         private int $position,
-    ) {
+    )
+    {
     }
 
     public function apply(RequestBuilder $requestBuilder, mixed $value): void

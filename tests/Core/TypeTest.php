@@ -24,7 +24,8 @@ class TypeTest extends TestCase
         ReflectionParameter $reflectionParameter,
         array $params,
         string $expectedRawType,
-    ): void {
+    ): void
+    {
         // when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
@@ -39,7 +40,8 @@ class TypeTest extends TestCase
         ReflectionParameter $reflectionParameter,
         array $params,
         string $expectedRawType,
-    ): void {
+    ): void
+    {
         // when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
@@ -54,7 +56,8 @@ class TypeTest extends TestCase
         ReflectionParameter $reflectionParameter,
         array $params,
         string $expectedRawType,
-    ): void {
+    ): void
+    {
         // when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
@@ -70,7 +73,8 @@ class TypeTest extends TestCase
         ReflectionParameter $reflectionParameter,
         array $params,
         string $expectedRawType,
-    ): void {
+    ): void
+    {
         // when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
@@ -87,7 +91,8 @@ class TypeTest extends TestCase
         ReflectionParameter $reflectionParameter,
         array $params,
         string $expectedRawType,
-    ): void {
+    ): void
+    {
         // when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 
@@ -104,7 +109,8 @@ class TypeTest extends TestCase
         ReflectionParameter $reflectionParameter,
         array $params,
         string $expectedRawType,
-    ): void {
+    ): void
+    {
         // when
         $type = Type::create($reflectionMethod, $reflectionParameter, $params);
 

@@ -44,7 +44,8 @@ class RequestBuilder
         UriInterface $baseUrl,
         private readonly HttpRequest $httpRequest,
         array $defaultHeaders = [],
-    ) {
+    )
+    {
         $this->uri = new Uri($baseUrl->__toString());
         if (!is_null($this->httpRequest->path())) {
             $this->uri = $this->uri->withPath($this->httpRequest->path());
