@@ -31,8 +31,8 @@ jobs:
         env:
           fail-fast: true
 
-      - name: Install PHP-CS-Fixer
+      - name: Install PHPStan
         run: composer --working-dir=vendor-bin/phpstan --no-progress install
 
-      - name: Run PHP-CS-Fixer
-        run: ./vendor-bin/phpstan/vendor/bin/phpstan --configuration=/opt/project/phpstan.neon.dist --autoload-file=/opt/project/vendor/autoload.php analyse
+      - name: Run PHPStan
+        run: ./vendor-bin/phpstan/vendor/bin/phpstan --configuration=./phpstan.neon.dist --autoload-file=./vendor/autoload.php analyse
