@@ -62,9 +62,6 @@ use Retrofit\Core\Retrofit;
  *      }
  * }
  * </pre>
- *
- * @template T of object
- * @implements ProxyFactory<T>
  */
 readonly class DefaultProxyFactory implements ProxyFactory
 {
@@ -80,6 +77,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
     }
 
     /**
+     * @template T of object
      * @param Retrofit $retrofit
      * @param ReflectionClass<T> $service
      * @return object
@@ -104,6 +102,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
     }
 
     /**
+     * @template T of object
      * @param ReflectionClass<T> $service
      * @param string $proxyServiceName
      * @return Class_
@@ -158,6 +157,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
     }
 
     /**
+     * @template T of object
      * @param ReflectionClass<T> $service
      * @param Class_ $serviceClassImplementation
      * @return void
@@ -199,6 +199,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
     }
 
     /**
+     * @template T of object
      * @param ReflectionClass<T> $service
      * @return MethodCall
      */

@@ -42,8 +42,9 @@ readonly class Retrofit
     /**
      * Creates and implementation of the API endpoints defined by the {@code service} interface.
      *
-     * @param string $service
-     * @return object the implementation of the service
+     * @template T of object
+     * @param class-string<T> $service
+     * @return T the implementation of the service
      * @throws ReflectionException
      */
     public function create(string $service): object
@@ -58,6 +59,11 @@ readonly class Retrofit
         return new RetrofitBuilder();
     }
 
+    /**
+     * @template T of object
+     * @param ReflectionClass<T> $service
+     * @return void
+     */
     private function validateServiceInterface(ReflectionClass $service): void
     {
         if (!$service->isInterface()) {

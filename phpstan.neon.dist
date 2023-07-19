@@ -3,16 +3,5 @@ includes:
 
 parameters:
     paths:
-        - src/Core/Attribute
-        - src/Core/Converter
-        - src/Core/Internal
-        - src/Core/Multipart
-        - src/Core/Call.php
-        - src/Core/Callback.php
-        - src/Core/HttpClient.php
-        - src/Core/HttpMethod.php
-        - src/Core/MimeEncoding.php
-        - src/Core/Response.php
-        - src/Core/RetrofitBuilder.php
-        - src/Core/Type.php
+        - src
     level: max

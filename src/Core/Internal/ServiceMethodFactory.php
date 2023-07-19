@@ -37,7 +37,7 @@ use Retrofit\Core\Retrofit;
 use Retrofit\Core\Type;
 
 /**
- * @template T
+ * @template T of object
  */
 readonly class ServiceMethodFactory
 {
