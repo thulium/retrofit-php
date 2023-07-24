@@ -1,0 +1,9 @@
+{
+    "sub-splits": [
+        {
+            "name": "core",
+            "directory": "src/Core",
+            "target": "git@github.com:thulium/retrofit-php-core.git"
+        }
+    ]
+}
