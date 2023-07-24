@@ -70,7 +70,6 @@ readonly class Utils
             return [];
         }
 
-        /** @var Detail[] $matcher */
         $matcher = pattern(self::PARAM_URL_REGEX)
             ->match($path);
 

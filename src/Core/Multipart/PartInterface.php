@@ -14,7 +14,8 @@ interface PartInterface
 
     public function getFilename(): ?string;
 
+    /**
+     * @return array<string, string>
+     */
     public function getHeaders(): array;
-
-    public static function createFromData(string $name, StreamInterface|string $body);
 }

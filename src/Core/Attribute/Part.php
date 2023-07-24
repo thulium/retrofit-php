@@ -8,7 +8,7 @@ use Attribute;
 use Retrofit\Core\MimeEncoding;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
-readonly class Part
+readonly class Part implements ParameterAttribute
 {
     private MimeEncoding $encoding;
 

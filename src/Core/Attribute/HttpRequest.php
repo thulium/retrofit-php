@@ -12,6 +12,9 @@ interface HttpRequest
 
     public function path(): ?string;
 
+    /**
+     * @return list<string>
+     */
     public function pathParameters(): array;
 
     public function hasBody(): bool;

@@ -6,16 +6,29 @@ namespace Retrofit\Core\Internal\ParameterHandler\Factory;
 
 use ReflectionMethod;
 use Retrofit\Core\Attribute\HttpRequest;
+use Retrofit\Core\Attribute\ParameterAttribute;
 use Retrofit\Core\Attribute\Url;
 use Retrofit\Core\Internal\Encoding;
 use Retrofit\Core\Internal\ParameterHandler\ParameterHandler;
 use Retrofit\Core\Internal\ParameterHandler\UrlParameterHandler;
 use Retrofit\Core\Type;
 
+/**
+ * @extends AbstractParameterHandlerFactory<Url>
+ */
 readonly class UrlParameterHandlerFactory extends AbstractParameterHandlerFactory
 {
+    /**
+     * @param Url $param
+     * @param HttpRequest $httpRequest
+     * @param Encoding|null $encoding
+     * @param ReflectionMethod $reflectionMethod
+     * @param int $position
+     * @param Type $type
+     * @return ParameterHandler
+     */
     public function create(
-        Url $param,
+        ParameterAttribute $param,
         HttpRequest $httpRequest,
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,

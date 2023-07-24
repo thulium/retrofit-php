@@ -51,4 +51,19 @@ class UrlParameterHandlerTest extends TestCase
         $request = $this->requestBuilder->build();
         $this->assertSame('https://foo.bar/v2/api', $request->getUri()->__toString());
     }
+
+    #[Test]
+    public function shouldThrowExceptionWhenParameterIsNotStringOrUriInterface(): void
+    {
+        // given
+        $url = 123;
+
+        // when
+        CatchException::when($this->urlParameterHandler)->apply($this->requestBuilder, $url);
+
+        // then
+        CatchException::assertThat()
+            ->isInstanceOf(RuntimeException::class)
+            ->hasMessage('Method MockMethod::mockMethod() parameter #1. #[Url] must be string or UriInterface type.');
+    }
 }

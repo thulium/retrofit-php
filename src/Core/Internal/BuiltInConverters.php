@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Retrofit\Core\Internal;
 
 use GuzzleHttp\Psr7\Utils;
+use Iterator;
+use Ouzo\Utilities\Strings;
 use Psr\Http\Message\StreamInterface;
 use Retrofit\Core\Converter\RequestBodyConverter;
 use Retrofit\Core\Converter\ResponseBodyConverter;
 use Retrofit\Core\Converter\StringConverter;
 use Retrofit\Core\Type;
+use RuntimeException;
 use stdClass;
 
 readonly class BuiltInConverters
@@ -27,9 +30,13 @@ readonly class BuiltInConverters
     public static function StreamInterfaceRequestBodyConverter(): RequestBodyConverter
     {
         return new class () implements RequestBodyConverter {
+            /**
+             * @param bool|callable|float|int|Iterator|StreamInterface|resource|string|null $value
+             * @return StreamInterface
+             */
             public function convert(mixed $value): StreamInterface
             {
-                return $value;
+                return Utils::streamFor($value);
             }
         };
     }
@@ -49,7 +56,11 @@ readonly class BuiltInConverters
         return new class () implements ResponseBodyConverter {
             public function convert(StreamInterface $value): stdClass
             {
-                return json_decode($value->getContents());
+                $response = json_decode($value->getContents());
+                if ($response instanceof stdClass) {
+                    return $response;
+                }
+                throw new RuntimeException('Response is not a stdClass.');
             }
         };
     }
@@ -61,9 +72,17 @@ readonly class BuiltInConverters
             {
             }
 
+            /**
+             * @param StreamInterface $value
+             * @return array<mixed>
+             */
             public function convert(StreamInterface $value): array
             {
-                return json_decode($value->getContents(), $this->type->parametrizedTypeIsScalar());
+                $result = json_decode($value->getContents(), $this->type->parametrizedTypeIsScalar());
+                if (is_array($result)) {
+                    return $result;
+                }
+                throw new RuntimeException('Response is not an array.');
             }
         };
     }
@@ -118,7 +137,16 @@ readonly class BuiltInConverters
                     return 'false';
                 }
 
-                return (string)$value;
+                if (is_scalar($value)) {
+                    return (string)$value;
+                }
+
+                if (is_null($value)) {
+                    return Strings::EMPTY;
+                }
+
+                $type = gettype($value);
+                throw new RuntimeException("Cannot convert to string type '{$type}'.");
             }
         };
     }

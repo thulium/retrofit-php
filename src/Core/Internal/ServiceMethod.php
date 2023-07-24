@@ -8,5 +8,9 @@ use Retrofit\Core\Call;
 
 interface ServiceMethod
 {
+    /**
+     * @param list<mixed> $args
+     * @return Call
+     */
     public function invoke(array $args): Call;
 }

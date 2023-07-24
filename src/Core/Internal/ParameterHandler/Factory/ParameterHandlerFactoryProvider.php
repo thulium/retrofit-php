@@ -9,6 +9,7 @@ use Retrofit\Core\Attribute\Field;
 use Retrofit\Core\Attribute\FieldMap;
 use Retrofit\Core\Attribute\Header;
 use Retrofit\Core\Attribute\HeaderMap;
+use Retrofit\Core\Attribute\ParameterAttribute;
 use Retrofit\Core\Attribute\Part;
 use Retrofit\Core\Attribute\PartMap;
 use Retrofit\Core\Attribute\Path;
@@ -20,6 +21,9 @@ use Retrofit\Core\Internal\ConverterProvider;
 
 class ParameterHandlerFactoryProvider
 {
+    /**
+     * @var array<string, AbstractParameterHandlerFactory<ParameterAttribute>>
+     */
     private array $attributeNameToFactory;
 
     public function __construct(ConverterProvider $converterProvider)
@@ -40,6 +44,10 @@ class ParameterHandlerFactoryProvider
         ];
     }
 
+    /**
+     * @param string $attributeName
+     * @return AbstractParameterHandlerFactory<ParameterAttribute>
+     */
     public function get(string $attributeName): AbstractParameterHandlerFactory
     {
         return $this->attributeNameToFactory[$attributeName];

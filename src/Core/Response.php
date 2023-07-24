@@ -45,6 +45,8 @@ readonly class Response
 
     /**
      * HTTP headers.
+     *
+     * @return array<string, string[]>
      */
     public function headers(): array
     {

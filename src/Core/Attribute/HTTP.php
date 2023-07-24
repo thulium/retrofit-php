@@ -13,6 +13,9 @@ readonly class HTTP implements HttpRequest
 {
     private HttpMethod $httpMethod;
 
+    /**
+     * @var list<string>
+     */
     private array $pathParameters;
 
     public function __construct(

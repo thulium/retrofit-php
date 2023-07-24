@@ -8,9 +8,9 @@ use Retrofit\Core\Type;
 
 interface ConverterFactory
 {
-    public function requestBodyConverter(Type $type): ?Converter;
+    public function requestBodyConverter(Type $type): ?RequestBodyConverter;
 
-    public function responseBodyConverter(Type $type): ?Converter;
+    public function responseBodyConverter(Type $type): ?ResponseBodyConverter;
 
-    public function stringConverter(Type $type): ?Converter;
+    public function stringConverter(Type $type): ?StringConverter;
 }

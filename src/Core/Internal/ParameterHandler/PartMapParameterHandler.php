@@ -6,7 +6,7 @@ namespace Retrofit\Core\Internal\ParameterHandler;
 
 use Psr\Http\Message\StreamInterface;
 use ReflectionMethod;
-use Retrofit\Core\Converter\Converter;
+use Retrofit\Core\Converter\RequestBodyConverter;
 use Retrofit\Core\Internal\RequestBuilder;
 use Retrofit\Core\Internal\Utils\Utils;
 use Retrofit\Core\MimeEncoding;
@@ -21,7 +21,7 @@ readonly class PartMapParameterHandler implements ParameterHandler
 
     public function __construct(
         private MimeEncoding $encoding,
-        private Converter $converter,
+        private RequestBodyConverter $converter,
         private ReflectionMethod $reflectionMethod,
         private int $position,
     )

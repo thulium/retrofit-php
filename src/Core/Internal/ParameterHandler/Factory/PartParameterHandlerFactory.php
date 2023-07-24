@@ -6,6 +6,7 @@ namespace Retrofit\Core\Internal\ParameterHandler\Factory;
 
 use ReflectionMethod;
 use Retrofit\Core\Attribute\HttpRequest;
+use Retrofit\Core\Attribute\ParameterAttribute;
 use Retrofit\Core\Attribute\Part;
 use Retrofit\Core\Internal\Encoding;
 use Retrofit\Core\Internal\ParameterHandler\ParameterHandler;
@@ -13,10 +14,22 @@ use Retrofit\Core\Internal\ParameterHandler\PartParameterHandler;
 use Retrofit\Core\Internal\Utils\Utils;
 use Retrofit\Core\Type;
 
+/**
+ * @extends AbstractParameterHandlerFactory<Part>
+ */
 readonly class PartParameterHandlerFactory extends AbstractParameterHandlerFactory
 {
+    /**
+     * @param Part $param
+     * @param HttpRequest $httpRequest
+     * @param Encoding|null $encoding
+     * @param ReflectionMethod $reflectionMethod
+     * @param int $position
+     * @param Type $type
+     * @return ParameterHandler
+     */
     public function create(
-        Part $param,
+        ParameterAttribute $param,
         HttpRequest $httpRequest,
         ?Encoding $encoding,
         ReflectionMethod $reflectionMethod,

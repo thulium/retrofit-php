@@ -7,7 +7,7 @@ namespace Retrofit\Core\Attribute;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_PARAMETER)]
-readonly class Path
+readonly class Path implements ParameterAttribute
 {
     public function __construct(
         private string $name,

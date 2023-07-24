@@ -8,7 +8,6 @@ use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Query;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
-use JetBrains\PhpStorm\ArrayShape;
 use Ouzo\Utilities\Arrays;
 use Ouzo\Utilities\Strings;
 use Psr\Http\Message\RequestInterface;
@@ -24,15 +23,29 @@ class RequestBuilder
 
     private UriInterface $uri;
 
-    #[ArrayShape([0 => ['name' => 'string', 'value' => 'string']])]
+    /**
+     * @var list<array<string, string>>
+     */
     private array $pathParameters = [];
 
+    /**
+     * @var list<string>
+     */
     private array $queries = [];
 
+    /**
+     * @var array<string, string>
+     */
     private array $headers = [];
 
+    /**
+     * @var array<string, string>
+     */
     private array $fields = [];
 
+    /**
+     * @var array<int, array{name: string, contents: StreamInterface|string, headers: array<string, string>, filename?: string|null}>
+     */
     private array $parts = [];
 
     private ?StreamInterface $body = null;
@@ -72,12 +85,22 @@ class RequestBuilder
         $this->pathParameters[] = ['name' => $name, 'value' => $value];
     }
 
+    /**
+     * @param string|list<string> $name
+     * @param string|list<string>|null $value
+     * @param bool $encoded
+     * @return void
+     */
     public function addQueryParam(string|array $name, string|array|null $value, bool $encoded): void
     {
         if (is_null($value)) {
             $name = Arrays::toArray($name);
             $this->queries = Arrays::map($name, fn(string $item) => $encoded ? $item : rawurlencode($item));
         } else {
+            if (is_array($name)) {
+                throw new RuntimeException('Cannot add query param name when is an array.');
+            }
+
             $value = Arrays::toArray($value);
             foreach ($value as $item) {
                 if (!$encoded) {
@@ -102,6 +125,13 @@ class RequestBuilder
         $this->fields[$name] = $value;
     }
 
+    /**
+     * @param string $name
+     * @param StreamInterface|string $body
+     * @param array<string, string> $headers
+     * @param string|null $filename
+     * @return void
+     */
     public function addPart(string $name, StreamInterface|string $body, array $headers = [], ?string $filename = null): void
     {
         $this->parts[] = [

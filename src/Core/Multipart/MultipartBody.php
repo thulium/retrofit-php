@@ -14,6 +14,9 @@ class MultipartBody
             public function __construct(
                 private readonly string $name = '',
                 private readonly StreamInterface|string $body = '',
+                /**
+                 * @var array<string, string>
+                 */
                 private readonly array $headers = [],
                 private readonly ?string $filename = null,
             )
@@ -40,7 +43,19 @@ class MultipartBody
                 return $this->filename;
             }
 
-            public static function createFromData(string $name, StreamInterface|string $body, array $headers = [], ?string $filename = null): PartInterface
+            /**
+             * @param string $name
+             * @param StreamInterface|string $body
+             * @param array<string, string> $headers
+             * @param string|null $filename
+             * @return PartInterface
+             */
+            public static function createFromData(
+                string $name,
+                StreamInterface|string $body,
+                array $headers = [],
+                ?string $filename = null,
+            ): PartInterface
             {
                 return new self($name, $body, $headers, $filename);
             }
