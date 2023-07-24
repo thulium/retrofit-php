@@ -1,9 +1,20 @@
 {
     "name": "thulium/retrofit-php",
     "description": "Retrofit for PHP - A type-safe PHP REST client",
-    "minimum-stability": "stable",
-    "license": "MIT",
     "type": "library",
+    "keywords": [
+        "http",
+        "http-client",
+        "rest",
+        "rest-client",
+        "retrofit"
+    ],
+    "homepage": "https://github.com/thulium/retrofit-php",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/thulium/retrofit-php/issues"
+    },
+    "minimum-stability": "stable",
     "require": {
         "php": ">=8.2",
         "guzzlehttp/psr7": "^2.5.0",
