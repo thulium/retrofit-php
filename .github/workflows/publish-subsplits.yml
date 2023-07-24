@@ -1,0 +1,33 @@
+name: Publish Sub-Split
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+        with:
+          fetch-depth: 0
+
+      - name: Cache splitsh-lite
+        id: splitsh-cache
+        uses: actions/cache@v3.3.1
+        with:
+          path: ./.splitsh
+          key: ${{ runner.os }}-splitsh-d-101
+
+      - uses: frankdejonge/use-subsplit-publish@1.0.0-beta.7
+        with:
+          source-branch: main
+          config-path: ./config.subsplit-publish.json
+          splitsh-path: ./.splitsh/splitsh-lite
+          splitsh-version: v1.0.1

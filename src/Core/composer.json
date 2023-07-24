@@ -1,6 +1,6 @@
 {
-    "name": "thulium/retrofit-php",
-    "description": "Retrofit for PHP - A type-safe PHP REST client",
+    "name": "thulium/retrofit-php-core",
+    "description": "Retrofit for PHP - Core",
     "type": "library",
     "keywords": [
         "http",
@@ -24,17 +24,9 @@
         "psr/http-message": "^2.0",
         "rawr/t-regx": "^0.41"
     },
-    "require-dev": {
-        "phpunit/phpunit": "^10.2.5"
-    },
     "autoload": {
         "psr-4": {
-            "Retrofit\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Retrofit\\Tests\\": "tests/"
+            "Retrofit\\Core": ""
         }
     },
     "config": {
