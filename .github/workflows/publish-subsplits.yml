@@ -3,9 +3,12 @@ name: Publish Sub-Split
 on:
   push:
     branches:
+      - main
+  create:
+    tags:
       - '*'
-  pull_request:
-    branches:
+  delete:
+    tags:
       - '*'
 
 jobs:
@@ -17,6 +20,7 @@ jobs:
         uses: actions/checkout@v3.5.3
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Cache splitsh-lite
         id: splitsh-cache
@@ -25,7 +29,8 @@ jobs:
           path: ./.splitsh
           key: ${{ runner.os }}-splitsh-d-101
 
-      - uses: frankdejonge/use-subsplit-publish@1.0.0-beta.7
+      - name: Publish using splitish
+        uses: frankdejonge/use-subsplit-publish@1.0.0-beta.7
         with:
           source-branch: main
           config-path: ./config.subsplit-publish.json
