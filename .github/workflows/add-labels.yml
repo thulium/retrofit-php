@@ -12,5 +12,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Triage against type/* label
+      - name: Triage labels
         uses: actions/labeler@v5.0.0-alpha.1
