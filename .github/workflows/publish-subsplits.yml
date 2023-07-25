@@ -30,7 +30,7 @@ jobs:
           private_key: ${{ secrets.RETROFIT_BOT_PRIVATE_KEY }}
 
       - name: Set RetrofitBot token
-        uses: frankdejonge/use-github-token@1.0.1
+        uses: frankdejonge/use-github-token@1.0.2
         with:
           authentication: 'RetrofitBot:${{ steps.generate_token.outputs.token }}'
           name: github-actions[bot]
