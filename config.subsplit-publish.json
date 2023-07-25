@@ -1,6 +1,11 @@
 {
     "sub-splits": [
         {
+            "name": "guzzle7",
+            "directory": "src/Client/Guzzle7",
+            "target": "git@github.com:thulium/retrofit-php-client-guzzle7.git"
+        },
+        {
             "name": "core",
             "directory": "src/Core",
             "target": "git@github.com:thulium/retrofit-php-core.git"
