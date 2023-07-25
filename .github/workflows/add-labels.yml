@@ -1,7 +1,9 @@
 name: Add labels
 
 on:
-  - pull_request_target
+  pull_request:
+    branches:
+      - '*'
 
 jobs:
   type-label:
@@ -12,5 +14,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Triage against type/* label
+      - name: Triage labels
         uses: actions/labeler@v5.0.0-alpha.1
