@@ -1,6 +1,6 @@
 {
-    "name": "thulium/retrofit-php",
-    "description": "Retrofit for PHP - A type-safe PHP REST client",
+    "name": "thulium/retrofit-php-converter-symfony-serializer",
+    "description": "Retrofit for PHP - Symfony Serializer Converter",
     "type": "library",
     "keywords": [
         "http",
@@ -17,28 +17,16 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=8.2",
-        "guzzlehttp/guzzle": "^7.7",
         "guzzlehttp/psr7": "^2.5",
-        "letsdrink/ouzo-goodies": "dev-master",
-        "nikic/php-parser": "^4.16",
-        "phpdocumentor/reflection-docblock": "^5.3",
-        "psr/http-message": "^2.0",
-        "rawr/t-regx": "^0.41",
         "symfony/serializer": "^5.4 || ^6.3"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^10.2",
-        "symfony/property-access": "^5.4 || ^6.3"
     },
     "autoload": {
         "psr-4": {
-            "Retrofit\\": "src/"
+            "Retrofit\\Converter\\SymfonySerializer\\": ""
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Retrofit\\Tests\\": "tests/"
-        }
+    "suggest": {
+        "symfony/property-access": "^5.4 || ^6.3"
     },
     "config": {
         "sort-packages": true

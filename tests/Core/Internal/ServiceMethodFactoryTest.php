@@ -395,6 +395,7 @@ class ServiceMethodFactoryTest extends TestCase
 
         $string = 'some-string';
         $userRequest = (new UserRequest())
+            ->setId(1)
             ->setLogin('jon-doe');
         $partInterface = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor($fileResource), [], 'image.png');
         $streamInterface = Utils::streamFor($fileResource);
@@ -410,7 +411,7 @@ class ServiceMethodFactoryTest extends TestCase
         $part1 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"string\"\r\nContent-Length: 13\r\n\r\n\"some-string\"";
         $this->assertStringContainsString($part1, $contents);
 
-        $part2 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"userRequest\"\r\nContent-Length: 19\r\n\r\n{\"login\":\"jon-doe\"}\r\n";
+        $part2 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"userRequest\"\r\nContent-Length: 26\r\n\r\n{\"id\":1,\"login\":\"jon-doe\"}\r\n";
         $this->assertStringContainsString($part2, $contents);
 
         $part3 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Length: 9155\r\nContent-Type: image/png\r\n\r\n";
@@ -425,6 +426,7 @@ class ServiceMethodFactoryTest extends TestCase
     {
         // given
         $part1 = (new UserRequest())
+            ->setId(1)
             ->setLogin('jon-doe');
 
         $fileResource = $this->getFileResource('sample-image.jpg');
@@ -439,7 +441,7 @@ class ServiceMethodFactoryTest extends TestCase
 
         $contents = $request->getBody()->getContents();
 
-        $expectedPart1 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part1\"\r\nContent-Length: 19\r\n\r\n{\"login\":\"jon-doe\"}";
+        $expectedPart1 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part1\"\r\nContent-Length: 26\r\n\r\n{\"id\":1,\"login\":\"jon-doe\"}";
         $this->assertStringContainsString($expectedPart1, $contents);
 
         $expectedPart2 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Length: 9155\r\nContent-Type: image/png\r\n\r\n";
@@ -518,6 +520,7 @@ class ServiceMethodFactoryTest extends TestCase
     {
         // given
         $userRequest = (new UserRequest())
+            ->setId(1)
             ->setLogin('jon-doe');
 
         // when
@@ -526,7 +529,7 @@ class ServiceMethodFactoryTest extends TestCase
         // then
         $request = $serviceMethod->invoke([$userRequest])->request();
 
-        $this->assertStringContainsString('{"login":"jon-doe"}', $request->getBody()->getContents());
+        $this->assertStringContainsString('{"id":1,"login":"jon-doe"}', $request->getBody()->getContents());
     }
 
     #[Test]
@@ -540,6 +543,7 @@ class ServiceMethodFactoryTest extends TestCase
         Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], Utils::streamFor($body)));
 
         $userRequest = (new UserRequest())
+            ->setId(1)
             ->setLogin('jon-doe');
 
         // when
@@ -557,6 +561,7 @@ class ServiceMethodFactoryTest extends TestCase
         Mock::when($this->httpClient)->send(Mock::any())->thenReturn(new Response(200, [], Utils::streamFor('sample body')));
 
         $userRequest = (new UserRequest())
+            ->setId(1)
             ->setLogin('jon-doe');
 
         // when

@@ -84,6 +84,7 @@ class PartParameterHandlerTest extends TestCase
         // given
         $partParameterHandler = new PartParameterHandler('some-part-name', MimeEncoding::BIT_7, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
         $part = (new UserRequest())
+            ->setId(1)
             ->setLogin('jon-doe');
 
         // when
@@ -91,7 +92,7 @@ class PartParameterHandlerTest extends TestCase
 
         // then
         $request = $this->requestBuilder->build();
-        $part = "Content-Transfer-Encoding: 7bit\r\nContent-Disposition: form-data; name=\"some-part-name\"\r\nContent-Length: 19\r\n\r\n{\"login\":\"jon-doe\"}";
+        $part = "Content-Transfer-Encoding: 7bit\r\nContent-Disposition: form-data; name=\"some-part-name\"\r\nContent-Length: 26\r\n\r\n{\"id\":1,\"login\":\"jon-doe\"}";
         $this->assertStringContainsString($part, $request->getBody()->getContents());
     }
 
