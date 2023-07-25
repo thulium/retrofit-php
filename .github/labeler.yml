@@ -8,3 +8,8 @@ type/housekeeping:
   - head-branch: ^housekeeping/
 type/dependencies:
   - head-branch: ^dependabot/
+
+module/retrofit-core:
+  - src/Core/**/*
+module/retrofit-client-guzzle7:
+  - src/Client/Guzzle7/**/*
