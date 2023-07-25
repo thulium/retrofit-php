@@ -10,6 +10,8 @@ type/dependencies:
   - head-branch: ^dependabot/
 
 'module/retrofit-core':
-  - src/Core/**/*
+  - any:
+      - src/Core/**/*
 'module/retrofit-client-guzzle7':
-  - src/Client/Guzzle7/**/*
+  - any:
+      - src/Client/Guzzle7/**/*
