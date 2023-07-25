@@ -1,13 +1,13 @@
-#type/epic:
-#  - head-branch: ^epic/
-#type/feature:
-#  - head-branch: ^feature/
-#type/bug:
-#  - head-branch: ^bug/
-#type/housekeeping:
-#  - head-branch: ^housekeeping/
-#type/dependencies:
-#  - head-branch: ^dependabot/
+type/epic:
+  - head-branch: ^epic/
+type/feature:
+  - head-branch: ^feature/
+type/bug:
+  - head-branch: ^bug/
+type/housekeeping:
+  - head-branch: ^housekeeping/
+type/dependencies:
+  - head-branch: ^dependabot/
 module/retrofit-core:
   - changed-files: src/Core/**/*
 module/retrofit-client-guzzle7:
