@@ -104,6 +104,7 @@ class PartMapParameterHandlerTest extends TestCase
 
         $partMapParameterHandler = new PartMapParameterHandler(MimeEncoding::BINARY, BuiltInConverters::JsonEncodeRequestBodyConverter(), $this->reflectionMethod, 0);
         $part1 = (new UserRequest())
+            ->setId(1)
             ->setLogin('jon-doe');
 
         $part2 = MultipartBody::Part()::createFromData('part-iface', Utils::streamFor($fileResource), [], 'image.png');
@@ -115,7 +116,7 @@ class PartMapParameterHandlerTest extends TestCase
         $request = $this->requestBuilder->build();
         $contents = $request->getBody()->getContents();
 
-        $expectedPart1 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part1\"\r\nContent-Length: 19\r\n\r\n{\"login\":\"jon-doe\"}";
+        $expectedPart1 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part1\"\r\nContent-Length: 26\r\n\r\n{\"id\":1,\"login\":\"jon-doe\"}";
         $this->assertStringContainsString($expectedPart1, $contents);
 
         $expectedPart2 = "Content-Transfer-Encoding: binary\r\nContent-Disposition: form-data; name=\"part-iface\"; filename=\"image.png\"\r\nContent-Length: 9155\r\nContent-Type: image/png\r\n\r\n";

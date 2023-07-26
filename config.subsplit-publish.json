@@ -1,9 +1,14 @@
 {
     "sub-splits": [
         {
-            "name": "guzzle7",
+            "name": "client-guzzle7",
             "directory": "src/Client/Guzzle7",
             "target": "git@github.com:thulium/retrofit-php-client-guzzle7.git"
+        },
+        {
+            "name": "converter-symfony-serializer",
+            "directory": "src/Converter/SymfonySerializer",
+            "target": "git@github.com:thulium/retrofit-php-converter-symfony-serializer.git"
         },
         {
             "name": "core",
