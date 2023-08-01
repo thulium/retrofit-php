@@ -10,6 +10,11 @@ use Retrofit\Core\Converter\RequestBodyConverter;
 use Retrofit\Core\Type;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * {@link RequestBodyConverter} implementation.
+ *
+ * @internal
+ */
 readonly class SymfonySerializerRequestBodyConverter implements RequestBodyConverter
 {
     public function __construct(

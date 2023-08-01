@@ -11,6 +11,13 @@ use Retrofit\Core\Converter\StringConverter;
 use Retrofit\Core\Type;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * {@link https://symfony.com/doc/current/components/serializer.html Symfony Serializer} converter factory implementation.
+ *
+ * @see ConverterFactory
+ *
+ * @api
+ */
 readonly class SymfonySerializerConverterFactory implements ConverterFactory
 {
     public function __construct(

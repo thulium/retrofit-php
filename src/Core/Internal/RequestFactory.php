@@ -9,11 +9,14 @@ use Psr\Http\Message\UriInterface;
 use Retrofit\Core\Attribute\HttpRequest;
 use Retrofit\Core\Internal\ParameterHandler\ParameterHandler;
 
+/**
+ * @internal
+ */
 readonly class RequestFactory
 {
     /**
      * @param array<string, string> $defaultHeaders
-     * @param ParameterHandler[] $parameterHandlers
+     * @param list<ParameterHandler> $parameterHandlers
      */
     public function __construct(
         private UriInterface $baseUrl,
@@ -24,10 +27,7 @@ readonly class RequestFactory
     {
     }
 
-    /**
-     * @param list<mixed> $args
-     * @return RequestInterface
-     */
+    /** @param list<mixed> $args */
     public function create(array $args): RequestInterface
     {
         $requestBuilder = new RequestBuilder($this->baseUrl, $this->httpRequest, $this->defaultHeaders);

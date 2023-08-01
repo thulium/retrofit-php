@@ -7,6 +7,9 @@ namespace Retrofit\Core\Internal\ParameterHandler;
 use Retrofit\Core\Converter\StringConverter;
 use Retrofit\Core\Internal\RequestBuilder;
 
+/**
+ * @internal
+ */
 readonly class HeaderParameterHandler implements ParameterHandler
 {
     public function __construct(

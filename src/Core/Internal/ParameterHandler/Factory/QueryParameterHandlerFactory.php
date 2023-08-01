@@ -15,18 +15,12 @@ use Retrofit\Core\Type;
 
 /**
  * @extends AbstractParameterHandlerFactory<Query>
+ *
+ * @internal
  */
 readonly class QueryParameterHandlerFactory extends AbstractParameterHandlerFactory
 {
-    /**
-     * @param Query $param
-     * @param HttpRequest $httpRequest
-     * @param Encoding|null $encoding
-     * @param ReflectionMethod $reflectionMethod
-     * @param int $position
-     * @param Type $type
-     * @return ParameterHandler
-     */
+    /** @param Query $param */
     public function create(
         ParameterAttribute $param,
         HttpRequest $httpRequest,

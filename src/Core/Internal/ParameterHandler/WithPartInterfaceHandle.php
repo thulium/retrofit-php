@@ -8,6 +8,9 @@ use Ouzo\Utilities\Arrays;
 use Retrofit\Core\Internal\RequestBuilder;
 use Retrofit\Core\Multipart\PartInterface;
 
+/**
+ * @internal
+ */
 trait WithPartInterfaceHandle
 {
     private const CONTENT_TRANSFER_ENCODING_HEADER = 'Content-Transfer-Encoding';

@@ -9,6 +9,9 @@ use Retrofit\Core\Converter\StringConverter;
 use Retrofit\Core\Internal\RequestBuilder;
 use Retrofit\Core\Internal\Utils\Utils;
 
+/**
+ * @internal
+ */
 readonly class PathParameterHandler implements ParameterHandler
 {
     public function __construct(

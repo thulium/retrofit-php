@@ -11,6 +11,11 @@ use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * {@link ResponseBodyConverter} implementation.
+ *
+ * @internal
+ */
 readonly class SymfonySerializerResponseBodyConverter implements ResponseBodyConverter
 {
     public function __construct(

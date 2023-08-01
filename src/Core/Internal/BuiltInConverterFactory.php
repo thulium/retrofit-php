@@ -11,6 +11,9 @@ use Retrofit\Core\Converter\ResponseBodyConverter;
 use Retrofit\Core\Converter\StringConverter;
 use Retrofit\Core\Type;
 
+/**
+ * @internal
+ */
 readonly class BuiltInConverterFactory implements ConverterFactory
 {
     public function requestBodyConverter(Type $type): ?RequestBodyConverter

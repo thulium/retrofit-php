@@ -7,7 +7,6 @@ namespace Retrofit\Core;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use ReflectionClass;
-use ReflectionException;
 use Retrofit\Core\Internal\ConverterProvider;
 use Retrofit\Core\Internal\Proxy\ProxyFactory;
 
@@ -18,15 +17,17 @@ use Retrofit\Core\Internal\Proxy\ProxyFactory;
  *
  * For example:
  * <pre>
- * $retrofit = Retrofit::builder()
+ * $retrofit = Retrofit::Builder()
  *     ->client(...) // Implementation of the HttpClient interface
  *     ->baseUrl('https://api.example.com')
- *     ->addConverterFactory()
+ *     ->addConverterFactory(...)
  *     ->build();
  *
- * $api = retrofit.create(MyApi::class);
+ * $api = $retrofit->create(MyApi::class);
  * $users = $api->getUsers()->execute();
  * </pre>
+ *
+ * @api
  */
 readonly class Retrofit
 {
@@ -40,12 +41,11 @@ readonly class Retrofit
     }
 
     /**
-     * Creates and implementation of the API endpoints defined by the {@code service} interface.
+     * Creates an implementation of the API endpoints defined by the <code>service</code> interface.
      *
      * @template T of object
      * @param class-string<T> $service
-     * @return T the implementation of the service
-     * @throws ReflectionException
+     * @return T
      */
     public function create(string $service): object
     {
@@ -54,6 +54,9 @@ readonly class Retrofit
         return $this->proxyFactory->create($this, $reflectionClass);
     }
 
+    /**
+     * Build a new {@link Retrofit}.
+     */
     public static function Builder(): RetrofitBuilder
     {
         return new RetrofitBuilder();
@@ -62,7 +65,6 @@ readonly class Retrofit
     /**
      * @template T of object
      * @param ReflectionClass<T> $service
-     * @return void
      */
     private function validateServiceInterface(ReflectionClass $service): void
     {

@@ -13,11 +13,16 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Retrofit\Core\HttpClient;
 
+/**
+ * Guzzle7 {@link HttpClient} implementation.
+ *
+ * @see HttpClient
+ *
+ * @api
+ */
 class Guzzle7HttpClient implements HttpClient
 {
-    /**
-     * @var array<int, array{promise: PromiseInterface, onResponse: Closure, onFailure: Closure}>
-     */
+    /** @var array<int, array{promise: PromiseInterface, onResponse: Closure, onFailure: Closure}> */
     private array $requests = [];
 
     public function __construct(

@@ -7,7 +7,9 @@ namespace Retrofit\Core;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Create an error response from {@code rawResponse} with {@code body} as the error body.
+ * An HTTP response.
+ *
+ * @api
  */
 readonly class Response
 {
@@ -36,7 +38,7 @@ readonly class Response
     }
 
     /**
-     * HTTP status message or null if unknown.
+     * HTTP status message.
      */
     public function message(): string
     {

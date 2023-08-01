@@ -62,6 +62,8 @@ use Retrofit\Core\Retrofit;
  *      }
  * }
  * </pre>
+ *
+ * @internal
  */
 readonly class DefaultProxyFactory implements ProxyFactory
 {
@@ -78,7 +80,6 @@ readonly class DefaultProxyFactory implements ProxyFactory
 
     /**
      * @template T of object
-     * @param Retrofit $retrofit
      * @param ReflectionClass<T> $service
      * @return object
      */
@@ -104,8 +105,6 @@ readonly class DefaultProxyFactory implements ProxyFactory
     /**
      * @template T of object
      * @param ReflectionClass<T> $service
-     * @param string $proxyServiceName
-     * @return Class_
      */
     private function serviceClassImplementation(ReflectionClass $service, string $proxyServiceName): Class_
     {
@@ -159,8 +158,6 @@ readonly class DefaultProxyFactory implements ProxyFactory
     /**
      * @template T of object
      * @param ReflectionClass<T> $service
-     * @param Class_ $serviceClassImplementation
-     * @return void
      */
     private function appendMethods(ReflectionClass $service, Class_ $serviceClassImplementation): void
     {
@@ -201,7 +198,6 @@ readonly class DefaultProxyFactory implements ProxyFactory
     /**
      * @template T of object
      * @param ReflectionClass<T> $service
-     * @return MethodCall
      */
     private function createServiceMethodInvokeReturnStmt(ReflectionClass $service): MethodCall
     {
@@ -243,10 +239,7 @@ readonly class DefaultProxyFactory implements ProxyFactory
         }
     }
 
-    /**
-     * @param ReflectionMethod $method
-     * @return list<Node>
-     */
+    /** @return list<Node> */
     private function appendMethodParameters(ReflectionMethod $method): array
     {
         $params = [];

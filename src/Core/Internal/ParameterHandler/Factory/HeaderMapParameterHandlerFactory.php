@@ -15,18 +15,12 @@ use Retrofit\Core\Type;
 
 /**
  * @extends AbstractParameterHandlerFactory<HeaderMap>
+ *
+ * @internal
  */
 readonly class HeaderMapParameterHandlerFactory extends AbstractParameterHandlerFactory
 {
-    /**
-     * @param HeaderMap $param
-     * @param HttpRequest $httpRequest
-     * @param Encoding|null $encoding
-     * @param ReflectionMethod $reflectionMethod
-     * @param int $position
-     * @param Type $type
-     * @return ParameterHandler
-     */
+    /** @param HeaderMap $param */
     public function create(
         ParameterAttribute $param,
         HttpRequest $httpRequest,

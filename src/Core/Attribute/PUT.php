@@ -8,12 +8,15 @@ use Attribute;
 use Retrofit\Core\HttpMethod;
 use Retrofit\Core\Internal\Utils\Utils;
 
+/**
+ * Make a PUT request.
+ *
+ * @api
+ */
 #[Attribute(Attribute::TARGET_METHOD)]
 readonly class PUT implements HttpRequest
 {
-    /**
-     * @var list<string>
-     */
+    /** @var list<string> */
     private array $pathParameters;
 
     public function __construct(private ?string $path = null)

@@ -6,6 +6,11 @@ namespace Retrofit\Core\Attribute\Response;
 
 use InvalidArgumentException;
 
+/**
+ * Convenient class for handle types in {@link ResponseBody} and {@link ErrorBody} attributes.
+ *
+ * @internal
+ */
 trait WithBody
 {
     public function __construct(

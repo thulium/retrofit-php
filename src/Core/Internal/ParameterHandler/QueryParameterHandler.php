@@ -8,6 +8,9 @@ use ReflectionMethod;
 use Retrofit\Core\Converter\StringConverter;
 use Retrofit\Core\Internal\RequestBuilder;
 
+/**
+ * @internal
+ */
 readonly class QueryParameterHandler implements ParameterHandler
 {
     use WithQueryParameter;
