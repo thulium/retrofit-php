@@ -12,9 +12,12 @@ use Retrofit\Core\Converter\StringConverter;
 use Retrofit\Core\Type;
 use RuntimeException;
 
+/**
+ * @internal
+ */
 readonly class ConverterProvider
 {
-    /** @param ConverterFactory[] $converterFactories */
+    /** @param list<ConverterFactory> $converterFactories */
     public function __construct(private array $converterFactories)
     {
     }

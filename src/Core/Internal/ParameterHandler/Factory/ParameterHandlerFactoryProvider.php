@@ -19,11 +19,12 @@ use Retrofit\Core\Attribute\QueryName;
 use Retrofit\Core\Attribute\Url;
 use Retrofit\Core\Internal\ConverterProvider;
 
+/**
+ * @internal
+ */
 class ParameterHandlerFactoryProvider
 {
-    /**
-     * @var array<string, AbstractParameterHandlerFactory<ParameterAttribute>>
-     */
+    /** @var array<string, AbstractParameterHandlerFactory<ParameterAttribute>> */
     private array $attributeNameToFactory;
 
     public function __construct(ConverterProvider $converterProvider)
@@ -44,10 +45,7 @@ class ParameterHandlerFactoryProvider
         ];
     }
 
-    /**
-     * @param string $attributeName
-     * @return AbstractParameterHandlerFactory<ParameterAttribute>
-     */
+    /** @return AbstractParameterHandlerFactory<ParameterAttribute> */
     public function get(string $attributeName): AbstractParameterHandlerFactory
     {
         return $this->attributeNameToFactory[$attributeName];

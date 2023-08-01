@@ -9,6 +9,9 @@ use Retrofit\Core\Converter\RequestBodyConverter;
 use Retrofit\Core\Internal\RequestBuilder;
 use Retrofit\Core\Internal\Utils\Utils;
 
+/**
+ * @internal
+ */
 readonly class BodyParameterHandler implements ParameterHandler
 {
     public function __construct(

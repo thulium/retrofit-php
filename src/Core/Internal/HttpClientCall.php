@@ -14,6 +14,9 @@ use Retrofit\Core\Response;
 use RuntimeException;
 use Throwable;
 
+/**
+ * @internal
+ */
 readonly class HttpClientCall implements Call
 {
     public function __construct(

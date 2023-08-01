@@ -8,14 +8,34 @@ use Attribute;
 use Retrofit\Core\HttpMethod;
 use Retrofit\Core\Internal\Utils\Utils;
 
+/**
+ * Use a custom HTTP verb for a request.
+ *
+ * <pre>
+ * interface Service
+ * {
+ *     #[HTTP('CUSTOM', 'custom/endpoint/')]
+ *     public function customEndpoint(): Call;
+ * }
+ * </pre>
+ *
+ * This annotation can also used for sending DELETE with a request body:
+ * <pre>
+ * interface Service
+ * {
+ *     #[HTTP('DELETE', 'remove', true)]
+ *     public function customEndpoint(): Call;
+ * }
+ *  </pre>
+ *
+ * @api
+ */
 #[Attribute(Attribute::TARGET_METHOD)]
 readonly class HTTP implements HttpRequest
 {
     private HttpMethod $httpMethod;
 
-    /**
-     * @var list<string>
-     */
+    /** @var list<string> */
     private array $pathParameters;
 
     public function __construct(

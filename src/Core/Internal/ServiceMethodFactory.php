@@ -12,7 +12,6 @@ use Ouzo\Utilities\Strings;
 use phpDocumentor\Reflection\DocBlockFactory;
 use Psr\Http\Message\StreamInterface;
 use ReflectionAttribute;
-use ReflectionException;
 use ReflectionMethod;
 use Retrofit\Core\Attribute\Field;
 use Retrofit\Core\Attribute\FieldMap;
@@ -38,6 +37,8 @@ use Retrofit\Core\Type;
 
 /**
  * @template T of object
+ *
+ * @internal
  */
 readonly class ServiceMethodFactory
 {
@@ -48,12 +49,7 @@ readonly class ServiceMethodFactory
     {
     }
 
-    /**
-     * @param class-string<T> $service
-     * @param string $method
-     * @return ServiceMethod
-     * @throws ReflectionException
-     */
+    /** @param class-string<T> $service */
     public function create(string $service, string $method): ServiceMethod
     {
         $reflectionMethod = new ReflectionMethod($service, $method);
@@ -150,10 +146,7 @@ readonly class ServiceMethodFactory
         return Encoding::MULTIPART;
     }
 
-    /**
-     * @param ReflectionMethod $reflectionMethod
-     * @return array<string, string>
-     */
+    /** @return array<string, string> */
     private function getDefaultHeaders(ReflectionMethod $reflectionMethod): array
     {
         $defaultHeaders = [];
@@ -183,12 +176,7 @@ readonly class ServiceMethodFactory
         return $defaultHeaders;
     }
 
-    /**
-     * @param HttpRequest $httpRequest
-     * @param Encoding|null $encoding
-     * @param ReflectionMethod $reflectionMethod
-     * @return array<int, ParameterHandler>
-     */
+    /** @return array<int, ParameterHandler> */
     private function getParameterHandlers(HttpRequest $httpRequest, ?Encoding $encoding, ReflectionMethod $reflectionMethod): array
     {
         $docCommentParams = [];
@@ -294,7 +282,6 @@ readonly class ServiceMethodFactory
     /**
      * @template A of object
      * @param ReflectionAttribute<A> $reflectionAttribute
-     * @return ResponseBodyConverter|null
      */
     private function getBodyConverter(ReflectionAttribute $reflectionAttribute): ?ResponseBodyConverter
     {

@@ -17,42 +17,33 @@ use Retrofit\Core\Attribute\HttpRequest;
 use Retrofit\Core\Internal\Utils\Utils;
 use RuntimeException;
 
+/**
+ * @internal
+ */
 class RequestBuilder
 {
     private const PARAMETER_PLACEHOLDER = '{%s}';
 
     private UriInterface $uri;
 
-    /**
-     * @var list<array<string, string>>
-     */
+    /** @var list<array<string, string>> */
     private array $pathParameters = [];
 
-    /**
-     * @var list<string>
-     */
+    /** @var list<string> */
     private array $queries = [];
 
-    /**
-     * @var array<string, string>
-     */
+    /** @var array<string, string> */
     private array $headers = [];
 
-    /**
-     * @var array<string, string>
-     */
+    /** @var array<string, string> */
     private array $fields = [];
 
-    /**
-     * @var array<int, array{name: string, contents: StreamInterface|string, headers: array<string, string>, filename?: string|null}>
-     */
+    /** @var array<int, array{name: string, contents: StreamInterface|string, headers: array<string, string>, filename?: string|null}> */
     private array $parts = [];
 
     private ?StreamInterface $body = null;
 
-    /**
-     * @param array<string, string> $defaultHeaders
-     */
+    /** @param array<string, string> $defaultHeaders */
     public function __construct(
         UriInterface $baseUrl,
         private readonly HttpRequest $httpRequest,
@@ -88,8 +79,6 @@ class RequestBuilder
     /**
      * @param string|list<string> $name
      * @param string|list<string>|null $value
-     * @param bool $encoded
-     * @return void
      */
     public function addQueryParam(string|array $name, string|array|null $value, bool $encoded): void
     {
@@ -125,13 +114,7 @@ class RequestBuilder
         $this->fields[$name] = $value;
     }
 
-    /**
-     * @param string $name
-     * @param StreamInterface|string $body
-     * @param array<string, string> $headers
-     * @param string|null $filename
-     * @return void
-     */
+    /** @param array<string, string> $headers */
     public function addPart(string $name, StreamInterface|string $body, array $headers = [], ?string $filename = null): void
     {
         $this->parts[] = [

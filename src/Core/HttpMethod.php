@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Retrofit\Core;
 
+/**
+ * Convenient enum to describe HTTP methods.
+ *
+ * @api
+ */
 enum HttpMethod: string
 {
     case GET = 'GET';

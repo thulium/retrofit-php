@@ -10,6 +10,9 @@ use Retrofit\Core\Converter\RequestBodyConverter;
 use Retrofit\Core\Converter\StringConverter;
 use Retrofit\Core\Internal\Utils\Utils;
 
+/**
+ * @internal
+ */
 trait WithMapParameter
 {
     protected function validateAndApply(mixed $value, string $context, StringConverter|RequestBodyConverter $converter, Closure $apply): void

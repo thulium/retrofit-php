@@ -7,12 +7,12 @@ namespace Retrofit\Core\Internal\ParameterHandler;
 use Ouzo\Utilities\Arrays;
 use Retrofit\Core\Internal\Utils\Utils;
 
+/**
+ * @internal
+ */
 trait WithQueryParameter
 {
-    /**
-     * @param mixed $value
-     * @return list<string>|string
-     */
+    /** @return list<string>|string */
     protected function validateAndConvert(mixed $value): array|string
     {
         if (is_array($value)) {

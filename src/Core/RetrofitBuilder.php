@@ -16,6 +16,8 @@ use Retrofit\Core\Internal\Proxy\DefaultProxyFactory;
 
 /**
  * Build a new {@link Retrofit}.
+ *
+ * @api
  */
 class RetrofitBuilder
 {
@@ -23,17 +25,21 @@ class RetrofitBuilder
 
     private ?UriInterface $baseUrl = null;
 
-    /**
-     * @var list<ConverterFactory>
-     */
+    /** @var list<ConverterFactory> */
     private array $converterFactories = [];
 
+    /**
+     * The HTTP Client used for requests.
+     */
     public function client(HttpClient $httpClient): static
     {
         $this->httpClient = $httpClient;
         return $this;
     }
 
+    /**
+     * Set the API base URL.
+     */
     public function baseUrl(UriInterface|string $baseUrl): static
     {
         if (is_string($baseUrl)) {
@@ -43,12 +49,18 @@ class RetrofitBuilder
         return $this;
     }
 
+    /**
+     * Add converter factory for serialization and deserialization of objects.
+     */
     public function addConverterFactory(ConverterFactory $converterFactory): static
     {
         $this->converterFactories[] = $converterFactory;
         return $this;
     }
 
+    /**
+     * Create the {@link Retrofit} instance using the configured values.
+     */
     public function build(): Retrofit
     {
         if (is_null($this->httpClient)) {

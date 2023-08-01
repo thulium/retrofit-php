@@ -14,6 +14,8 @@ use Retrofit\Core\Type;
 
 /**
  * @template-covariant T of ParameterAttribute
+ *
+ * @internal
  */
 abstract readonly class AbstractParameterHandlerFactory
 {
@@ -21,15 +23,6 @@ abstract readonly class AbstractParameterHandlerFactory
     {
     }
 
-    /**
-     * @param ParameterAttribute $param
-     * @param HttpRequest $httpRequest
-     * @param Encoding|null $encoding
-     * @param ReflectionMethod $reflectionMethod
-     * @param int $position
-     * @param Type $type
-     * @return ParameterHandler
-     */
     abstract public function create(
         ParameterAttribute $param,
         HttpRequest $httpRequest,

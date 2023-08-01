@@ -9,6 +9,9 @@ use ReflectionMethod;
 use Retrofit\Core\Internal\RequestBuilder;
 use Retrofit\Core\Internal\Utils\Utils;
 
+/**
+ * @internal
+ */
 readonly class UrlParameterHandler implements ParameterHandler
 {
     public function __construct(

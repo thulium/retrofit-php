@@ -19,11 +19,16 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use Retrofit\Core\Internal\Utils\Utils;
 
+/**
+ * Wrapper around PHP types.
+ *
+ * This class also fills in the gaps of the generic types in PHP using PHPDoc comments syntax.
+ *
+ * @api
+ */
 readonly class Type
 {
-    /**
-     * @var list<string>
-     */
+    /** @var list<string> */
     private const SCALARS = ['bool', 'int', 'float', 'string'];
 
     public function __construct(
@@ -33,32 +38,54 @@ readonly class Type
     {
     }
 
+    /**
+     * Returns the raw type.
+     *
+     * This type could be a scalar, array or object (built-in or custom class).
+     */
     public function getRawType(): string
     {
         return $this->rawType;
     }
 
+    /**
+     * Returns generic type of array.
+     *
+     * If type is scalar or object returns <code>null</code>.
+     */
     public function getParametrizedType(): ?string
     {
         return $this->parametrizedType;
     }
 
+    /**
+     * Checks if given type is a
+     * {@link https://www.php.net/manual/en/language.types.type-system.php#language.types.type-system.base scalar}.
+     */
     public function isScalar(): bool
     {
         return in_array($this->rawType, self::SCALARS);
     }
 
+    /**
+     * Checks if type matches provided type.
+     */
     public function isA(string $type): bool
     {
         return $this->rawType === $type;
     }
 
+    /**
+     * Determines if parametrized (generic) type is an array.
+     */
     public function parametrizedTypeIsScalar(): bool
     {
         return !is_null($this->parametrizedType) && in_array($this->parametrizedType, self::SCALARS);
     }
 
     /**
+     * Creates {@link Type} object using reflection and parsed params from PHPDoc.
+     *
      * @param list<Tag> $params
      */
     public static function create(
@@ -83,9 +110,7 @@ readonly class Type
         return is_null($this->parametrizedType) ? $this->rawType : "{$this->rawType}<{$this->parametrizedType}>";
     }
 
-    /**
-     * @param list<Tag> $params
-     */
+    /** @param list<Tag> $params */
     private static function handleParametrizedTypeForArray(
         string $rawType,
         ReflectionParameter $reflectionParameter,

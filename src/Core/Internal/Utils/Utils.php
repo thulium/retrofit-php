@@ -17,7 +17,7 @@ use TRegx\CleanRegex\Match\Detail;
 /**
  * Convenient utils for repeatable things.
  *
- * <b>Only for internal purposes.</b>
+ * @internal
  */
 readonly class Utils
 {
@@ -62,7 +62,7 @@ readonly class Utils
      * Gets the set of unique path parameters used in the given URI. If a parameter is used twice in the URI, it will
      * only show up once in the set.
      *
-     * @return string[]
+     * @return list<string>
      */
     public static function parsePathParameters(?string $path): array
     {
@@ -82,8 +82,8 @@ readonly class Utils
     /**
      * Sorts parameters using their priorities.
      *
-     * @param ReflectionParameter[] $reflectionParameters
-     * @return ReflectionParameter[]
+     * @param list<ReflectionParameter> $reflectionParameters
+     * @return list<ReflectionParameter>
      */
     public static function sortParameterAttributesByPriorities(array $reflectionParameters): array
     {

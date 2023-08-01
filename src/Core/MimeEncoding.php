@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Retrofit\Core;
 
+/**
+ * Convenient enum to handle supported mime encodings.
+ *
+ * @api
+ */
 enum MimeEncoding: string
 {
     case BIT_7 = '7bit';

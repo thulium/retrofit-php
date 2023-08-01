@@ -15,6 +15,9 @@ use Retrofit\Core\Type;
 use RuntimeException;
 use stdClass;
 
+/**
+ * @internal
+ */
 readonly class BuiltInConverters
 {
     public static function JsonEncodeRequestBodyConverter(): RequestBodyConverter
@@ -72,10 +75,7 @@ readonly class BuiltInConverters
             {
             }
 
-            /**
-             * @param StreamInterface $value
-             * @return array<mixed>
-             */
+            /** @return array<mixed> */
             public function convert(StreamInterface $value): array
             {
                 $result = json_decode($value->getContents(), $this->type->parametrizedTypeIsScalar());

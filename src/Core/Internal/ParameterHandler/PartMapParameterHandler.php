@@ -12,6 +12,9 @@ use Retrofit\Core\Internal\Utils\Utils;
 use Retrofit\Core\MimeEncoding;
 use Retrofit\Core\Multipart\PartInterface;
 
+/**
+ * @internal
+ */
 readonly class PartMapParameterHandler implements ParameterHandler
 {
     use WithMapParameter;

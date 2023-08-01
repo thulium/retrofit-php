@@ -7,13 +7,15 @@ namespace Retrofit\Core\Internal\Proxy;
 use ReflectionClass;
 use Retrofit\Core\Retrofit;
 
+/**
+ * @internal
+ */
 interface ProxyFactory
 {
     /**
      * Creates a new proxy from given service.
      *
      * @template T of object
-     * @param Retrofit $retrofit
      * @param ReflectionClass<T> $service
      * @return T
      */
