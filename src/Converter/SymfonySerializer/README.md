@@ -1,7 +1,7 @@
 # Retrofit PHP - Symfony Serializer Converter
 
-The Symfony Serializer converter implements [symfony/serializer](https://github.com/symfony/serializer) for serialize
-and deserialize requests and responses.
+The Symfony Serializer converter implements [symfony/serializer](https://github.com/symfony/serializer) to serialize and deserialize requests and 
+responses.
 
 ## Resources
 
