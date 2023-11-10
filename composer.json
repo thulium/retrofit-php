@@ -27,6 +27,7 @@
         "symfony/serializer": "^5.4 || ^6.3"
     },
     "require-dev": {
+        "donatj/mock-webserver": "^2.7",
         "phpunit/phpunit": "^10.2",
         "symfony/property-access": "^5.4 || ^6.3"
     },
