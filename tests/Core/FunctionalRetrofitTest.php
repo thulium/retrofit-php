@@ -25,10 +25,10 @@ class FunctionalRetrofitTest extends TestCase
     {
         parent::setUp();
 
-//        $this->mockWebServer = new MockWebServer();
-//        $this->mockWebServer->start();
+        $this->mockWebServer = new MockWebServer();
+        $this->mockWebServer->start();
 
-//        $this->fullyValidApi = $this->createFullyValidApiMock();
+        $this->fullyValidApi = $this->createFullyValidApiMock();
     }
 
     protected function tearDown(): void
@@ -42,31 +42,15 @@ class FunctionalRetrofitTest extends TestCase
     public function shouldGenerateProperResponse(): void
     {
         // given
-        $this->mockWebServer = new MockWebServer();
-        $this->mockWebServer->start();
-        $url = $this->mockWebServer->setResponseOfPath('/info/sample', new Response('foo bar content'));
-
-        $retrofit = Retrofit::Builder()
-            ->baseUrl($url)
-            ->client(new Guzzle7HttpClient(new Client()))
-            ->addConverterFactory(new SymfonySerializerConverterFactory(new Serializer()))
-            ->build();
-
-        /** @var FullyValidApi $service */
-        $this->fullyValidApi = $retrofit->create(FullyValidApi::class);
-
-        $content = file_get_contents($url);
-
-//        $this->fullyValidApi = $this->createFullyValidApiMock();
+        $this->mockWebServer->setResponseOfPath('/info/sample-user', new Response('foo bar content'));
 
         $call = $this->fullyValidApi->getInfo('sample-user');
 
         // when
-        $result = $call->request();
+        $result = $call->execute();
 
         // then
-        $body = $result->getBody();
-        $this->assertEquals('foo bar content', $body->getContents());
+        $this->assertEquals('foo bar content', $result->body());
     }
 
     private function createFullyValidApiMock(): FullyValidApi
