@@ -38,6 +38,36 @@ class RequestBuilderTest extends TestCase
     }
 
     #[Test]
+    public function shouldAppendPathToBaseUrlPath(): void
+    {
+        // given
+        $requestBuilder = new RequestBuilder(new Uri('https://example.com/api'), new GET('/users'));
+
+        // when
+        $request = $requestBuilder->build();
+
+        // then
+        $this->assertSame('https://example.com/api/users', $request->getUri()->__toString());
+    }
+
+    #[Test]
+    #[TestWith(['https://example.com/api', '/users'])]
+    #[TestWith(['https://example.com/api/', '/users'])]
+    #[TestWith(['https://example.com/api', 'users'])]
+    #[TestWith(['https://example.com/api/', 'users'])]
+    public function shouldNotDuplicateSlashWhenJoiningBaseUrlPathAndPath(string $baseUrl, string $path): void
+    {
+        // given
+        $requestBuilder = new RequestBuilder(new Uri($baseUrl), new GET($path));
+
+        // when
+        $request = $requestBuilder->build();
+
+        // then
+        $this->assertSame('https://example.com/api/users', $request->getUri()->__toString());
+    }
+
+    #[Test]
     public function shouldKeepStaticQueryStringFromPath(): void
     {
         // given
