@@ -54,8 +54,15 @@ class RequestBuilder
         $path = $this->httpRequest->path();
         if (!is_null($path)) {
             $parsed = new Uri($path);
-            $this->uri = $this->uri->withPath($parsed->getPath());
-            if ($parsed->getQuery() !== '') {
+            $relativePath = $parsed->getPath();
+
+            if ($relativePath !== Strings::EMPTY) {
+                $baseUrlFormatted = rtrim($this->uri->getPath(), '/');
+                $relativePathFormatted = ltrim($relativePath, '/');
+
+                $this->uri = $this->uri->withPath("{$baseUrlFormatted}/{$relativePathFormatted}");
+            }
+            if ($parsed->getQuery() !== Strings::EMPTY) {
                 $this->uri = $this->uri->withQuery($parsed->getQuery());
             }
         }
